@@ -1,0 +1,55 @@
+package ecommerce.productservice.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "PRODUCT", schema = "PRODUCT")
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
+    @SequenceGenerator(name = "product_seq", sequenceName = "SEQ_PRODUCT_ID", allocationSize = 1)
+    @Column(name = "PRODUCT_ID")
+    private Long id;
+
+    @Column(name = "NAME", nullable = false)
+    private String name;
+
+    @Lob
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @Column(name = "PRICE", nullable = false)
+    private BigDecimal price;
+
+    @Column(name = "DISCOUNT_PRICE")
+    private BigDecimal discountPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "CATEGORY_ID", nullable = false)
+    private Category category;
+
+    @Column(name = "BRAND_ID")
+    private String brandId;
+
+    @Column(name = "UNIT")
+    private String unit;
+
+    @Column(name = "IS_ACTIVE")
+    private Integer isActive;
+
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
+
+    // Getters and Setters
+}
+
