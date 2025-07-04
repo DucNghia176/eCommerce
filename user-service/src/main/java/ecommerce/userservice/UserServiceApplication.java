@@ -1,13 +1,13 @@
-package ecommerce.apicommon;
+package ecommerce.userservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApiCommonApplication {
+public class UserServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApiCommonApplication.class, args);
+        SpringApplication.run(UserServiceApplication.class, args);
     }
 
 }
