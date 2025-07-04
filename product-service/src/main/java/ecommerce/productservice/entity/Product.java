@@ -2,6 +2,7 @@ package ecommerce.productservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -47,9 +48,8 @@ public class Product {
     @Column(name = "IS_ACTIVE")
     private Integer isActive;
 
-    @Column(name = "CREATED_AT")
+    @CreationTimestamp
+    @Column(name = "CREATED_AT", updatable = false)
     private LocalDateTime createdAt;
-
-    // Getters and Setters
 }
 

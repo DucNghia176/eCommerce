@@ -1,14 +1,14 @@
 package ecommerce.productservice.controller;
 
 
+import ecommerce.apicommon.dto.response.ApiResponse;
 import ecommerce.productservice.dto.request.CategoryRequest;
 import ecommerce.productservice.dto.response.CategoryResponse;
 import ecommerce.productservice.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/category")
@@ -17,7 +17,22 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/create")
-    public CategoryResponse createCategory(@RequestBody CategoryRequest request) {
+    public ApiResponse<CategoryResponse> createCategory(@RequestBody CategoryRequest request) {
         return categoryService.createCategory(request);
+    }
+
+    @GetMapping
+    public ApiResponse<List<CategoryResponse>> getAllCategory() {
+        return categoryService.getAllCategory();
+    }
+
+    @PutMapping("/update/{id}")
+    public ApiResponse<CategoryResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryRequest request) {
+        return categoryService.updateCategory(id, request);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ApiResponse<CategoryResponse> deleteCategory(@PathVariable Long id) {
+        return categoryService.deleteCategory(id);
     }
 }

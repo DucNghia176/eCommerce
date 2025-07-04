@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @Data
 public class CategoryRequest {
-    private String id;
     private String name;
     private Long parentId;
 }

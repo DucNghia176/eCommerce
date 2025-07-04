@@ -10,14 +10,16 @@
         <module name="eureka" />
         <module name="Gateway" />
       </profile>
-      <profile name="Annotation profile for api-common" enabled="true">
+      <profile name="Annotation profile for product-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
         </processorPath>
-        <module name="api-common" />
+        <module name="common" />
         <module name="product-service" />
       </profile>
     </annotationProcessing>
@@ -25,7 +27,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Gateway" options="-parameters" />
-      <module name="api-common" options="-parameters" />
+      <module name="common" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="product-service" options="-parameters" />
     </option>
