@@ -1,9 +1,9 @@
 package ecommerce.productservice.controller;
 
-import ecommerce.apicommon.dto.response.ApiResponse;
+import ecommerce.apicommon.model.response.ApiResponse;
+import ecommerce.apicommon.model.response.ProductResponse;
 import ecommerce.productservice.dto.request.ProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
-import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

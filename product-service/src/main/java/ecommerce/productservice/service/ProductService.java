@@ -1,9 +1,9 @@
 package ecommerce.productservice.service;
 
-import ecommerce.apicommon.dto.response.ApiResponse;
+import ecommerce.apicommon.model.response.ApiResponse;
+import ecommerce.apicommon.model.response.ProductResponse;
 import ecommerce.productservice.dto.request.ProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
-import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.entity.*;
 import ecommerce.productservice.mapper.ProductMapper;
 import ecommerce.productservice.repository.*;

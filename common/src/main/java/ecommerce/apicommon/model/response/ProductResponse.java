@@ -1,4 +1,4 @@
-package ecommerce.productservice.dto.response;
+package ecommerce.apicommon.model.response;
 
 import lombok.*;
 

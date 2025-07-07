@@ -1,4 +1,4 @@
-package ecommerce.apicommon.dto.response;
+package ecommerce.apicommon.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ApiResponse<T>{
+public class ApiResponse<T> {
     @Builder.Default
     int code = 1000;
     String message;

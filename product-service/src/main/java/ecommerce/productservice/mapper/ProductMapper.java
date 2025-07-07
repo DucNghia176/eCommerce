@@ -1,7 +1,7 @@
 package ecommerce.productservice.mapper;
 
+import ecommerce.apicommon.model.response.ProductResponse;
 import ecommerce.productservice.dto.request.ProductRequest;
-import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
