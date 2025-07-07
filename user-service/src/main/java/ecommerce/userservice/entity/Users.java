@@ -17,7 +17,7 @@ public class Users {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "USERNAME", nullable = false, length = 50)
+    @Column(name = "USERNAME", nullable = false, length = 50, unique = true)
     private String username;
 
     @Column(name = "PASSWORD", nullable = false, length = 255)
@@ -26,7 +26,7 @@ public class Users {
     @Column(name = "FULL_NAME", length = 100)
     private String fullName;
 
-    @Column(name = "EMAIL", length = 100)
+    @Column(name = "EMAIL", length = 100, unique = true)
     private String email;
 
     @Column(name = "ROLE", length = 20)
@@ -38,14 +38,17 @@ public class Users {
     @Column(name = "IS_ACTIVE")
     private Integer isActive = 1;
 
+    @Column(name = "IS_LOCK", nullable = false)
+    private Integer isLock = 0;
+
     @Column(name = "CREATED_AT", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "UPDATED_AT")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 
     @Column(name = "LAST_LOGIN")
-    private LocalDateTime lastLogin = LocalDateTime.now();
+    private LocalDateTime lastLogin;
 
     @Column(name = "GENDER", length = 10)
     private String gender;
