@@ -6,10 +6,7 @@ import ecommerce.userservice.dto.request.UserRequest;
 import ecommerce.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -20,5 +17,10 @@ public class UserController {
     @PostMapping("create")
     public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
         return userService.createUser(request);
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<UserResponse> getById(@PathVariable Long id) {
+        return userService.getUserById(id);
     }
 }

@@ -40,4 +40,9 @@ public class ProductController {
     public ApiResponse<List<ProductResponse>> searchProduct(@RequestBody ProductSearchRequest request) {
         return productService.searchProduct(request);
     }
+
+    @GetMapping("/{id}")
+    public ApiResponse<ProductResponse> getUserById(@PathVariable Long id) {
+        return productService.getUserById(id);
+    }
 }

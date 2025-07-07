@@ -61,4 +61,32 @@ public class UserService {
                     .build();
         }
     }
+
+    public ApiResponse<UserResponse> getUserById(Long id) {
+        try {
+            Users user = userRepository.findById(id)
+                    .orElse(null);
+
+            if (user == null) {
+                return ApiResponse.<UserResponse>builder()
+                        .code(404)
+                        .message("Không tìm thấy người dùng với ID: " + id)
+                        .data(null)
+                        .build();
+            }
+            UserResponse response = userMapper.toResponse(user);
+            return ApiResponse.<UserResponse>builder()
+                    .code(200)
+                    .message("Lấy thông tin người dùng thành công")
+                    .data(response)
+                    .build();
+        } catch (Exception e) {
+            log.error("Lỗi khi lấy người dùng theo ID: {}", e.getMessage(), e);
+            return ApiResponse.<UserResponse>builder()
+                    .code(500)
+                    .message("Đã xảy ra lỗi khi lấy thông tin người dùng")
+                    .data(null)
+                    .build();
+        }
+    }
 }
