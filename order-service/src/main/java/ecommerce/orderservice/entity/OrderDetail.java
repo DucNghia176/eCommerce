@@ -1,5 +1,6 @@
 package ecommerce.orderservice.entity;
 
+import ecommerce.orderservice.entity.imp.OrderDetailId;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "ORDER_DETAIL", schema = "order_db")
+@IdClass(OrderDetailId.class)
 public class OrderDetail {
     @Id
     @ManyToOne
