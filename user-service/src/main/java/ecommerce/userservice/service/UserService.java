@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -26,8 +27,9 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final KafkaUser kafkaUser;
+    private final CloudinaryService cloudinaryService;
 
-    public ApiResponse<UserResponse> createUser(UserRequest request) {
+    public ApiResponse<UserResponse> createUser(UserRequest request, MultipartFile avatarFile) {
         try {
             if (userRepository.existsByUsername(request.getUsername())) {
                 return ApiResponse.<UserResponse>builder()
@@ -47,6 +49,10 @@ public class UserService {
             Users users = userMapper.toEntity(request);
 
             users.setRole(RoleStatus.USER.toString());
+            if (avatarFile != null && !avatarFile.isEmpty()) {
+                String avatarUrl = cloudinaryService.uploadFile(avatarFile);
+                users.setAvatar(avatarUrl);
+            }
             String encodedPassword = passwordEncoder.encode(request.getPassword());
             users.setPassword(encodedPassword);
             users.setCreatedAt(LocalDateTime.now());

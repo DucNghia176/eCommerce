@@ -1,4 +1,4 @@
-package ecommerce.apicommon.model.status;
+package ecommerce.aipcommon.model.status;
 
 public enum OrderStatus {
     PAID, PENDING

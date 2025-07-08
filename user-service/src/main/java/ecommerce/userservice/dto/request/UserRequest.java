@@ -29,7 +29,6 @@ public class UserRequest {
     @Email(message = "Email phải đúng định dạng")
     private String email;
     private String role;
-    private String avatar;
     private String gender;
     private LocalDate dateOfBirth;
 }

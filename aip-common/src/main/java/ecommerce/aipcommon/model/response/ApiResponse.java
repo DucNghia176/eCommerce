@@ -1,4 +1,4 @@
-package ecommerce.apicommon.model.response;
+package ecommerce.aipcommon.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
