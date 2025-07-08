@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   ecommerce-db:
     image: gvenzl/oracle-xe:21-slim-faststart
@@ -18,32 +16,61 @@ services:
       timeout: 15s
       retries: 10
       start_period: 40s
+  #  ecommerce-product-service:
+  #    build: ./product-service
+  #    container_name: ecommerce-product-service
+  #    ports:
+  #      - "8081:8081"
+  #    environment:
+  #      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@ecommerce-db:1521/XEPDB1
+  #      - SPRING_DATASOURCE_USERNAME=product
+  #      - SPRING_DATASOURCE_PASSWORD=${ORACLE_PASSWORD}
+  #    depends_on:
+  #      ecommerce-db:
+  #        condition: service_healthy
+  #    networks:
+  #      - ecommerce-network
 
-  ecommerce-product-service:
-    build: ./product-service
-    container_name: ecommerce-product-service
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
     ports:
-      - "8081:8081"
+      - "2181:2181"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@ecommerce-db:1521/XEPDB1
-      - SPRING_DATASOURCE_USERNAME=product
-      - SPRING_DATASOURCE_PASSWORD=${ORACLE_PASSWORD}
-    depends_on:
-      ecommerce-db:
-        condition: service_healthy
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
     networks:
       - ecommerce-network
-#  frontend:
-#    build: ./frontend
-#    container_name: ecommerce-frontend
-#    ports:
-#      - "4200:80"
-#    depends_on:
-#      - ecommerce-product-service
-#    networks:
-#      - ecommerce-network
 
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+    networks:
+      - ecommerce-network
 
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8089:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: ecommerce-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    networks:
+      - ecommerce-network
 networks:
   ecommerce-network:
     driver: bridge

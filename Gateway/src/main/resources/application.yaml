@@ -1,27 +1,46 @@
 server:
   port: 8085
+
 spring:
   application:
     name: api-gateway
+
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: product-service
-          uri: lb://product-service
-          predicates:
-            - Path=/products/**, /category/**
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+          routes:
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/user/**
+                - Path=/auth/**
 
-        - id: orders-service
-          uri: lb://orders-service
-          predicates:
-            - Path=/orders/**
+            - id: product-service
+              uri: lb://product-service
+              predicates:
+                - Path=/product/**
+                - Path=/category/**
+            - id: orders-service
+              uri: lb://orders-service
+              predicates:
+                - Path=/orders/**
+
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - Path=/notification/**
+
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

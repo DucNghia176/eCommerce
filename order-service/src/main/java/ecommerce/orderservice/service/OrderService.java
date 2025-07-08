@@ -9,6 +9,7 @@ import ecommerce.orderservice.dto.request.OrderRequest;
 import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.entity.OrderDetail;
 import ecommerce.orderservice.entity.Orders;
+import ecommerce.orderservice.kafka.KafkaOrder;
 import ecommerce.orderservice.mapper.OrderDetailMapper;
 import ecommerce.orderservice.mapper.OrderMapper;
 import ecommerce.orderservice.repository.OrderRepository;
@@ -28,6 +29,8 @@ public class OrderService {
     private final ProductClient productClient;
     private final OrderMapper orderMapper;
     private final OrderDetailMapper orderDetailMapper;
+
+    private final KafkaOrder kafkaOrder;
 
     public ApiResponse<OrderResponse> createOrder(OrderRequest request) {
         try {
@@ -68,6 +71,8 @@ public class OrderService {
             Orders saved = orderRepository.save(orders);
 
             OrderResponse response = orderMapper.toResponse(saved);
+            // Gửi thông báo sang Kafka
+            kafkaOrder.sendMessage("order-events", "Tạo đơn hàng thành công: ID " + saved.getId());
             return ApiResponse.<OrderResponse>builder()
                     .code(200)
                     .message("Tạo đơn hàng thành công")
@@ -75,11 +80,15 @@ public class OrderService {
                     .build();
         } catch (Exception e) {
             log.error("Lỗi: " + e.getMessage(), e);
+            // Gửi thông báo sang Kafka
+            kafkaOrder.sendMessage("order-events", "Tạo đơn hàng thất bại");
             return ApiResponse.<OrderResponse>builder()
                     .code(500)
                     .message("Lỗi hệ thống")
                     .data(null)
                     .build();
+
         }
+
     }
 }
