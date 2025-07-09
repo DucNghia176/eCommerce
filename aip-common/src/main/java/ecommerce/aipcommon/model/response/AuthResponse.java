@@ -1,4 +1,4 @@
-package ecommerce.userservice.dto.respone;
+package ecommerce.aipcommon.model.response;
 
 import lombok.*;
 

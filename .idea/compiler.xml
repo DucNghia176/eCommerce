@@ -23,7 +23,7 @@
         <module name="user-service" />
         <module name="order-service" />
       </profile>
-      <profile name="Annotation profile for aip-common" enabled="true">
+      <profile name="Annotation profile for cart-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -31,15 +31,19 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="aip-common" />
-        <module name="common" />
+        <module name="cart-service" />
         <module name="notification-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Gateway" options="-parameters" />
       <module name="aip-common" options="-parameters" />
+      <module name="cart-service" options="-parameters" />
       <module name="common" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="notification-service" options="-parameters" />

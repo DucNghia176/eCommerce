@@ -1,8 +1,8 @@
 package ecommerce.userservice.service;
 
-import ecommerce.apicommon.model.response.ApiResponse;
-import ecommerce.apicommon.model.response.UserResponse;
-import ecommerce.apicommon.model.status.RoleStatus;
+import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.UserResponse;
+import ecommerce.aipcommon.model.status.RoleStatus;
 import ecommerce.userservice.dto.request.UserRequest;
 import ecommerce.userservice.dto.request.UserUpdateRequest;
 import ecommerce.userservice.entity.Users;
@@ -56,6 +56,15 @@ public class UserService {
             String encodedPassword = passwordEncoder.encode(request.getPassword());
             users.setPassword(encodedPassword);
             users.setCreatedAt(LocalDateTime.now());
+            try {
+                users.setGender(request.getGender());
+            } catch (IllegalArgumentException e) {
+                return ApiResponse.<UserResponse>builder()
+                        .code(400)
+                        .message("Giới tính không hợp lệ. Chỉ được phép 'Nam' hoặc 'Nữ'")
+                        .data(null)
+                        .build();
+            }
             UserResponse response = userMapper.toResponse(userRepository.save(users));
             return ApiResponse.<UserResponse>builder()
                     .code(200)
@@ -100,7 +109,7 @@ public class UserService {
         }
     }
 
-    public ApiResponse<UserResponse> updateUser(Long id, UserUpdateRequest request) {
+    public ApiResponse<UserResponse> updateUser(Long id, UserUpdateRequest request, MultipartFile avatarFile) {
         try {
             Users users = userRepository.findById(id)
                     .orElse(null);
@@ -111,9 +120,30 @@ public class UserService {
                         .data(null)
                         .build();
             }
-            users.setFullName(request.getFullName());
-            users.setAvatar(request.getAvatar());
-            users.setGender(request.getGender());
+            users.setFullName(request.getFullName().trim());
+            // Xử lý ảnh đại diện
+            if (avatarFile != null && !avatarFile.isEmpty()) {
+                String oldAvatarUrl = users.getAvatar();
+                if (oldAvatarUrl != null && !oldAvatarUrl.isEmpty()) {
+                    String publicId = cloudinaryService.extractPublicId(oldAvatarUrl);
+                    if (publicId != null) {
+                        cloudinaryService.deleteFile(publicId);
+                    }
+                }
+                // Upload ảnh mới
+                String avatarUrl = cloudinaryService.uploadFile(avatarFile);
+                users.setAvatar(avatarUrl);
+            }
+
+            try {
+                users.setGender(request.getGender());
+            } catch (IllegalArgumentException e) {
+                return ApiResponse.<UserResponse>builder()
+                        .code(400)
+                        .message("Giới tính không hợp lệ. Chỉ được phép 'Nam' hoặc 'Nữ'")
+                        .data(null)
+                        .build();
+            }
             users.setDateOfBirth(request.getDateOfBirth());
             users.setUpdatedAt(LocalDateTime.now());
             UserResponse response = userMapper.toResponse(userRepository.save(users));

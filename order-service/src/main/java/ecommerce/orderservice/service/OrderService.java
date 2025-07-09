@@ -1,8 +1,9 @@
 package ecommerce.orderservice.service;
 
-import ecommerce.apicommon.model.response.ApiResponse;
-import ecommerce.apicommon.model.response.ProductResponse;
-import ecommerce.apicommon.model.response.UserResponse;
+import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.ProductResponse;
+import ecommerce.aipcommon.model.response.UserResponse;
+import ecommerce.aipcommon.util.JwtUtil;
 import ecommerce.orderservice.client.ProductClient;
 import ecommerce.orderservice.client.UserClient;
 import ecommerce.orderservice.dto.request.OrderRequest;
@@ -31,12 +32,15 @@ public class OrderService {
     private final OrderDetailMapper orderDetailMapper;
 
     private final KafkaOrder kafkaOrder;
+    private final JwtUtil jwtUtil;
 
-    public ApiResponse<OrderResponse> createOrder(OrderRequest request) {
+    public ApiResponse<OrderResponse> createOrder(String authHeader, OrderRequest request) {
         try {
+            String token = authHeader.replace("Bearer ", "").trim();
+            Long userId = jwtUtil.extractId(token);
             UserResponse user = null;
             try {
-                user = userClient.getUsersById(request.getUserId());
+                user = userClient.getUsersById(userId);
             } catch (Exception e) {
                 return ApiResponse.<OrderResponse>builder()
                         .code(404)
@@ -67,6 +71,7 @@ public class OrderService {
             orders.setTotalAmount(totalAmount);
             orders.setOrderDetails(orderDetails);
             orders.setIsActive(1);
+            orders.setUserId(userId);
 
             Orders saved = orderRepository.save(orders);
 
@@ -89,6 +94,5 @@ public class OrderService {
                     .build();
 
         }
-
     }
 }

@@ -1,8 +1,9 @@
 package ecommerce.userservice.controller;
 
-import ecommerce.apicommon.model.response.ApiResponse;
-import ecommerce.apicommon.model.response.UserResponse;
+import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.UserResponse;
 import ecommerce.userservice.dto.request.UserRequest;
+import ecommerce.userservice.dto.request.UserUpdateRequest;
 import ecommerce.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,22 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("create")
-    public ApiResponse<UserResponse> createUser(@RequestPart("data") @Valid @ModelAttribute UserRequest request,
-                                                @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
+    public ApiResponse<UserResponse> createUser(
+            @RequestPart("data") @Valid @ModelAttribute UserRequest request,
+            @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
         return userService.createUser(request, avatar);
     }
 
     @GetMapping("/{id}")
     public ApiResponse<UserResponse> getById(@PathVariable Long id) {
         return userService.getUserById(id);
+    }
+
+    @PutMapping("update/{id}")
+    public ApiResponse<UserResponse> updateUser(
+            @PathVariable Long id,
+            @RequestPart("data") @Valid @ModelAttribute UserUpdateRequest request,
+            @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
+        return userService.updateUser(id, request, avatar);
     }
 }

@@ -20,6 +20,7 @@ public class UserResponse {
     private Integer isActive;
     private String avatar;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String gender;
     private LocalDate dateOfBirth;
 }

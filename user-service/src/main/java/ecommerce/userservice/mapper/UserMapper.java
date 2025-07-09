@@ -1,6 +1,6 @@
 package ecommerce.userservice.mapper;
 
-import ecommerce.apicommon.model.response.UserResponse;
+import ecommerce.aipcommon.model.response.UserResponse;
 import ecommerce.userservice.dto.request.UserRequest;
 import ecommerce.userservice.entity.Users;
 import org.mapstruct.Mapper;

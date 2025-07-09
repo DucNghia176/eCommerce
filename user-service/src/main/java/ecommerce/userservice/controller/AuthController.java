@@ -1,8 +1,8 @@
 package ecommerce.userservice.controller;
 
-import ecommerce.apicommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.AuthResponse;
 import ecommerce.userservice.dto.request.AuthRequest;
-import ecommerce.userservice.dto.respone.AuthResponse;
 import ecommerce.userservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

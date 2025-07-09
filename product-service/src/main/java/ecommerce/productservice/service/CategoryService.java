@@ -1,7 +1,7 @@
 package ecommerce.productservice.service;
 
 
-import ecommerce.apicommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.productservice.dto.request.CategoryRequest;
 import ecommerce.productservice.dto.response.CategoryResponse;
 import ecommerce.productservice.entity.Category;

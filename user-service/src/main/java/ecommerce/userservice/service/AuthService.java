@@ -3,13 +3,14 @@ package ecommerce.userservice.service;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
-import ecommerce.apicommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.AuthResponse;
 import ecommerce.userservice.dto.request.AuthRequest;
-import ecommerce.userservice.dto.respone.AuthResponse;
 import ecommerce.userservice.entity.Users;
 import ecommerce.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +26,12 @@ import java.util.UUID;
 @Service
 public class AuthService {
 
-    private static final String SIGNER_KEY = "/r/a3kh+1BLgXBAEU6dERcsXrzHZgWnsOqcnmxYDTxEMSa/6piUNFaoDWbmcE92K";
+    //    private static final String SIGNER_KEY = "/r/a3kh+1BLgXBAEU6dERcsXrzHZgWnsOqcnmxYDTxEMSa/6piUNFaoDWbmcE92K";
     private static final int TOKEN_EXPIRATION_HOURS = 24;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    @Value("${jwt.signing-key}")
+    private String SIGNER_KEY;
 
     public String generateToken(Users users) {
         try {
@@ -36,12 +39,13 @@ public class AuthService {
                     new JWSHeader(JWSAlgorithm.HS256),
                     new Payload(
                             new JWTClaimsSet.Builder()
-                                    .subject(users.getUsername())
+                                    .subject(users.getUsername() + "/" + users.getEmail())
+                                    .claim("id", users.getId())
+                                    .claim("role", users.getRole())
                                     .issuer("deviate.com")
                                     .issueTime(new Date())
                                     .expirationTime(Date.from(Instant.now().plus(TOKEN_EXPIRATION_HOURS, ChronoUnit.HOURS)))
                                     .jwtID(UUID.randomUUID().toString())
-                                    .claim("scope", buildScope(users))
                                     .build().toJSONObject()
                     )
             );
@@ -50,12 +54,6 @@ public class AuthService {
         } catch (JOSEException e) {
             throw new IllegalStateException("Không thể tạo token", e);
         }
-    }
-
-    private String buildScope(Users users) {
-        return Optional.ofNullable(users.getRole())
-                .map(role -> role.toString())
-                .orElse("");
     }
 
     public ApiResponse<AuthResponse> login(AuthRequest request) {
@@ -91,7 +89,6 @@ public class AuthService {
             response.setUsername(user.getUsername());
             response.setEmail(user.getEmail());
             response.setRole(user.getRole());
-            response.setPassword(user.getPassword() == null ? null : "********");
             response.setToken(token);
             response.setLastLogin(String.valueOf(LocalDateTime.now()));
 

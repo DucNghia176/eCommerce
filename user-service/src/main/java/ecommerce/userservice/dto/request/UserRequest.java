@@ -1,5 +1,6 @@
 package ecommerce.userservice.dto.request;
 
+import ecommerce.aipcommon.model.status.GenderStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -29,6 +30,6 @@ public class UserRequest {
     @Email(message = "Email phải đúng định dạng")
     private String email;
     private String role;
-    private String gender;
+    private GenderStatus gender;
     private LocalDate dateOfBirth;
 }

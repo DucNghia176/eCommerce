@@ -1,6 +1,6 @@
 package ecommerce.userservice.Config;
 
-import ecommerce.apicommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,14 +1,11 @@
 package ecommerce.orderservice.controller;
 
-import ecommerce.apicommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.orderservice.dto.request.OrderRequest;
 import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
@@ -17,8 +14,10 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/create")
-    public ApiResponse<OrderResponse> createOrder(@RequestBody OrderRequest request) {
-        return orderService.createOrder(request);
+    public ApiResponse<OrderResponse> createOrder(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody OrderRequest request) {
+        return orderService.createOrder(authHeader, request);
     }
 
 //    @GetMapping("/{id}")

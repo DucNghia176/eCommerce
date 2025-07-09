@@ -16,10 +16,44 @@ public class CloudinaryService {
 
     public String uploadFile(MultipartFile file) {
         try {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+                    "folder", "user/"
+            ));
             return uploadResult.get("secure_url").toString();
         } catch (IOException e) {
             throw new RuntimeException("Không thể upload ảnh lên Cloudinary", e);
         }
     }
+
+    public String extractPublicId(String imageUrl) {
+        if (imageUrl == null || imageUrl.isEmpty()) return null;
+
+        try {
+            int uploadIndex = imageUrl.indexOf("/upload/");
+            if (uploadIndex == -1) return null;
+
+            String pathAfterUpload = imageUrl.substring(uploadIndex + "/upload/".length());
+
+            // Xoá đuôi mở rộng nếu có (vd: .jpg, .png)
+            int dotIndex = pathAfterUpload.lastIndexOf('.');
+            if (dotIndex != -1) {
+                pathAfterUpload = pathAfterUpload.substring(0, dotIndex);
+            }
+
+            return pathAfterUpload; // chính là publicId đầy đủ: ví dụ "user/avatar1" hoặc "admin/avatar2"
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    public void deleteFile(String publicId) {
+        try {
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            throw new RuntimeException("Không thể xoá ảnh trên Cloudinary", e);
+        }
+    }
+
+
 }

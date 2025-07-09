@@ -1,5 +1,6 @@
 package ecommerce.userservice.entity;
 
+import ecommerce.aipcommon.model.status.GenderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -50,8 +51,9 @@ public class Users {
     @Column(name = "LAST_LOGIN")
     private LocalDateTime lastLogin;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "GENDER", length = 10)
-    private String gender;
+    private GenderStatus gender;
 
     @Column(name = "DATE_OF_BIRTH")
     private LocalDate dateOfBirth;

@@ -1,6 +1,6 @@
 package ecommerce.orderservice.client;
 
-import ecommerce.apicommon.model.response.ProductResponse;
+import ecommerce.aipcommon.model.response.ProductResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

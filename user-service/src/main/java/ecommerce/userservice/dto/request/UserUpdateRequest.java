@@ -1,5 +1,6 @@
 package ecommerce.userservice.dto.request;
 
+import ecommerce.aipcommon.model.status.GenderStatus;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -11,7 +12,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserUpdateRequest {
     private String fullName;
-    private String avatar;
-    private String gender;
+    private GenderStatus gender;
     private LocalDate dateOfBirth;
 }
