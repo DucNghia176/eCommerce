@@ -1,4 +1,4 @@
-package ecommerce.orderservice.config;
+package ecommerce.aipcommon.config;
 
 import feign.RequestInterceptor;
 import jakarta.servlet.http.HttpServletRequest;

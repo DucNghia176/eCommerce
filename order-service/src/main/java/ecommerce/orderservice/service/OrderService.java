@@ -1,24 +1,23 @@
 package ecommerce.orderservice.service;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.response.ProductResponse;
+import ecommerce.aipcommon.model.response.CartResponse;
 import ecommerce.aipcommon.model.response.UserResponse;
-import ecommerce.aipcommon.util.JwtUtil;
-import ecommerce.orderservice.client.ProductClient;
-import ecommerce.orderservice.client.UserClient;
+import ecommerce.orderservice.client.CartClient;
 import ecommerce.orderservice.dto.request.OrderRequest;
 import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.entity.OrderDetail;
 import ecommerce.orderservice.entity.Orders;
 import ecommerce.orderservice.kafka.KafkaOrder;
-import ecommerce.orderservice.mapper.OrderDetailMapper;
 import ecommerce.orderservice.mapper.OrderMapper;
 import ecommerce.orderservice.repository.OrderRepository;
+import ecommerce.orderservice.util.OrderValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,54 +25,63 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final UserClient userClient;
-    private final ProductClient productClient;
     private final OrderMapper orderMapper;
-    private final OrderDetailMapper orderDetailMapper;
 
     private final KafkaOrder kafkaOrder;
-    private final JwtUtil jwtUtil;
+
+    private final CartClient cartClient;
+    private final OrderValidator validator;
 
     public ApiResponse<OrderResponse> createOrder(String authHeader, OrderRequest request) {
         try {
-            String token = authHeader.replace("Bearer ", "").trim();
-            Long userId = jwtUtil.extractId(token);
-            UserResponse user = null;
+            Long userId = validator.extractUserId(authHeader);
+            UserResponse user = validator.validateUser(userId);
+            List<CartResponse> selectedItems;
             try {
-                user = userClient.getUsersById(userId);
+                selectedItems = cartClient.getSelectedCartItems(userId);
             } catch (Exception e) {
                 return ApiResponse.<OrderResponse>builder()
-                        .code(404)
-                        .message("Người dùng không tồn tại")
+                        .code(500)
+                        .message("Không thể lấy danh sách giỏ hàng")
                         .data(null)
                         .build();
             }
-            Orders orders = orderMapper.toOrderEntity(request);
-
-            List<OrderDetail> orderDetails = orderDetailMapper.toEntityList(request.getOrderDetails());
-            BigDecimal totalAmount = BigDecimal.ZERO;
-            for (OrderDetail detail : orderDetails) {
-                ProductResponse product;
-                try {
-                    product = productClient.getProductById(detail.getProductId());
-                } catch (Exception e) {
-                    return ApiResponse.<OrderResponse>builder()
-                            .code(404)
-                            .message("Sản phẩm với ID " + detail.getProductId() + " không tồn tại")
-                            .data(null)
-                            .build();
-                }
-                detail.setOrder(orders);
-                BigDecimal price = detail.getUnitPrice().multiply(BigDecimal.valueOf(detail.getQuantity()));
-                BigDecimal discount = detail.getDiscount() != null ? detail.getDiscount() : BigDecimal.ZERO;
-                totalAmount = totalAmount.add(price.subtract(discount));
+            if (selectedItems.isEmpty()) {
+                return ApiResponse.<OrderResponse>builder()
+                        .code(400)
+                        .message("Giỏ hàng trống hoặc chưa chọn sản phẩm nào")
+                        .data(null)
+                        .build();
             }
-            orders.setTotalAmount(totalAmount);
-            orders.setOrderDetails(orderDetails);
-            orders.setIsActive(1);
-            orders.setUserId(userId);
+            Orders order = orderMapper.toOrderEntity(request);
+            order.setUserId(userId);
+            order.setIsActive(1);
 
-            Orders saved = orderRepository.save(orders);
+            BigDecimal totalAmount = BigDecimal.ZERO;
+            List<OrderDetail> orderDetails = new ArrayList<>();
+
+            for (CartResponse item : selectedItems) {
+                BigDecimal discount = item.getDiscount() != null ? item.getDiscount() : BigDecimal.ZERO;
+                BigDecimal price = item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+                BigDecimal itemTotal = price.subtract(discount);
+
+                OrderDetail orderDetail = OrderDetail.builder()
+                        .order(order)
+                        .productId(item.getProductId())
+                        .quantity(item.getQuantity())
+                        .unitPrice(item.getUnitPrice())
+                        .discount(item.getDiscount())
+                        .build();
+                orderDetails.add(orderDetail);
+                totalAmount = totalAmount.add(itemTotal);
+            }
+            order.setTotalAmount(totalAmount);
+            order.setOrderDetails(orderDetails);
+            order.setIsActive(1);
+
+            Orders saved = orderRepository.save(order);
+
+            cartClient.clearSelectedCartItems(authHeader);
 
             OrderResponse response = orderMapper.toResponse(saved);
             // Gửi thông báo sang Kafka

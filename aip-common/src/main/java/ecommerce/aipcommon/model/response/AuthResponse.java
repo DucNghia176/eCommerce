@@ -1,17 +1,20 @@
 package ecommerce.aipcommon.model.response;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-@Data
-@Setter
 @Getter
+@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthResponse {
-    private String username;
-    private String password;
-    private String email;
-    private String token;
-    private String role;
-    private String lastLogin;
+    String username;
+    String password;
+    String email;
+    String token;
+    String role;
+    String lastLogin;
 }

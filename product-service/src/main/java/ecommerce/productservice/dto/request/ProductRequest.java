@@ -18,8 +18,7 @@ public class ProductRequest {
     private Long categoryId;
     private String brandId;
     private String unit;
-    private List<String> imageUrls;
-    private String thumbnailUrl;
-    private Integer isActive;
+    //    private List<MultipartFile> imageUrls;
+//    private String thumbnailUrl;
     private List<Long> tags;
 }

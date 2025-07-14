@@ -1,26 +1,29 @@
 package ecommerce.aipcommon.model.response;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Data
-@Setter
 @Getter
+@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
-    private Long id;
-    private String username;
-    private String password;
-    private String fullName;
-    private String email;
-    private String role;
-    private Integer isActive;
-    private String avatar;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String gender;
-    private LocalDate dateOfBirth;
+    Long id;
+    String username;
+    String password;
+    String fullName;
+    String email;
+    String role;
+    Integer isActive;
+    String avatar;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+    String gender;
+    LocalDate dateOfBirth;
 }

@@ -1,29 +1,33 @@
 package ecommerce.aipcommon.model.response;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
 @Getter
 @Setter
-@AllArgsConstructor
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductResponse {
-    private Long id;
-    private String name;
-    private String description;
-    private BigDecimal price;
-    private BigDecimal discountPrice;
-    private String categoryName;
-    private String brandId;
-    private String unit;
-    private Integer isActive;
-    private List<String> tags;
-    private List<String> imageUrls;
-    private String thumbnailUrl;
-    private LocalDateTime createdAt;
+    Long id;
+    String name;
+    String description;
+    BigDecimal price;
+    BigDecimal discountPrice;
+    String categoryName;
+    String brandId;
+    String unit;
+    Integer isActive;
+    List<String> tags;
+    List<String> imageUrls;
+    String thumbnailUrl;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 }
 

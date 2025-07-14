@@ -1,13 +1,11 @@
-package ecommerce.orderservice.client;
+package ecommerce.aipcommon.client;
 
+import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.ProductResponse;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "product-service", path = "/product")
 public interface ProductClient {
     @GetMapping("/{id}")
-    ProductResponse getProductById(@PathVariable("id") Long id);
-
+    ApiResponse<ProductResponse> getProductById(@PathVariable("id") Long id);
 }

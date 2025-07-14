@@ -16,4 +16,9 @@ public class NotificationListener {
     public void listenUser(String message) {
         log.info("Received message: {}", message);
     }
+
+    @KafkaListener(topics = "cart-events", groupId = "notification-group")
+    public void listenCart(String message) {
+        log.info("Received message: {}", message);
+    }
 }

@@ -4,40 +4,47 @@ server:
 spring:
   application:
     name: api-gateway
+  main:
+    web-application-type: reactive
 
   cloud:
     gateway:
       server:
         webflux:
-          discovery:
-            locator:
-              enabled: true
           routes:
-            - id: user-service
-              uri: lb://user-service
+            - id: USER-SERVICE
+              uri: lb://USER-SERVICE
               predicates:
-                - Path=/user/**
+                - Path=/users/**
                 - Path=/auth/**
-
-            - id: product-service
-              uri: lb://product-service
+            - id: PRODUCT-SERVICE
+              uri: lb://PRODUCT-SERVICE
               predicates:
                 - Path=/product/**
                 - Path=/category/**
-            - id: orders-service
-              uri: lb://orders-service
+            - id: CART-SERVICE
+              uri: lb://CART-SERVICE
+              predicates:
+                - Path=/cart/**
+            - id: ORDERS-SERVICE
+              uri: lb://ORDERS-SERVICE
               predicates:
                 - Path=/orders/**
-
-            - id: notification-service
-              uri: lb://notification-service
+            - id: NOTIFICATION-SERVICE
+              uri: lb://NOTIFICATION-SERVICE
               predicates:
                 - Path=/notification/**
 
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+
 eureka:
   client:
-    register-with-eureka: true
-    fetch-registry: true
+    instance:
+      hostname: localhost
+      prefer-ip-address: true
     service-url:
       defaultZone: http://localhost:8761/eureka
 

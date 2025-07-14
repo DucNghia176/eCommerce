@@ -23,16 +23,25 @@ public class UserController {
         return userService.createUser(request, avatar);
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<UserResponse> getById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @GetMapping
+    public ApiResponse<UserResponse> getById() {
+        return userService.getUserById();
     }
 
-    @PutMapping("update/{id}")
+    @PutMapping("update")
     public ApiResponse<UserResponse> updateUser(
-            @PathVariable Long id,
             @RequestPart("data") @Valid @ModelAttribute UserUpdateRequest request,
             @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
-        return userService.updateUser(id, request, avatar);
+        return userService.updateUser(request, avatar);
+    }
+
+    @PutMapping("/toggle/lock/{id}")
+    public ApiResponse<UserResponse> toggleUserLock(@PathVariable Long id) {
+        return userService.toggleUserLock(id);
+    }
+
+    @PutMapping("/toggle/role/{id}")
+    public ApiResponse<UserResponse> toggleUserRole(@PathVariable Long id) {
+        return userService.toggleUserRole(id);
     }
 }

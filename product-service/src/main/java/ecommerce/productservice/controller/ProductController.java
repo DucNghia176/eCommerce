@@ -4,9 +4,11 @@ import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.ProductResponse;
 import ecommerce.productservice.dto.request.ProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
+import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,13 +19,27 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/create")
-    public ApiResponse<ProductResponse> createProduct(@RequestBody ProductRequest request) {
-        return productService.createProduct(request);
+    public ApiResponse<ProductResponse> createProduct(@RequestPart("data") @ModelAttribute ProductRequest request,
+                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+        return productService.createProduct(request, images);
     }
 
-    @PutMapping("update/{id}")
-    public ApiResponse<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody ProductRequest request) {
-        return productService.updateProduct(id, request);
+//    @PutMapping("update/{id}")
+//    public ApiResponse<ProductResponse> updateProduct(@PathVariable Long id,
+//                                                      @RequestBody ProductRequest request) {
+//        return productService.updateProduct(id, request);
+//    }
+
+    @PutMapping("update/info/{id}")
+    public ApiResponse<ProductResponse> updateInfoProduct(@PathVariable Long id,
+                                                          @RequestBody ProductUpdateInfoRequest request) {
+        return productService.updateProductInfo(id, request);
+    }
+
+    @PutMapping("update/image/{id}")
+    public ApiResponse<ProductResponse> updateProductImage(@PathVariable Long id,
+                                                           @RequestPart("images") List<MultipartFile> images) {
+        return productService.updateProductImage(id, images);
     }
 
     @DeleteMapping("delete/{id}")
@@ -42,7 +58,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<ProductResponse> getUserById(@PathVariable Long id) {
-        return productService.getUserById(id);
+    public ApiResponse<ProductResponse> getProductById(@PathVariable Long id) {
+        return productService.getProductByUserId(id);
     }
 }
