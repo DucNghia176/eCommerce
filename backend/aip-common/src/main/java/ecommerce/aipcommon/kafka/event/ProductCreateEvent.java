@@ -1,0 +1,16 @@
+package ecommerce.aipcommon.kafka.event;
+
+import lombok.*;
+
+import java.math.BigDecimal;
+
+@Getter
+@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductCreateEvent {
+    private String skuCode;
+    private String name;
+    private BigDecimal importPrice;
+}
