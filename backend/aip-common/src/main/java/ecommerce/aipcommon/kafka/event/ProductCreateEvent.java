@@ -12,5 +12,6 @@ import java.math.BigDecimal;
 public class ProductCreateEvent {
     private String skuCode;
     private String name;
+    //    private Integer quantity;
     private BigDecimal importPrice;
 }

@@ -22,8 +22,6 @@ public interface ProductService {
 
     ApiResponse<List<ProductResponse>> getAllProduct();
 
-    ApiResponse<ProductResponse> deleteProduct(Long id);
-
     ApiResponse<List<ProductResponse>> searchProduct(ProductSearchRequest request);
 
     ApiResponse<ProductResponse> getProductByUserId(Long id);

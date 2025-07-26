@@ -3,6 +3,7 @@ package ecommerce.inventoryservice.dto.response;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -15,4 +16,5 @@ public class InventoryResponse {
     int quantity;
     int reservedQuantity;
     BigDecimal importPrice;
+    LocalDateTime importedAt;
 }

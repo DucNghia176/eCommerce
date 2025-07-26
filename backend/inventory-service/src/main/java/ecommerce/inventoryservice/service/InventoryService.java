@@ -1,13 +1,23 @@
 package ecommerce.inventoryservice.service;
 
+import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.inventoryservice.dto.request.InventoryRequest;
+import ecommerce.inventoryservice.dto.response.InventoryResponse;
 import ecommerce.inventoryservice.entity.Inventory;
 
 import java.util.Optional;
 
 public interface InventoryService {
-    boolean isInStock(String skuCode, int quantity);
+    public boolean isInStock(InventoryRequest request);
 
     Optional<Inventory> findBySkuCode(String skuCode);
 
-//    ApiResponse<Void> updateInventory(Inventory inventory);
+    ApiResponse<InventoryResponse> importQuantity(InventoryRequest request);
+
+    ApiResponse<InventoryResponse> updateInventoryFortCart(InventoryRequest request);
+
+    ApiResponse<InventoryResponse> confirmOrder(InventoryRequest request);
+
+    ApiResponse<InventoryResponse> cancelOrder(InventoryRequest request);
+
 }

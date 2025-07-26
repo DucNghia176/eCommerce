@@ -4,7 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update" />
+    <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update">
+      <change afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/controller/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/kafka/event/ProductCreateEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/kafka/event/ProductCreateEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/dto/request/InventoryRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/dto/request/InventoryRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/dto/response/InventoryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/dto/response/InventoryResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/entity/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/entity/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/InventoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/impl/InventoryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,6 +38,7 @@
         <option value="Spring Service" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Spring REST Controller" />
       </list>
     </option>
   </component>
@@ -60,77 +78,82 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;HTTP Request.generated-requests | #1.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #10.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #11.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #12.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #2.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #3.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #4.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #5.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #6.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #7.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #8.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.generated-requests | #9.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Gateway [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.aip-common [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.aip-common [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.backend [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.cart-service [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.common [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.common [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.common [org.apache.maven.plugins:maven-clean-plugin:3.4.1:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.order-service [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.product-service [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.user-service [org.apache.maven.plugins:maven-clean-plugin:3.4.1:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.user-service [org.apache.maven.plugins:maven-install-plugin:3.1.4:install].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;Database connection parameters found&quot;,
-    &quot;Notification.DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.EurekaApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.GatewayApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.InventoryServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/eCommerce1&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;settings.editor.splitter.proportion&quot;: &quot;0.27522936&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\eCommerce1\\front\\untitled\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "HTTP Request.generated-requests | #1.executor": "Run",
+    "HTTP Request.generated-requests | #10.executor": "Run",
+    "HTTP Request.generated-requests | #11.executor": "Run",
+    "HTTP Request.generated-requests | #12.executor": "Run",
+    "HTTP Request.generated-requests | #2.executor": "Run",
+    "HTTP Request.generated-requests | #3.executor": "Run",
+    "HTTP Request.generated-requests | #4.executor": "Run",
+    "HTTP Request.generated-requests | #5.executor": "Run",
+    "HTTP Request.generated-requests | #6.executor": "Run",
+    "HTTP Request.generated-requests | #7.executor": "Run",
+    "HTTP Request.generated-requests | #8.executor": "Run",
+    "HTTP Request.generated-requests | #9.executor": "Run",
+    "JavaScript Debug.Angular Application (frontend).executor": "Run",
+    "Maven.Gateway [clean].executor": "Run",
+    "Maven.aip-common [clean].executor": "Run",
+    "Maven.aip-common [install].executor": "Run",
+    "Maven.backend [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
+    "Maven.cart-service [clean].executor": "Run",
+    "Maven.common [clean].executor": "Run",
+    "Maven.common [install].executor": "Run",
+    "Maven.common [org.apache.maven.plugins:maven-clean-plugin:3.4.1:clean].executor": "Run",
+    "Maven.ecommerce1 [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
+    "Maven.order-service [clean].executor": "Run",
+    "Maven.product-service [clean].executor": "Run",
+    "Maven.user-service [org.apache.maven.plugins:maven-clean-plugin:3.4.1:clean].executor": "Run",
+    "Maven.user-service [org.apache.maven.plugins:maven-install-plugin:3.1.4:install].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "Database connection parameters found",
+    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.AipCommonApplication.executor": "Run",
+    "Spring Boot.CartServiceApplication.executor": "Run",
+    "Spring Boot.EurekaApplication.executor": "Run",
+    "Spring Boot.GatewayApplication.executor": "Run",
+    "Spring Boot.InventoryServiceApplication.executor": "Run",
+    "Spring Boot.NotificationServiceApplication.executor": "Run",
+    "Spring Boot.OrderServiceApplication.executor": "Run",
+    "Spring Boot.PaymentServiceApplication.executor": "Run",
+    "Spring Boot.ProductServiceApplication.executor": "Run",
+    "Spring Boot.UserServiceApplication.executor": "Run",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "D:/eCommerce1",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "npm",
+    "npm.Angular CLI Server (frontend).executor": "Run",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "rearrange.code.on.save": "true",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.splitter.proportion": "0.27522936",
+    "ts.external.directory.path": "D:\\eCommerce1\\front\\untitled\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;oracle&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "oracle"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -172,6 +195,15 @@
       <map>
         <entry key="SpringBootApplicationConfigurationType">
           <value>
+            <set />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="shownConfigurations">
+      <map>
+        <entry key="SpringBootApplicationConfigurationType">
+          <value>
             <set>
               <option value="AipCommonApplication" />
               <option value="CartServiceApplication" />
@@ -182,16 +214,6 @@
               <option value="OrderServiceApplication" />
               <option value="PaymentServiceApplication" />
               <option value="ProductServiceApplication" />
-            </set>
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="shownConfigurations">
-      <map>
-        <entry key="SpringBootApplicationConfigurationType">
-          <value>
-            <set>
               <option value="UserServiceApplication" />
             </set>
           </value>
@@ -204,7 +226,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.UserServiceApplication">
+  <component name="RunManager" selected="JavaScript Debug.Angular Application (frontend)">
     <configuration name="Angular Application (frontend)" type="JavascriptDebugType" uri="http://localhost:4200">
       <method v="2" />
     </configuration>
@@ -346,7 +368,12 @@
       <workItem from="1753460859189" duration="207000" />
       <workItem from="1753461079559" duration="1845000" />
       <workItem from="1753462936225" duration="207000" />
-      <workItem from="1753463163030" duration="604000" />
+      <workItem from="1753463163030" duration="790000" />
+      <workItem from="1753463970648" duration="266000" />
+      <workItem from="1753464248823" duration="664000" />
+      <workItem from="1753496430195" duration="229000" />
+      <workItem from="1753502060488" duration="2866000" />
+      <workItem from="1753518278458" duration="3305000" />
     </task>
     <task id="LOCAL-00001" summary="no">
       <option name="closed" value="true" />
@@ -548,7 +575,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753463532456</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="update">
+      <option name="closed" value="true" />
+      <created>1753463808177</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1753463808177</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

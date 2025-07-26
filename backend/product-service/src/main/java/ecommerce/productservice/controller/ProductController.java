@@ -42,11 +42,6 @@ public class ProductController {
         return productService.updateProductImage(id, images);
     }
 
-    @DeleteMapping("delete/{id}")
-    public ApiResponse<ProductResponse> deleteProduct(@PathVariable Long id) {
-        return productService.deleteProduct(id);
-    }
-
     @GetMapping
     public ApiResponse<List<ProductResponse>> getAllProduct() {
         return productService.getAllProduct();
