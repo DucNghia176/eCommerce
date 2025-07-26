@@ -52,8 +52,4 @@ public class ProductController {
         return productService.searchProduct(request);
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<ProductResponse> getProductById(@PathVariable Long id) {
-        return productService.getProductByUserId(id);
-    }
 }
