@@ -3,6 +3,7 @@ package ecommerce.inventoryservice.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "INVENTORY", schema = "INVENTORY_DB")
 public class Inventory {
     @Id
     @Column(name = "SKU_CODE")
