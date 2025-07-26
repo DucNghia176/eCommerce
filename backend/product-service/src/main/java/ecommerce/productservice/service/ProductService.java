@@ -24,5 +24,4 @@ public interface ProductService {
 
     ApiResponse<List<ProductResponse>> searchProduct(ProductSearchRequest request);
 
-    ApiResponse<ProductResponse> getProductByUserId(Long id);
 }

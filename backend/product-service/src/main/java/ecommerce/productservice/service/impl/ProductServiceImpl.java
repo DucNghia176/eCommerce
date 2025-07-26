@@ -418,35 +418,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    public ApiResponse<ProductResponse> getProductByUserId(Long id) {
-        try {
-            Product product = productRepository.findById(id)
-                    .orElse(null);
-
-            if (product == null) {
-                return ApiResponse.<ProductResponse>builder()
-                        .code(404)
-                        .message("Không tìm thấy người dùng với ID: " + id)
-                        .data(null)
-                        .build();
-            }
-            ProductResponse response = productMapper.toResponse(product);
-            return ApiResponse.<ProductResponse>builder()
-                    .code(200)
-                    .message("Lấy thông tin người dùng thành công")
-                    .data(response)
-                    .build();
-        } catch (Exception e) {
-            log.error("Lỗi khi lấy người dùng theo ID: {}", e.getMessage(), e);
-            return ApiResponse.<ProductResponse>builder()
-                    .code(500)
-                    .message("Đã xảy ra lỗi khi lấy thông tin người dùng")
-                    .data(null)
-                    .build();
-        }
-    }
-
     private Specification<Product> and(Specification<Product> base, Specification<Product> addition) {
         return (base == null) ? addition : base.and(addition);
     }
