@@ -18,8 +18,8 @@ class InventoryController {
     private final InventoryService inventoryService;
 
     @GetMapping("/check")
-    public boolean isInStock(@RequestParam InventoryRequest request) {
-        return inventoryService.isInStock(request);
+    public boolean isInStock(@RequestParam String skuCode, @RequestParam int quantity) {
+        return inventoryService.isInStock(skuCode, quantity);
     }
 
     @GetMapping("/findSkuCode")
@@ -37,12 +37,12 @@ class InventoryController {
         return inventoryService.updateInventoryFortCart(request);
     }
 
-    @PutMapping("order/confirm")
+    @PutMapping("orders/confirm")
     public ApiResponse<InventoryResponse> importOrder(@Valid @RequestBody InventoryRequest request) {
         return inventoryService.confirmOrder(request);
     }
 
-    @PutMapping("order/cancel")
+    @PutMapping("orders/cancel")
     public ApiResponse<InventoryResponse> cancelOrder(@Valid @RequestBody InventoryRequest request) {
         return inventoryService.cancelOrder(request);
     }

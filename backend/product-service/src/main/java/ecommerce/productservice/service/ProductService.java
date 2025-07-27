@@ -8,6 +8,7 @@ import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -22,6 +23,11 @@ public interface ProductService {
 
     ApiResponse<List<ProductResponse>> getAllProduct();
 
+    ApiResponse<ProductResponse> deleteProduct(Long id);
+
     ApiResponse<List<ProductResponse>> searchProduct(ProductSearchRequest request);
 
+    String getSkuCodeByProductId(Long productId);
+
+    BigDecimal getPriceByProductId(Long productId);
 }

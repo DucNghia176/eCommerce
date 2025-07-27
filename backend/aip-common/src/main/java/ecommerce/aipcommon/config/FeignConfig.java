@@ -1,5 +1,6 @@
 package ecommerce.aipcommon.config;
 
+import feign.Logger;
 import feign.RequestInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
@@ -22,5 +23,10 @@ public class FeignConfig {
                 }
             }
         };
+    }
+
+    @Bean
+    Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL; // rất quan trọng
     }
 }

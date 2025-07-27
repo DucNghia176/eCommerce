@@ -3,15 +3,19 @@ package ecommerce.cartservice.controller;
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.CartResponse;
 import ecommerce.cartservice.dto.request.CartRequest;
-import ecommerce.cartservice.service.impl.CartServiceImpl;
+import ecommerce.cartservice.service.CartService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import static com.cloudinary.AccessControlRule.AccessType.token;
+
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/cart")
 public class CartController {
-    private final CartServiceImpl cartService;
+    private final CartService cartService;
 
     @PostMapping("/create")
     public ApiResponse<CartResponse> createCart(@RequestBody CartRequest request) {
@@ -34,7 +38,8 @@ public class CartController {
     }
 
     @GetMapping("/selected")
-    CartResponse getSelectedCartItems() {
+    public CartResponse getSelectedCartItems() {
+        log.info("Received token: {}", token);
         return cartService.getSelectedCartItems();
     }
 

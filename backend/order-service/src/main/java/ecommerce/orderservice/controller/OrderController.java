@@ -5,7 +5,10 @@ import ecommerce.orderservice.dto.request.OrderRequest;
 import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/orders")
@@ -14,10 +17,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/create")
-    public ApiResponse<OrderResponse> createOrder(
-            @RequestHeader("Authorization") String authHeader,
-            @RequestBody OrderRequest request) {
-        return orderService.createOrder(authHeader, request);
+    public ApiResponse<OrderResponse> createOrder(@RequestBody OrderRequest request) {
+        return orderService.placeOrder(request);
     }
 
 //    @GetMapping("/{id}")

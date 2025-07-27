@@ -5,9 +5,61 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update">
+      <change afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/kafka/event/InventoryKafkaEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/kafka/event/OrderCreateEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/kafka/event/PaymentKafkaEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/client/InventoryClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/filter/JwtAuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/kafka/listener/InventoryListenerToOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/client/ProductClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/filter/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b7705d5b-ca0c-4041-8bbe-91bdfde3f433.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b7705d5b-ca0c-4041-8bbe-91bdfde3f433.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/router/GateWayRouter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/router/GateWayRouter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/aip-common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/aip-common/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/client/ProductClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/client/UserClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/config/FeignConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/config/FeignConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/model/response/CartItemResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/model/response/CartItemResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/CartServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/CartServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/client/CartProductClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/client/ProductClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/client/CartUserClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/controller/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/controller/CartController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/dto/request/CartRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/dto/request/CartRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/filter/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/filter/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/repository/CartItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/repository/CartItemRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/service/impl/CartServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/service/impl/CartServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/util/CartValidator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/eureka/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/eureka/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/InventoryServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/InventoryServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/controller/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/controller/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/kafka/listener/InventoryKafkaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/kafka/listener/InventoryListenerToProduct.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/InventoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/impl/InventoryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/order-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/OrderServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/OrderServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/client/CartClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/client/CartClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/client/OrderUserClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/util/OrderValidator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/payment-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/payment-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/filter/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/filter/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,9 +75,9 @@
         <option value="package-info" />
         <option value="Spring Repository" />
         <option value="Spring Service" />
+        <option value="Spring REST Controller" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="Spring REST Controller" />
       </list>
     </option>
   </component>
@@ -85,6 +137,7 @@
     "Maven.aip-common [install].executor": "Run",
     "Maven.backend [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
     "Maven.cart-service [clean].executor": "Run",
+    "Maven.cart-service [install].executor": "Run",
     "Maven.common [clean].executor": "Run",
     "Maven.common [install].executor": "Run",
     "Maven.common [org.apache.maven.plugins:maven-clean-plugin:3.4.1:clean].executor": "Run",
@@ -116,7 +169,7 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "D:/eCommerce1",
+    "last_opened_file_path": "D:/eCommerce1/backend/order-service/src/main/java/ecommerce/orderservice",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -132,7 +185,7 @@
     "run.configurations.included.in.services": "true",
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "settings.editor.splitter.proportion": "0.27522936",
-    "ts.external.directory.path": "D:\\eCommerce1\\front\\untitled\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "D:\\eCommerce1\\frontend\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -146,22 +199,22 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\eCommerce1\backend\order-service\src\main\java\ecommerce\orderservice" />
+      <recent name="D:\eCommerce1\backend\inventory-service\src\main\java\ecommerce\inventoryservice" />
       <recent name="D:\eCommerce1\cart-service\src\main\java\ecommerce\cartservice" />
       <recent name="D:\eCommerce1\notification-service\src\main\java\ecommerce\notificationservice" />
       <recent name="D:\eCommerce1\Gateway\src\main\java\ecommerce\gateway" />
-      <recent name="D:\eCommerce1\user-service\src\main\java\ecommerce\userservice" />
-      <recent name="D:\eCommerce1\product-service\src\main\java\ecommerce\productservice" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\eCommerce1\backend" />
       <recent name="D:\eCommerce1\aip-common\src\main\java\ecommerce\aipcommon\model\response" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="ecommerce.orderservice.client" />
       <recent name="ecommerce.aipcommon.kafka.event" />
       <recent name="ecommerce.inventoryservice.kafka.event" />
       <recent name="ecommerce.notificationservice.kafka.event" />
       <recent name="ecommerce.productservice.service" />
-      <recent name="ecommerce.productservice.service.impl" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -182,15 +235,6 @@
       <map>
         <entry key="SpringBootApplicationConfigurationType">
           <value>
-            <set />
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="shownConfigurations">
-      <map>
-        <entry key="SpringBootApplicationConfigurationType">
-          <value>
             <set>
               <option value="AipCommonApplication" />
               <option value="CartServiceApplication" />
@@ -201,6 +245,16 @@
               <option value="OrderServiceApplication" />
               <option value="PaymentServiceApplication" />
               <option value="ProductServiceApplication" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="shownConfigurations">
+      <map>
+        <entry key="SpringBootApplicationConfigurationType">
+          <value>
+            <set>
               <option value="UserServiceApplication" />
             </set>
           </value>
@@ -213,7 +267,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.Angular Application (frontend)">
+  <component name="RunManager" selected="Spring Boot.ProductServiceApplication">
     <configuration name="Angular Application (frontend)" type="JavascriptDebugType" uri="http://localhost:4200">
       <method v="2" />
     </configuration>
@@ -303,6 +357,20 @@
       <envs />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="JavaScript Debug.Angular Application (frontend)" />
+      <item itemvalue="npm.Angular CLI Server (frontend)" />
+      <item itemvalue="Spring Boot.AipCommonApplication" />
+      <item itemvalue="Spring Boot.CartServiceApplication" />
+      <item itemvalue="Spring Boot.EurekaApplication" />
+      <item itemvalue="Spring Boot.GatewayApplication" />
+      <item itemvalue="Spring Boot.InventoryServiceApplication" />
+      <item itemvalue="Spring Boot.NotificationServiceApplication" />
+      <item itemvalue="Spring Boot.OrderServiceApplication" />
+      <item itemvalue="Spring Boot.PaymentServiceApplication" />
+      <item itemvalue="Spring Boot.ProductServiceApplication" />
+      <item itemvalue="Spring Boot.UserServiceApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Spring Boot.UserServiceApplication" />
@@ -360,7 +428,9 @@
       <workItem from="1753464248823" duration="664000" />
       <workItem from="1753496430195" duration="229000" />
       <workItem from="1753502060488" duration="2866000" />
-      <workItem from="1753518278458" duration="3392000" />
+      <workItem from="1753518278458" duration="26067000" />
+      <workItem from="1753603154628" duration="6532000" />
+      <workItem from="1753620073149" duration="193000" />
     </task>
     <task id="LOCAL-00001" summary="no">
       <option name="closed" value="true" />
@@ -578,7 +648,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753521628341</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="update">
+      <option name="closed" value="true" />
+      <created>1753521725403</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1753521725403</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

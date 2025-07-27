@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -42,6 +43,11 @@ public class ProductController {
         return productService.updateProductImage(id, images);
     }
 
+    @DeleteMapping("delete/{id}")
+    public ApiResponse<ProductResponse> deleteProduct(@PathVariable Long id) {
+        return productService.deleteProduct(id);
+    }
+
     @GetMapping
     public ApiResponse<List<ProductResponse>> getAllProduct() {
         return productService.getAllProduct();
@@ -52,4 +58,13 @@ public class ProductController {
         return productService.searchProduct(request);
     }
 
+    @GetMapping("/{id}/skuCode")
+    public String getSkuCode(@PathVariable Long id) {
+        return productService.getSkuCodeByProductId(id);
+    }
+
+    @GetMapping("/{id}/price")
+    public BigDecimal getPrice(@PathVariable Long id) {
+        return productService.getPriceByProductId(id);
+    }
 }

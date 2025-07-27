@@ -22,6 +22,10 @@ spring:
               predicates:
                 - Path=/product/**
                 - Path=/category/**
+            - id: INVENTORY-SERVICE
+              uri: lb://INVENTORY-SERVICE
+              predicates:
+                - Path=/inventory/**
             - id: CART-SERVICE
               uri: lb://CART-SERVICE
               predicates:
@@ -30,6 +34,10 @@ spring:
               uri: lb://ORDERS-SERVICE
               predicates:
                 - Path=/orders/**
+            - id: PAYMENT-SERVICE
+              uri: lb://PAYMENT-SERVICE
+              predicates:
+                - Path=/payment/**
             - id: NOTIFICATION-SERVICE
               uri: lb://NOTIFICATION-SERVICE
               predicates:

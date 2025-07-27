@@ -8,7 +8,7 @@ import ecommerce.inventoryservice.entity.Inventory;
 import java.util.Optional;
 
 public interface InventoryService {
-    public boolean isInStock(InventoryRequest request);
+    boolean isInStock(String skuCode, int quantity);
 
     Optional<Inventory> findBySkuCode(String skuCode);
 

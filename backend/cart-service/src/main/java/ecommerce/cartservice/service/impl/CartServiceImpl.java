@@ -3,7 +3,8 @@ package ecommerce.cartservice.service.impl;
 import ecommerce.aipcommon.config.TokenInfo;
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.CartResponse;
-import ecommerce.aipcommon.model.response.ProductResponse;
+import ecommerce.cartservice.client.InventoryClient;
+import ecommerce.cartservice.client.ProductClient;
 import ecommerce.cartservice.dto.request.CartRequest;
 import ecommerce.cartservice.entity.Cart;
 import ecommerce.cartservice.entity.CartItem;
@@ -12,11 +13,11 @@ import ecommerce.cartservice.mapper.CartMapper;
 import ecommerce.cartservice.repository.CartItemRepository;
 import ecommerce.cartservice.repository.CartRepository;
 import ecommerce.cartservice.service.CartService;
-import ecommerce.cartservice.util.CartValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +29,10 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final KafkaCart kafkaCart;
     private final CartMapper cartMapper;
-    private final CartValidator validator;
     private final TokenInfo tokenInfo;
     private final CartItemRepository cartItemRepository;
+    private final ProductClient productClient;
+    private final InventoryClient inventoryClient;
 
     @Override
     public ApiResponse<CartResponse> addProductToCart(CartRequest request) {
@@ -44,8 +46,16 @@ public class CartServiceImpl implements CartService {
                         .build();
             }
 
-            validator.validateUser(userId);
-            ProductResponse product = validator.validateProduct(request.getProductId());
+            String skuCode = productClient.getSkuCode(request.getProductId());
+
+            boolean inStock = inventoryClient.isInStock(skuCode, request.getQuantity());
+            if (!inStock) {
+                return ApiResponse.<CartResponse>builder()
+                        .code(400)
+                        .message("Sản phẩm không đủ số lượng trong kho")
+                        .data(null)
+                        .build();
+            }
 
             Cart cart = cartRepository.findByUserId(userId).orElse(null);
             if (cart == null) {
@@ -57,7 +67,7 @@ public class CartServiceImpl implements CartService {
                 cart = cartRepository.save(cart);
             }
 
-            Optional<CartItem> optionalItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
+            Optional<CartItem> optionalItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), request.getProductId());
 
             CartItem cartItem;
 
@@ -65,20 +75,13 @@ public class CartServiceImpl implements CartService {
                 cartItem = optionalItem.get();
                 cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
             } else {
-                if (request.getQuantity() <= 0) {
-                    return ApiResponse.<CartResponse>builder()
-                            .code(400)
-                            .message("Số lượng sản phẩm phải lớn hơn 0")
-                            .data(null)
-                            .build();
-                }
+                BigDecimal price = productClient.getPrice(request.getProductId());
 
                 cartItem = CartItem.builder()
                         .cart(cart)
-                        .productId(product.getId())
+                        .productId(request.getProductId())
                         .quantity(request.getQuantity())
-                        .unitPrice(product.getPrice())
-                        .discount(product.getDiscountPrice())
+                        .unitPrice(price)
                         .isSelected(1)
                         .build();
             }
@@ -88,7 +91,7 @@ public class CartServiceImpl implements CartService {
             Cart updatedCart = cartRepository.findById(cart.getId()).orElseThrow();
             CartResponse response = cartMapper.toResponse(updatedCart);
 
-            kafkaCart.sendMessage("cart-events", "Thêm sản phẩm vào giỏ hàng ID= " + product.getId() + " thành công: ");
+            kafkaCart.sendMessage("cart-events", "Thêm sản phẩm vào giỏ hàng ID= " + request.getProductId() + " thành công: ");
             return ApiResponse.<CartResponse>builder()
                     .code(200)
                     .message("Thêm sản phẩm vào giỏ hàng thành công")
@@ -109,8 +112,6 @@ public class CartServiceImpl implements CartService {
     public ApiResponse<CartResponse> updateProduct(CartRequest request) {
         try {
             Long userId = tokenInfo.getUserId();
-            validator.validateUser(userId);
-            validator.validateProduct(request.getProductId());
             Cart cart = cartRepository.findByUserId(userId)
                     .orElse(null);
             if (cart == null) {
@@ -174,7 +175,6 @@ public class CartServiceImpl implements CartService {
                         .data(null)
                         .build();
             }
-            validator.validateUser(userId);
 
             Cart cart = cartRepository.findByUserId(userId)
                     .orElse(null);
@@ -217,8 +217,6 @@ public class CartServiceImpl implements CartService {
                         .data(null)
                         .build();
             }
-            validator.validateUser(userId);
-            validator.validateProduct(productId);
 
             Cart cart = cartRepository.findByUserId(userId)
                     .orElse(null);
@@ -265,6 +263,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartResponse getSelectedCartItems() {
         Long userId = tokenInfo.getUserId();
+        log.info("User ID: {}", userId);
         Cart cart = cartRepository.findByUserId(userId).orElse(null);
         if (cart == null) return null;
 
@@ -282,9 +281,8 @@ public class CartServiceImpl implements CartService {
     public ApiResponse<Void> clearSelectedItemsFromCart() {
         try {
             Long userId = tokenInfo.getUserId();
-            validator.validateUser(userId);
 
-            cartItemRepository.deleteByIdUserIdAndIsSelected(userId, 1);
+            cartItemRepository.deleteByCartUserIdAndIsSelected(userId, 1);
             kafkaCart.sendMessage("cart-events", "Xóa các sản phẩm đã chọn trong giỏ hàng thành công");
 
             return ApiResponse.<Void>builder()
