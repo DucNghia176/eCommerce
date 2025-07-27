@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -244,4 +245,27 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
     }
+
+    @Override
+    public ApiResponse<List<UserResponse>> getAllUsers() {
+        try {
+            List<Users> usersList = userRepository.findAll();
+            List<UserResponse> responses = usersList.stream()
+                    .map(userMapper::toResponse)
+                    .toList();
+            return ApiResponse.<List<UserResponse>>builder()
+                    .code(200)
+                    .message("Lấy danh sách người dùng thành công")
+                    .data(responses)
+                    .build();
+        } catch (Exception e) {
+            log.error("Lỗi khi lấy danh sách người dùng: {}", e.getMessage(), e);
+            return ApiResponse.<List<UserResponse>>builder()
+                    .code(500)
+                    .message("Đã xảy ra lỗi khi lấy danh sách người dùng")
+                    .data(null)
+                    .build();
+        }
+    }
+
 }

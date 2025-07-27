@@ -6,6 +6,8 @@ import ecommerce.userservice.dto.request.UserRequest;
 import ecommerce.userservice.dto.request.UserUpdateRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 
 public interface UserService {
     ApiResponse<UserResponse> createUser(UserRequest request, MultipartFile avatarFile);
@@ -17,4 +19,6 @@ public interface UserService {
     ApiResponse<UserResponse> toggleUserLock(Long id);
 
     ApiResponse<UserResponse> toggleUserRole(Long id);
+
+    ApiResponse<List<UserResponse>> getAllUsers();
 }
