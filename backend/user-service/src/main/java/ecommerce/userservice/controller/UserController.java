@@ -10,7 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
@@ -43,5 +46,10 @@ public class UserController {
     @PutMapping("/toggle/role/{id}")
     public ApiResponse<UserResponse> toggleUserRole(@PathVariable Long id) {
         return userService.toggleUserRole(id);
+    }
+
+    @GetMapping("/all")
+    public ApiResponse<List<UserResponse>> getAllUsers() {
+        return userService.getAllUsers();
     }
 }
