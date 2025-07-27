@@ -1,16 +1,18 @@
-package ecommerce.cartservice.config;
+package ecommerce.inventoryservice.config;
 
-import ecommerce.cartservice.filter.JwtAuthenticationFilter;
+
+import ecommerce.inventoryservice.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
@@ -19,9 +21,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/cart/**").hasAnyAuthority("USER")
-                                .requestMatchers("/cart/**").permitAll()
-                                .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
+                        .requestMatchers("/update/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/orders/**").hasAnyAuthority("USER")
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

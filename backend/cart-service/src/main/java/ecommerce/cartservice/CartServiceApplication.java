@@ -6,10 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = {
-        "ecommerce.cartservice",
-        "ecommerce.aipcommon.client"
-})
+@EnableFeignClients(basePackages = "ecommerce.cartservice.client")
 @ComponentScan(basePackages = {
         "ecommerce.cartservice",
         "ecommerce.aipcommon"

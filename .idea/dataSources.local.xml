@@ -17,6 +17,7 @@
             <name qname="ORDER_DB" />
             <name qname="PRODUCT" />
             <name qname="USER_DB" />
+            <name qname="SYSTEM" />
           </node>
         </introspection-scope>
       </schema-mapping>

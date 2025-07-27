@@ -10,7 +10,8 @@ import java.util.Optional;
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
-    void deleteByIdUserIdAndIsSelected(Long userId, Integer isSelected);
+    void deleteByCartUserIdAndIsSelected(Long userId, Integer isSelected);
+
 
     List<CartItem> findByCartIdAndIsSelected(Long userId, Integer isSelected);
 

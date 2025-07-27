@@ -4,6 +4,8 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -95,6 +98,35 @@ public class JwtUtil {
             return (String) payload.get("role");
         } catch (Exception e) {
             throw new IllegalArgumentException("Token không hợp lệ hoặc không chứa ID", e);
+        }
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsTFunction) {
+        final Claims claims = extractAllClaims(token);
+        return claimsTFunction.apply(claims);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SIGNER_KEY.getBytes())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
         }
     }
 }

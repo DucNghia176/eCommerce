@@ -1,4 +1,4 @@
-package ecommerce.productservice.filter;
+package ecommerce.orderservice.filter;
 
 import ecommerce.aipcommon.model.status.RoleStatus;
 import ecommerce.aipcommon.util.JwtUtil;

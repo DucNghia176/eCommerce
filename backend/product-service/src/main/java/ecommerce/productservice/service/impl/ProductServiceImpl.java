@@ -1,6 +1,5 @@
 package ecommerce.productservice.service.impl;
 
-import ecommerce.aipcommon.config.TokenInfo;
 import ecommerce.aipcommon.kafka.event.ProductCreateEvent;
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.ProductResponse;
@@ -24,6 +23,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +37,6 @@ public class ProductServiceImpl implements ProductService {
     private final TagRepository tagRepository;
     private final ProductTagRepository productTagRepository;
     private final ProductMapper productMapper;
-    private final TokenInfo tokenInfo;
     private final CloudinaryService cloudinaryService;
     private final KafkaTemplate<String, ProductCreateEvent> productKafka;
     private final KafkaTemplate<String, NotificationEvent> notificationKafka;
@@ -416,6 +415,23 @@ public class ProductServiceImpl implements ProductService {
                     .data(null)
                     .build();
         }
+    }
+
+    @Override
+    public String getSkuCodeByProductId(Long productId) {
+        return productRepository.findSkuCodeById(productId);
+    }
+
+    @Override
+    public BigDecimal getPriceByProductId(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        BigDecimal price = product.getPrice();
+        BigDecimal discount = product.getDiscountPrice();
+
+        BigDecimal finalPrice = price.multiply(BigDecimal.ONE.subtract(discount));
+        return finalPrice;
     }
 
     private Specification<Product> and(Specification<Product> base, Specification<Product> addition) {

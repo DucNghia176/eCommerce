@@ -20,10 +20,10 @@ public class InventoryServiceImpl implements InventoryService {
     private final InventoryRepository inventoryRepository;
 
     @Override
-    public boolean isInStock(InventoryRequest request) {
-        Inventory inventory = inventoryRepository.findById(request.getSkuCode())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với mã SKU: " + request.getSkuCode()));
-        return inventory.getQuantity() >= request.getQuantity();
+    public boolean isInStock(String skuCode, int quantity) {
+        Inventory inventory = inventoryRepository.findById(skuCode)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với mã SKU: " + skuCode));
+        return inventory.getQuantity() >= quantity;
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InventoryKafkaListener {
+public class InventoryListenerToProduct {
     private final InventoryRepository inventoryRepository;
 
     @KafkaListener(topics = "product-create", groupId = "inventory-group")
