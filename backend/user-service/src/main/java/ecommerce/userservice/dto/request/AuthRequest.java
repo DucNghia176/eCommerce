@@ -1,6 +1,5 @@
 package ecommerce.userservice.dto.request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -10,9 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthRequest {
-    private String username;
-    @Email(message = "Email phải đúng định dạng")
-    private String email;
+    private String usernameOrEmail;
     @NotBlank(message = "Password không được trống")
     private String password;
 }
