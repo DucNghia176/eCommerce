@@ -16,7 +16,6 @@ public interface CartMapper {
     @Mapping(source = "quantity", target = "quantity")
     @Mapping(source = "unitPrice", target = "unitPrice")
     @Mapping(source = "discount", target = "discount")
-    @Mapping(source = "isSelected", target = "isSelected")
     CartItemResponse toCartItemResponse(CartItem cartItem);
 
     List<CartItemResponse> toCartItemResponseList(List<CartItem> items);
@@ -27,4 +26,12 @@ public interface CartMapper {
     @Mapping(source = "updatedAt", target = "updatedAt")
     @Mapping(source = "items", target = "items")
     CartResponse toResponse(Cart cart);
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "productId", target = "productId")
+    @Mapping(source = "quantity", target = "quantity")
+    @Mapping(source = "unitPrice", target = "unitPrice")
+    @Mapping(source = "discount", target = "discount")
+    ecommerce.cartservice.dto.response.CartItemResponse toCartItemDto(CartItem cartItem);
+
 }

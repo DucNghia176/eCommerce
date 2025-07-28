@@ -1,8 +1,12 @@
 package ecommerce.cartservice.service;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.CartItemResponse;
 import ecommerce.aipcommon.model.response.CartResponse;
 import ecommerce.cartservice.dto.request.CartRequest;
+
+import java.util.List;
+import java.util.Map;
 
 public interface CartService {
     ApiResponse<CartResponse> addProductToCart(CartRequest request);
@@ -13,7 +17,7 @@ public interface CartService {
 
     ApiResponse<Void> removeProductFromCart(Long productId);
 
-    CartResponse getSelectedCartItems();
+    ApiResponse<Void> clearSelectedItemsFromCart(List<Long> ids);
 
-    ApiResponse<Void> clearSelectedItemsFromCart();
+    List<CartItemResponse> getSelectedCartItem(Map<Long, Boolean> items);
 }

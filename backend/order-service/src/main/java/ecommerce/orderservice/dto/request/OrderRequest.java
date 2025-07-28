@@ -2,6 +2,8 @@ package ecommerce.orderservice.dto.request;
 
 import lombok.*;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -9,5 +11,7 @@ import lombok.*;
 @Builder
 public class OrderRequest {
     private String shippingAddress;
-    private String status;
+    private Map<Long, Boolean> selectedCartItemIds;
+    private String paymentMethod;
+    private String note;
 }

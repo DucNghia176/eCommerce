@@ -1,5 +1,7 @@
 package ecommerce.orderservice.entity;
 
+import ecommerce.aipcommon.model.status.OrderStatus;
+import ecommerce.aipcommon.model.status.PaymentMethodStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,8 +31,9 @@ public class Orders {
     @Column(name = "ORDER_DATE")
     private LocalDateTime orderDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
-    private String status;
+    private OrderStatus status;
 
     @Column(name = "TOTAL_AMOUNT")
     private BigDecimal totalAmount;
@@ -49,9 +52,14 @@ public class Orders {
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PAYMENT_METHOD")
+    private PaymentMethodStatus paymentMethod;
+
+    @Column(name = "NOTE")
+    private String note;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private Payment payment;
 }

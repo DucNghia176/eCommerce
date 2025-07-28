@@ -20,6 +20,7 @@ public class SecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/orders/create").hasAuthority("USER")
+                        .requestMatchers("/cart/**").permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

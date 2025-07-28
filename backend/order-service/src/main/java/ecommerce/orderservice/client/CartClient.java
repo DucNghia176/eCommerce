@@ -2,16 +2,20 @@ package ecommerce.orderservice.client;
 
 import ecommerce.aipcommon.config.FeignConfig;
 import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.response.CartResponse;
+import ecommerce.orderservice.dto.response.CartItemResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "cart-service", path = "/cart", configuration = FeignConfig.class)
 public interface CartClient {
-    @GetMapping("/selected")
-    CartResponse getSelectedCartItems();
+    @PostMapping("/clear")
+    ApiResponse<Void> clearSelectedCartItems(@RequestBody List<Long> itemId);
 
-    @DeleteMapping("/clear")
-    ApiResponse<Void> clearSelectedCartItems();
+    @PostMapping("/selected-items")
+    List<CartItemResponse> getSelectedCartItem(@RequestBody Map<Long, Boolean> items);
 }
+
