@@ -20,7 +20,7 @@ public class UserResponse {
     String fullName;
     String email;
     String role;
-    Integer isActive;
+    Integer isLock;
     String avatar;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

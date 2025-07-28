@@ -2,6 +2,7 @@ package ecommerce.cartservice.service.impl;
 
 import ecommerce.aipcommon.config.TokenInfo;
 import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.CartItemResponse;
 import ecommerce.aipcommon.model.response.CartResponse;
 import ecommerce.cartservice.client.InventoryClient;
 import ecommerce.cartservice.client.ProductClient;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -82,7 +85,6 @@ public class CartServiceImpl implements CartService {
                         .productId(request.getProductId())
                         .quantity(request.getQuantity())
                         .unitPrice(price)
-                        .isSelected(1)
                         .build();
             }
 
@@ -261,28 +263,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponse getSelectedCartItems() {
-        Long userId = tokenInfo.getUserId();
-        log.info("User ID: {}", userId);
-        Cart cart = cartRepository.findByUserId(userId).orElse(null);
-        if (cart == null) return null;
-
-        // Lọc item được chọn
-        List<CartItem> selectedItems = cartItemRepository.findByCartIdAndIsSelected(cart.getId(), 1);
-
-        CartResponse response = cartMapper.toResponse(cart);
-        response.setItems(cartMapper.toCartItemResponseList(selectedItems)); // ghi đè lại danh sách items
-
-        return response;
-    }
-
-
-    @Override
-    public ApiResponse<Void> clearSelectedItemsFromCart() {
+    public ApiResponse<Void> clearSelectedItemsFromCart(List<Long> ids) {
         try {
-            Long userId = tokenInfo.getUserId();
+            ids.forEach(item -> {
+                cartItemRepository.deleteById(item);
+            });
 
-            cartItemRepository.deleteByCartUserIdAndIsSelected(userId, 1);
             kafkaCart.sendMessage("cart-events", "Xóa các sản phẩm đã chọn trong giỏ hàng thành công");
 
             return ApiResponse.<Void>builder()
@@ -301,4 +287,22 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public List<CartItemResponse> getSelectedCartItem(Map<Long, Boolean> items) {
+        List<CartItemResponse> itemIds = new ArrayList<>();
+        for (Map.Entry<Long, Boolean> entry : items.entrySet()) {
+            if (entry.getValue() == true) {
+                // laays
+                List<CartItem> cartList = cartItemRepository.findCartItemById(entry.getKey());
+                cartList.stream().forEach(item -> {
+                    itemIds.add(cartMapper.toCartItemResponse(item));
+                });
+            } else {
+                return null;
+            }
+        }
+        return itemIds;
+    }
 }
+
+

@@ -1,6 +1,7 @@
 package ecommerce.cartservice.controller;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.aipcommon.model.response.CartItemResponse;
 import ecommerce.aipcommon.model.response.CartResponse;
 import ecommerce.cartservice.dto.request.CartRequest;
 import ecommerce.cartservice.service.CartService;
@@ -8,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import static com.cloudinary.AccessControlRule.AccessType.token;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,14 +39,14 @@ public class CartController {
         return cartService.removeProductFromCart(id);
     }
 
-    @GetMapping("/selected")
-    public CartResponse getSelectedCartItems() {
-        log.info("Received token: {}", token);
-        return cartService.getSelectedCartItems();
+    @PostMapping("/clear")
+    public ApiResponse<Void> clearSelectedItemsFromCart(@RequestBody List<Long> ids) {
+        return cartService.clearSelectedItemsFromCart(ids);
     }
 
-    @DeleteMapping("/clear")
-    public ApiResponse<Void> clearSelectedItems() {
-        return cartService.clearSelectedItemsFromCart();
+    @PostMapping("/selected-items")
+    public List<CartItemResponse> getSelectedCartItem(@RequestBody Map<Long, Boolean> items) {
+        return cartService.getSelectedCartItem(items);
     }
+
 }

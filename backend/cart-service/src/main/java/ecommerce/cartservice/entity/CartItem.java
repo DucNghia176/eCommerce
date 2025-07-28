@@ -36,7 +36,4 @@ public class CartItem {
 
     @Column(name = "DISCOUNT")
     private BigDecimal discount;
-
-    @Column(name = "IS_SELECTED")
-    private Integer isSelected;
 }

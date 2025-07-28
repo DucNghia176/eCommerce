@@ -17,5 +17,4 @@ public class CartItemResponse {
     private int quantity;
     private BigDecimal unitPrice;
     private BigDecimal discount;
-    private Integer isSelected;
 }

@@ -12,8 +12,9 @@ public interface OrderMapper {
     @Mapping(target = "orderDate", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "status", constant = "PENDING")
     @Mapping(target = "totalAmount", ignore = true)
+    @Mapping(target = "paymentMethod", ignore = true)
+    @Mapping(target = "note", ignore = true)
     @Mapping(target = "orderDetails", ignore = true)
-    @Mapping(target = "payment", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Orders toOrderEntity(OrderRequest request);
