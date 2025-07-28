@@ -31,9 +31,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResponse<AuthResponse> login(AuthRequest request) {
         try {
-            Optional<Users> usersOpt = userRepository.findByUsername(request.getUsername());
+            Optional<Users> usersOpt = userRepository.findByUsername(request.getUsernameOrEmail());
             if (usersOpt.isEmpty()) {
-                usersOpt = userRepository.findByEmail(request.getEmail());
+                usersOpt = userRepository.findByEmail(request.getUsernameOrEmail());
             }
             if (usersOpt.isEmpty()) {
                 return ApiResponse.<AuthResponse>builder()
