@@ -11,13 +11,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CartMapper {
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "productId", target = "productId")
-    @Mapping(source = "quantity", target = "quantity")
-    @Mapping(source = "unitPrice", target = "unitPrice")
-    @Mapping(source = "discount", target = "discount")
-    CartItemResponse toCartItemResponse(CartItem cartItem);
-
     List<CartItemResponse> toCartItemResponseList(List<CartItem> items);
 
     @Mapping(source = "id", target = "id")
@@ -32,6 +25,6 @@ public interface CartMapper {
     @Mapping(source = "quantity", target = "quantity")
     @Mapping(source = "unitPrice", target = "unitPrice")
     @Mapping(source = "discount", target = "discount")
-    ecommerce.cartservice.dto.response.CartItemResponse toCartItemDto(CartItem cartItem);
+    CartItemResponse toCartItemDto(CartItem cartItem);
 
 }

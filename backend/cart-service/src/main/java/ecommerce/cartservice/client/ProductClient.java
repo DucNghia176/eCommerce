@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 
-@FeignClient(name = "product-service", path = "/product")
+@FeignClient(name = "product-service", path = "/api/product")
 public interface ProductClient {
     @GetMapping("/{id}/skuCode")
     String getSkuCode(@PathVariable("id") Long id);

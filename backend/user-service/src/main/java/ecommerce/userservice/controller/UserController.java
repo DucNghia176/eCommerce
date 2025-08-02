@@ -14,12 +14,12 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("create")
+    @PostMapping("register")
     public ApiResponse<UserResponse> createUser(
             @RequestPart("data") @Valid @ModelAttribute UserRequest request,
             @RequestPart(value = "avatar", required = false) MultipartFile avatar) {

@@ -12,4 +12,5 @@ import lombok.experimental.FieldDefaults;
 public class InventoryKafkaEvent {
     String skuCode;
     int quantity;
+    int reservedQuantity;
 }

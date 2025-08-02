@@ -8,12 +8,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -28,8 +30,11 @@ public class Orders {
     @Column(name = "USER_ID", nullable = false)
     private Long userId;
 
+    @Column(name = "ORDER_CODE")
+    private String orderCode;
+
     @Column(name = "ORDER_DATE")
-    private LocalDateTime orderDate;
+    private LocalDate orderDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")

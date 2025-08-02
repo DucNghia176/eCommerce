@@ -29,7 +29,6 @@ public class UserRequest {
     @NotBlank(message = "Email không được trống")
     @Email(message = "Email phải đúng định dạng")
     private String email;
-    private String role;
     private GenderStatus gender;
     private LocalDate dateOfBirth;
 }

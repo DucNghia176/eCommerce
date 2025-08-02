@@ -15,7 +15,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/api/cart")
 public class CartController {
     private final CartService cartService;
 
@@ -45,7 +45,7 @@ public class CartController {
     }
 
     @PostMapping("/selected-items")
-    public List<CartItemResponse> getSelectedCartItem(@RequestBody Map<Long, Boolean> items) {
+    public ApiResponse<List<CartItemResponse>> getSelectedCartItem(@RequestBody Map<Long, Boolean> items) {
         return cartService.getSelectedCartItem(items);
     }
 

@@ -4,11 +4,10 @@ import ecommerce.aipcommon.config.TokenInfo;
 import ecommerce.aipcommon.kafka.event.InventoryKafkaEvent;
 import ecommerce.aipcommon.kafka.event.PaymentKafkaEvent;
 import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.status.OrderStatus;
+import ecommerce.aipcommon.model.response.CartItemResponse;
 import ecommerce.orderservice.client.CartClient;
 import ecommerce.orderservice.client.ProductClient;
 import ecommerce.orderservice.dto.request.OrderRequest;
-import ecommerce.orderservice.dto.response.CartItemResponse;
 import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.entity.OrderDetail;
 import ecommerce.orderservice.entity.Orders;
@@ -23,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -44,12 +45,21 @@ public class OrderService {
     private final KafkaTemplate<String, PaymentKafkaEvent> paymentKafka;
     private final ProductClient productClient;
 
+
+    private String generateOrderCode() {
+        String prefix = "ORD";
+        String dateTimePart = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+        int random = (int) (Math.random() * 900) + 100;
+        return prefix + "-" + dateTimePart + "-" + random;
+    }
+
     @Transactional
     public ApiResponse<OrderResponse> placeOrder(OrderRequest request) {
         try {
             Long userId = tokenInfo.getUserId();
 
-            List<CartItemResponse> cart = cartClient.getSelectedCartItem(request.getSelectedCartItemIds());
+            ApiResponse<List<CartItemResponse>> cartResponse = cartClient.getSelectedCartItem(request.getSelectedCartItemIds());
+            List<CartItemResponse> cart = cartResponse.getData();
 
             if (cart == null) {
                 return ApiResponse.<OrderResponse>builder()
@@ -68,11 +78,12 @@ public class OrderService {
 
             // 3. Tạo đối tượng Orders từ request + mapper
             Orders order = orderMapper.toOrderEntity(request);
-            order.setUserId(userId); // gán userId từ cart
+            order.setUserId(userId);// gán userId từ cart
             order.setTotalAmount(totalAmount);
+            order.setPaymentMethod(request.getPaymentMethod());
+            order.setOrderDate(request.getOrderDate() != null ? request.getOrderDate() : LocalDate.now());
+            order.setOrderCode(generateOrderCode());
             order.setCreatedAt(LocalDateTime.now());
-            order.setStatus(OrderStatus.PENDING);
-            order.setUpdatedAt(LocalDateTime.now());
 
             // 4. Lưu tạm order để có ID
             orderRepository.save(order);
@@ -95,7 +106,10 @@ public class OrderService {
             PaymentKafkaEvent payment = PaymentKafkaEvent.builder()
                     .orderId(order.getId())
                     .userId(order.getUserId())
+                    .orderCode(order.getOrderCode())
                     .totalAmount(order.getTotalAmount())
+                    .paymentMethod(request.getPaymentMethod())
+                    .timestamp(LocalDateTime.now())
                     .build();
             paymentKafka.send("payment-topic", payment);
 
@@ -103,10 +117,10 @@ public class OrderService {
                 // Gọi product-service để lấy skuCode từ productId
                 String skuCode = productClient.getSkuCode(item.getProductId());
 
-                return new InventoryKafkaEvent(
-                        skuCode,
-                        item.getQuantity()
-                );
+                return InventoryKafkaEvent.builder()
+                        .skuCode(skuCode)
+                        .quantity(item.getQuantity())
+                        .build();
             }).toList();
 
             for (InventoryKafkaEvent event : inventory) {

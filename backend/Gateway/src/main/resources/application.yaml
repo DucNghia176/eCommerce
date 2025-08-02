@@ -15,33 +15,34 @@ spring:
             - id: USER-SERVICE
               uri: lb://USER-SERVICE
               predicates:
-                - Path=/users/**
-                - Path=/auth/**
+                - Path=/api/users/**
+                - Path=/api/auth/**
             - id: PRODUCT-SERVICE
               uri: lb://PRODUCT-SERVICE
               predicates:
-                - Path=/product/**
-                - Path=/category/**
+                - Path=/api/product/**
+                - Path=/api/category/**
             - id: INVENTORY-SERVICE
               uri: lb://INVENTORY-SERVICE
               predicates:
-                - Path=/inventory/**
+                - Path=/api/inventory/**
             - id: CART-SERVICE
               uri: lb://CART-SERVICE
               predicates:
-                - Path=/cart/**
+                - Path=/api/cart/**
             - id: ORDERS-SERVICE
               uri: lb://ORDERS-SERVICE
               predicates:
-                - Path=/orders/**
+                - Path=/api/orders/**
             - id: PAYMENT-SERVICE
               uri: lb://PAYMENT-SERVICE
               predicates:
-                - Path=/payment/**
+                - Path=/api/payment/**
+                - Path=/momo/**
             - id: NOTIFICATION-SERVICE
               uri: lb://NOTIFICATION-SERVICE
               predicates:
-                - Path=/notification/**
+                - Path=/api/notification/**
 
           discovery:
             locator:
