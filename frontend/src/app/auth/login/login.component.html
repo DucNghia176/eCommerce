@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold text-center text-gray-800">Đăng nhập</h1>
     <p class="text-center text-gray-600 text-sm mt-2">
       Bạn chưa có tài khoản?
-      <a class="hover:underline text-blue-600" href="/auth/register">Tạo tài khoản</a>
+      <a [routerLink]="['/auth/register']" class="hover:underline text-blue-600">Tạo tài khoản</a>
     </p>
 
     <div *ngIf="errorMessages" class="mt-5 my-3 border border-red-400 bg-red-100 p-2 text-red-700 text-sm rounded">

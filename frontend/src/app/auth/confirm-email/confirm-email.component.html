@@ -3,7 +3,7 @@
     <h1 class="font-bold text-2xl text-center text-gray-900">Confirm Email</h1>
     <p class="text-center text-gray-600 mt-1 text-sm">Check Your Email and Enter Confirmation Code</p>
 
-    <form class="mt-8 space-y-4">
+    <form (ngSubmit)="confirmEmail()" class="mt-8 space-y-4">
       <div>
         <label class="text-sm block font-medium text-gray-500" for="code">Confirmation Code</label>
         <input
@@ -18,8 +18,9 @@
       </div>
 
       <button
-        class="w-full bg-indigo-950 text-white font-semibold py-2 rounded-md hover:bg-indigo-800 transition duration-300">
-        <a href="#">Confirm Email</a>
+        class="w-full bg-indigo-950 text-white font-semibold py-2 rounded-md hover:bg-indigo-800 transition duration-300"
+        type="submit">
+        Confirm Email
       </button>
     </form>
 
@@ -28,9 +29,13 @@
       <span class="block text-gray-500 text-center ">Haven't received your code?</span>
     </div>
 
-    <button
-      class="w-full mt-5 border border-gray-400 px-4 py-2 bg-white text-blue-700 font-semibold rounded-md hover:bg-gray-200 transition duration-300">
-      <a href="#">Resend Code</a>
-    </button>
+    <form (ngSubmit)="resendCode()" class="mt-8 space-y-4">
+      <button
+        class="w-full mt-5 border border-gray-400 px-4 py-2 bg-white text-blue-700 font-semibold rounded-md hover:bg-gray-200 transition duration-300"
+        type="submit"
+      >
+        Resend Code
+      </button>
+    </form>
   </div>
 </div>
