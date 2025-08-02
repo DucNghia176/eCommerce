@@ -1,0 +1,88 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+  <div class="bg-white border border-blue-300 rounded-lg p-8 w-full max-w-md shadow-md">
+    <h1 class="text-2xl font-bold text-center text-gray-800">Đăng nhập</h1>
+    <p class="text-center text-gray-600 text-sm mt-2">
+      Bạn chưa có tài khoản?
+      <a class="hover:underline text-blue-600" href="/auth/register">Tạo tài khoản</a>
+    </p>
+
+    <div *ngIf="errorMessages" class="mt-5 my-3 border border-red-400 bg-red-100 p-2 text-red-700 text-sm rounded">
+      {{ errorMessages }}
+    </div>
+
+    <form #form="ngForm" #fromRef (ngSubmit)="login(form)" class="mt-8 space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 label-required" for="username">Tên đăng nhập hoặc
+          Email</label>
+        <input
+          #usernameRef="ngModel"
+          [(ngModel)]="username"
+          class="mt-1 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block w-full border border-gray-300 rounded-md"
+          id="username"
+          name="username"
+          placeholder="Nhập tên đăng nhập hoặc email"
+          required
+          type="text"
+        />
+        <div *ngIf="usernameRef.invalid && usernameRef.touched" class="text-red-600 text-sm mt-1 ">
+          <div *ngIf="usernameRef.errors?.['required']">Vui lòng nhập Tên đăng nhập hoặc Email để tiếp tục.</div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 label-required " for="password">Mật khẩu</label>
+        <input
+          #passwordRef="ngModel"
+          [(ngModel)]="password"
+          class="mt-1 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block w-full border border-gray-300 rounded-md"
+          id="password"
+          name="password"
+          placeholder="Nhập mật khẩu"
+          required
+          type="password"
+        />
+        <div *ngIf="passwordRef.invalid && passwordRef.touched" class="text-red-600 text-sm mt-1 ">
+          <div *ngIf="passwordRef.errors?.['required']">Vui lòng nhập Mật khẩu để tiếp tục.</div>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <input
+          class="mr-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          id="remember"
+          name="remember"
+          type="checkbox"
+        >
+        <label class="text-sm text-gray-700 cursor-pointer" for="remember">Ghi nhớ đăng nhập</label>
+      </div>
+
+      <button
+        class="w-full bg-indigo-950 text-white font-semibold py-2 rounded-md hover:bg-indigo-800 transition duration-300"
+        type="submit"
+      >
+        Đăng nhập
+      </button>
+    </form>
+
+    <a class="block text-center mt-5 text-blue-600 hover:underline" href="/auth/forgot">Quên mật khẩu?</a>
+
+    <div class="mt-5">
+      <hr class="my-6 border-gray-300">
+      <span class="block text-gray-500 text-center">Hoặc đăng nhập bằng:</span>
+    </div>
+
+    <div class="mt-5 space-y-2">
+      <button
+        class="flex items-center justify-center gap-2 border-gray-400 border w-full px-4 py-2 bg-white text-blue-700 font-semibold rounded-md hover:bg-gray-200 transition duration-300">
+        <img class="h-5 w-5" src="https://www.svgrepo.com/show/475656/google-color.svg"/>
+        <span>Đăng nhập bằng Google</span>
+      </button>
+
+      <button
+        class="flex items-center justify-center gap-2 border-gray-400 border w-full px-4 py-2 bg-white text-blue-700 font-semibold rounded-md hover:bg-gray-200 transition duration-300">
+        <img class="h-5 w-5" src="https://www.svgrepo.com/show/303114/facebook-3-logo.svg"/>
+        <span>Đăng nhập bằng Facebook</span>
+      </button>
+    </div>
+  </div>
+</div>

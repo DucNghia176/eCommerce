@@ -1,8 +1,10 @@
-import {Component} from '@angular/core';
-import {FormsModule} from "@angular/forms";
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {FormsModule, NgForm} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {Router} from "@angular/router";
-import {AuthService} from "../../../services/auth.service";
+import {AuthService} from "../../core/services/auth.service";
+import {AuthRequest} from "../../core/models/auth.model";
+import {validateAndFocusFirstError} from "../../shared/utils/validation";
 
 @Component({
   selector: 'app-login',
@@ -15,12 +17,20 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
   errorMessages: string | null = null;
+  @ViewChild('formRef') formRef!: ElementRef;
 
   constructor(private authService: AuthService, private router: Router) {
   }
 
-  onSubmit() {
-    this.authService.login(this.username, this.password).subscribe({
+  login(form: NgForm) {
+    if (!validateAndFocusFirstError(form, this.formRef)) return;
+    
+    const auth: AuthRequest = {
+      usernameOrEmail: this.username,
+      password: this.password
+    };
+
+    this.authService.login(auth).subscribe({
       next: (response) => {
         if (response.data?.token) {
 
@@ -31,9 +41,9 @@ export class LoginComponent {
           const role = payload.role;
 
           if (role === 'ADMIN') {
-            this.router.navigate(['/users']);
+            this.router.navigate(['/admin']);
           } else {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/users']);
           }
         }
       }, error: (error) => {

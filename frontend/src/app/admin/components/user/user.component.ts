@@ -1,8 +1,8 @@
 import {Component, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {UsersService} from '../../../services/users.service';
-import {UserResponse} from "../../../models/user.model";
-import {AuthService} from "../../../services/auth.service";
+import {UsersService} from '../../../core/services/users.service';
+import {UserResponse} from "../../../core/models/user.model";
+import {AuthService} from "../../../core/services/auth.service";
 
 @Component({
   selector: 'app-user',
@@ -11,7 +11,7 @@ import {AuthService} from "../../../services/auth.service";
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss'
 })
-export class UserComponent {
+export class UserAdminComponent {
   users: UserResponse[] = [];
   errorMessage: string | null = null;
   private userService = inject(UsersService);
