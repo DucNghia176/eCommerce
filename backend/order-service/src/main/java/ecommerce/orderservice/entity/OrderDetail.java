@@ -1,6 +1,5 @@
 package ecommerce.orderservice.entity;
 
-import ecommerce.orderservice.entity.imp.OrderDetailId;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,14 +15,17 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "ORDER_DETAIL", schema = "order_db")
-@IdClass(OrderDetailId.class)
 public class OrderDetail {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
+    @SequenceGenerator(name = "order_seq", sequenceName = "SEQ_ORDER_ID", allocationSize = 1)
+    @Column(name = "ORDER_DETAIL_ID")
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "ORDER_ID")
     private Orders order;
 
-    @Id
     @Column(name = "PRODUCT_ID")
     private Long productId;
 

@@ -17,6 +17,7 @@ import ecommerce.cartservice.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -51,15 +52,6 @@ public class CartServiceImpl implements CartService {
 
             String skuCode = productClient.getSkuCode(request.getProductId());
 
-            boolean inStock = inventoryClient.isInStock(skuCode, request.getQuantity());
-            if (!inStock) {
-                return ApiResponse.<CartResponse>builder()
-                        .code(400)
-                        .message("Sản phẩm không đủ số lượng trong kho")
-                        .data(null)
-                        .build();
-            }
-
             Cart cart = cartRepository.findByUserId(userId).orElse(null);
             if (cart == null) {
                 cart = Cart.builder()
@@ -71,6 +63,20 @@ public class CartServiceImpl implements CartService {
             }
 
             Optional<CartItem> optionalItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), request.getProductId());
+
+            int totalRequestedQuantity = request.getQuantity();
+            if (optionalItem.isPresent()) {
+                totalRequestedQuantity += optionalItem.get().getQuantity();
+            }
+
+            boolean inStock = inventoryClient.isInStock(skuCode, totalRequestedQuantity);
+            if (!inStock) {
+                return ApiResponse.<CartResponse>builder()
+                        .code(400)
+                        .message("Sản phẩm không đủ số lượng trong kho")
+                        .data(null)
+                        .build();
+            }
 
             CartItem cartItem;
 
@@ -287,22 +293,47 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Transactional
     @Override
-    public List<CartItemResponse> getSelectedCartItem(Map<Long, Boolean> items) {
-        List<CartItemResponse> itemIds = new ArrayList<>();
-        for (Map.Entry<Long, Boolean> entry : items.entrySet()) {
-            if (entry.getValue() == true) {
-                // laays
-                List<CartItem> cartList = cartItemRepository.findCartItemById(entry.getKey());
-                cartList.stream().forEach(item -> {
-                    itemIds.add(cartMapper.toCartItemResponse(item));
-                });
-            } else {
-                return null;
+    public ApiResponse<List<CartItemResponse>> getSelectedCartItem(Map<Long, Boolean> items) {
+        try {
+            List<CartItemResponse> itemResponses = new ArrayList<>();
+            boolean hasValidItem = false;
+
+            for (Map.Entry<Long, Boolean> entry : items.entrySet()) {
+                if (Boolean.TRUE.equals(entry.getValue())) {
+                    hasValidItem = true;
+                    List<CartItem> cartList = cartItemRepository.findCartItemById(entry.getKey());
+                    cartList.forEach(item -> {
+                        itemResponses.add(cartMapper.toCartItemDto(item));
+                    });
+                }
             }
+
+            if (!hasValidItem || itemResponses.isEmpty()) {
+                return ApiResponse.<List<CartItemResponse>>builder()
+                        .code(400)
+                        .message("Không có sản phẩm nào được chọn trong giỏ hàng")
+                        .data(null)
+                        .build();
+            }
+
+            return ApiResponse.<List<CartItemResponse>>builder()
+                    .code(200)
+                    .message("Lấy danh sách sản phẩm đã chọn thành công")
+                    .data(itemResponses)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Lỗi khi lấy sản phẩm được chọn: {}", e.getMessage(), e);
+            return ApiResponse.<List<CartItemResponse>>builder()
+                    .code(500)
+                    .message("Lỗi hệ thống")
+                    .data(null)
+                    .build();
         }
-        return itemIds;
     }
+
 }
 
 

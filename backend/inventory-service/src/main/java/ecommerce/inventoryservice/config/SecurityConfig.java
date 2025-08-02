@@ -22,8 +22,8 @@ public class SecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()
-                        .requestMatchers("/update/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/orders/**").hasAnyAuthority("USER")
+                        .requestMatchers("/api/inventory/update/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/inventory/orders/**").hasAnyAuthority("USER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

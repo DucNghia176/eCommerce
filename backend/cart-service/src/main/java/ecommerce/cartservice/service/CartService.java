@@ -19,5 +19,5 @@ public interface CartService {
 
     ApiResponse<Void> clearSelectedItemsFromCart(List<Long> ids);
 
-    List<CartItemResponse> getSelectedCartItem(Map<Long, Boolean> items);
+    ApiResponse<List<CartItemResponse>> getSelectedCartItem(Map<Long, Boolean> items);
 }

@@ -19,8 +19,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/orders/create").hasAuthority("USER")
-                        .requestMatchers("/cart/**").permitAll()
+                        .requestMatchers("/api/orders/create").hasAuthority("USER")
+                        .requestMatchers("/api/cart/**").permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

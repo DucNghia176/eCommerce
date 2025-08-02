@@ -23,6 +23,7 @@ public class InventoryListenerToProduct {
                 .skuCode(event.getSkuCode())
                 .name(event.getName())
                 .quantity(0)
+                .reservedQuantity(0)
                 .importPrice(event.getImportPrice())
                 .importedAt(LocalDateTime.now())
                 .build();
