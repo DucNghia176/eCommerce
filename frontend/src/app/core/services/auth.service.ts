@@ -2,13 +2,15 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, catchError, map, Observable, throwError} from "rxjs";
 import {ApiResponse} from "../models/common.model";
+import {AuthRequest} from "../models/auth.model";
+import {UserRequest, UserResponse} from "../models/user.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8085/auth';
+  private apiUrl = 'http://localhost:8085/api/auth';
 
   private tokenSubject = new BehaviorSubject<string | null>(null);
   token$ = this.tokenSubject.asObservable();
@@ -16,8 +18,8 @@ export class AuthService {
   constructor(private http: HttpClient) {
   }
 
-  login(usernameOrEmail: string, password: string): Observable<ApiResponse<{ token: string }>> {
-    return this.http.post<ApiResponse<{ token: string }>>(`${this.apiUrl}/login`, {usernameOrEmail, password})
+  login(auth: AuthRequest): Observable<ApiResponse<{ token: string }>> {
+    return this.http.post<ApiResponse<{ token: string }>>(`${this.apiUrl}/login`, auth)
       .pipe(
         map(response => {
           if (response.code === 200 && response.data) {
@@ -27,6 +29,28 @@ export class AuthService {
         }),
         catchError(this.handleError)
       );
+  }
+
+  logout() {
+    this.clearToken();
+  }
+
+  register(request: UserRequest, avatar ?: File): Observable<ApiResponse<UserResponse>> {
+    const formData = new FormData();
+
+    formData.append('data', new Blob([JSON.stringify(request)], {type: 'application/json'}));
+    if (avatar) {
+      formData.append('avatar', avatar);
+    }
+    return this.http.post<ApiResponse<UserResponse>>(`${this.apiUrl}/register`, formData).pipe(
+      map(response => {
+        if (response.code === 200 && response.data) {
+          return response;
+        }
+        throw new Error(response.message || 'Đăng ký thất bại');
+      }),
+      catchError(this.handleError)
+    );
   }
 
   setToken(token: string) {
@@ -42,7 +66,7 @@ export class AuthService {
     this.tokenSubject.next(null);
     localStorage.removeItem('token');
   }
-  
+
   private handleError(error: any): Observable<never> {
     let errorMessage = 'Đã xảy ra lỗi';
     if (error.error instanceof ErrorEvent) {

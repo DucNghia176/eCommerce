@@ -11,3 +11,12 @@ export interface UserResponse {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface UserRequest {
+  username: string;
+  password: string;
+  fullName?: string;
+  email: string;
+  gender?: string;
+  dateOfBirth?: Date;
+}
