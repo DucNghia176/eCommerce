@@ -1,7 +1,7 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {CommonModule} from "@angular/common";
-import {Router} from "@angular/router";
+import {Router, RouterModule} from "@angular/router";
 import {AuthService} from "../../core/services/auth.service";
 import {AuthRequest} from "../../core/models/auth.model";
 import {validateAndFocusFirstError} from "../../shared/utils/validation";
@@ -9,7 +9,7 @@ import {validateAndFocusFirstError} from "../../shared/utils/validation";
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -24,7 +24,7 @@ export class LoginComponent {
 
   login(form: NgForm) {
     if (!validateAndFocusFirstError(form, this.formRef)) return;
-    
+
     const auth: AuthRequest = {
       usernameOrEmail: this.username,
       password: this.password
@@ -41,7 +41,7 @@ export class LoginComponent {
           const role = payload.role;
 
           if (role === 'ADMIN') {
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/userAdmin']);
           } else {
             this.router.navigate(['/users']);
           }

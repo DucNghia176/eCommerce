@@ -44,10 +44,46 @@ export class AuthService {
     }
     return this.http.post<ApiResponse<UserResponse>>(`${this.apiUrl}/register`, formData).pipe(
       map(response => {
-        if (response.code === 200 && response.data) {
+        if (response.code === 202 && response.data) {
           return response;
         }
         throw new Error(response.message || 'Đăng ký thất bại');
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  sendOtp(email: string): Observable<ApiResponse<string>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/send`,
+      null, {params: {email: email}}).pipe(
+      map(response => {
+        if (response.code === 200) return response;
+        throw new Error(response.message || 'Gửi OTP thất bại');
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  confirmRegister(email: string, otp: string): Observable<ApiResponse<UserResponse>> {
+    return this.http.post<ApiResponse<UserResponse>>(
+      `${this.apiUrl}/register/confirm`, null,
+      {params: {email, otp}}
+    ).pipe(
+      map(response => {
+        if (response.code === 200) return response;
+        throw new Error(response.message || 'Xác thực OTP thất bại');
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+
+  verifyOtp(email: string, otp: string): Observable<ApiResponse<string>> {
+    return this.http.post<ApiResponse<string>>(`${this.apiUrl}/verify`, null, {params: {email: email, otp: otp}}
+    ).pipe(
+      map(reponse => {
+        if (reponse.code === 200) return reponse;
+        throw new Error(reponse.message || 'Xác thực thất bại');
       }),
       catchError(this.handleError)
     );
