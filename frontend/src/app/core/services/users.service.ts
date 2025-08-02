@@ -8,7 +8,7 @@ import {ApiResponse} from "../models/common.model";
   providedIn: 'root'
 })
 export class UsersService {
-  private apiUrl = 'http://localhost:8085/users';
+  private apiUrl = 'http://localhost:8085/api/users';
 
   constructor(private http: HttpClient) {
   }
