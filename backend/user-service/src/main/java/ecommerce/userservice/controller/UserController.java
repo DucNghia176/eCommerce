@@ -2,7 +2,6 @@ package ecommerce.userservice.controller;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.UserResponse;
-import ecommerce.userservice.dto.request.UserRequest;
 import ecommerce.userservice.dto.request.UserUpdateRequest;
 import ecommerce.userservice.service.UserService;
 import jakarta.validation.Valid;
@@ -18,13 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    @PostMapping("register")
-    public ApiResponse<UserResponse> createUser(
-            @RequestPart("data") @Valid @ModelAttribute UserRequest request,
-            @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
-        return userService.createUser(request, avatar);
-    }
 
     @GetMapping
     public ApiResponse<UserResponse> getById() {
