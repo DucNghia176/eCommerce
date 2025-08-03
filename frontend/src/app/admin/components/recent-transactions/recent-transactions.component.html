@@ -1,0 +1,28 @@
+<div class="bg-white p-4 rounded-xl shadow border border-blue-100">
+  <h3 class="text-lg font-semibold mb-3">Recent Transactions</h3>
+  <table class="w-full text-sm">
+    <thead class="text-gray-500 border-b">
+    <tr>
+      <th class="text-left py-2">Name</th>
+      <th class="text-left py-2">Date</th>
+      <th class="text-left py-2">Amount</th>
+      <th class="text-left py-2">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let tx of transactions" class="border-b">
+      <td class="py-2">{{ tx.name }}</td>
+      <td class="py-2">{{ tx.date }}</td>
+      <td class="py-2">{{ tx.amount }}</td>
+      <td class="py-2">
+          <span [ngClass]="{
+            'text-green-600': tx.status === PaymentStatus.Paid,
+            'text-gray-600': tx.status === PaymentStatus.Pending,
+          }">
+            {{ tx.status }}
+          </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

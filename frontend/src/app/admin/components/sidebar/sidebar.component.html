@@ -1,0 +1,154 @@
+<aside class="w-64 bg-[#0D1B45] text-white h-screen flex flex-col">
+
+  <!-- MENU CHÍNH -->
+  <nav class="flex-1 overflow-y-auto px-4 mt-5">
+    <ul class="space-y-2 text-sm">
+      <!--      home-->
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="home" class="w-4"></fa-icon>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!--order-->
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/orders']"
+          class="flex items-center justify-between px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <div class="flex items-center gap-3">
+            <fa-icon [icon]="orders" class="w-4"></fa-icon>
+            Orders
+          </div>
+          <!--          số lượng-->
+          <!--          <span class="bg-gray-100 text-[#0D1B45] text-xs font-bold rounded-full px-2 py-0.5">16</span>-->
+        </a>
+      </li>
+
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/product']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="product" class="w-4"></fa-icon>
+          Products
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/category']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="category" class="w-4"></fa-icon>
+          Categories
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/customers']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="user" class="w-4"></fa-icon>
+          Customers
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/reports']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="reports" class="w-4"></fa-icon>
+          Reports
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/coupons']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="coupon" class="w-4"></fa-icon>
+          Coupons
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/inbox']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="inbox" class="w-4"></fa-icon>
+          Inbox
+        </a>
+      </li>
+
+      <!-- OTHER INFO -->
+      <li class="mt-6 text-xs uppercase text-gray-400">Other Information</li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/knowledge']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="know" class="w-4"></fa-icon>
+          Knowledge Base
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/product-updates']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="productUpdate" class="w-4"></fa-icon>
+          Product Updates
+        </a>
+      </li>
+
+      <!-- SETTINGS -->
+      <li class="mt-6 text-xs uppercase text-gray-400">Settings</li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/personal-settings']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="personal" class="w-4"></fa-icon>
+          Personal Settings
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="['/admin/global-settings']"
+          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
+          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+        >
+          <fa-icon [icon]="global" class="w-4"></fa-icon>
+          Global Settings
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
