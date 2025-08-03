@@ -4,31 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="sửa hàm">
-      <change afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/dto/request/PendingRegistration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/email/OtpStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/email/PendingRegistrationStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/EmailService.java" afterDir="false" />
+    <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="+email">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/model/response/ApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/model/response/ApiResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/filter/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/filter/JwtAuthenticationFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/impl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/impl/AuthServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/confirm-email/confirm-email.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/confirm-email/confirm-email.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/confirm-email/confirm-email.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/confirm-email/confirm-email.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/forgot-password/forgot-password.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/forgot-password/forgot-password.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/forgot-password/forgot-password.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/forgot-password/forgot-password.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/login/login.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/login/login.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/admin/admin.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/admin/admin.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/admin/components/user/user.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/admin/pages/user/user.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/admin/components/user/user.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/admin/pages/user/user.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/admin/components/user/user.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/admin/pages/user/user.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/login/login.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/register/register.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/register/register.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/register/register.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/register/register.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/register/register.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/register/register.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/user/user.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/user/user.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +35,7 @@
         <option value="Spring Service" />
         <option value="SCSS File" />
         <option value="Class" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -90,6 +77,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "HTTP Request.generated-requests | #1.executor": "Run",
     "HTTP Request.generated-requests | #10.executor": "Run",
     "HTTP Request.generated-requests | #11.executor": "Run",
@@ -141,7 +129,7 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "D:/eCommerce1/frontend/src/app/admin",
+    "last_opened_file_path": "D:/eCommerce1/frontend/src/assets",
     "list.type.of.created.stylesheet": "SCSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -172,18 +160,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\eCommerce1\frontend\src\assets" />
       <recent name="D:\eCommerce1\frontend\src\app\admin" />
       <recent name="D:\eCommerce1\frontend\src\app\models" />
       <recent name="D:\eCommerce1\backend\order-service\src\main\java\ecommerce\orderservice" />
       <recent name="D:\eCommerce1\backend\inventory-service\src\main\java\ecommerce\inventoryservice" />
-      <recent name="D:\eCommerce1\cart-service\src\main\java\ecommerce\cartservice" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\eCommerce1\frontend\src\app\admin\layout" />
+      <recent name="D:\eCommerce1\frontend\src\app\admin" />
+      <recent name="D:\eCommerce1\frontend\src\app\admin\pages" />
       <recent name="D:\eCommerce1\frontend\src\app\shared\status" />
       <recent name="D:\eCommerce1\frontend\src\app\core\models" />
-      <recent name="D:\eCommerce1\frontend\src\app\core\models\response" />
-      <recent name="D:\eCommerce1\frontend\src\app\auth" />
-      <recent name="D:\eCommerce1\frontend\src\app\core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="ecommerce.paymentservice.fitter" />
@@ -243,7 +231,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.UserServiceApplication">
+  <component name="RunManager" selected="npm.Angular CLI Server (frontend)">
     <configuration name="Angular Application (frontend)" type="JavascriptDebugType" uri="http://localhost:4200">
       <method v="2" />
     </configuration>
@@ -400,7 +388,8 @@
       <workItem from="1753970043316" duration="10820000" />
       <workItem from="1754031825404" duration="14407000" />
       <workItem from="1754056265594" duration="15531000" />
-      <workItem from="1754123730654" duration="24879000" />
+      <workItem from="1754123730654" duration="26661000" />
+      <workItem from="1754214343617" duration="10652000" />
     </task>
     <task id="LOCAL-00001" summary="no">
       <option name="closed" value="true" />
@@ -738,7 +727,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754142211008</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="+email">
+      <option name="closed" value="true" />
+      <created>1754159142542</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1754159142542</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -779,7 +776,8 @@
     <MESSAGE value="auth" />
     <MESSAGE value="ko dùng" />
     <MESSAGE value="sửa hàm" />
-    <option name="LAST_COMMIT_MESSAGE" value="sửa hàm" />
+    <MESSAGE value="+email" />
+    <option name="LAST_COMMIT_MESSAGE" value="+email" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
