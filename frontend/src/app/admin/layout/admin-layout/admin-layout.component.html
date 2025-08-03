@@ -1,0 +1,12 @@
+<!-- NAVBAR: luôn nằm trên cùng -->
+<app-navbar></app-navbar>
+
+<!-- WRAPPER FLEX -->
+<div class="flex h-[calc(100vh-64px)]"> <!-- giả sử navbar cao 64px (h-16) -->
+  <!-- SIDEBAR: bên trái -->
+  <app-sidebar></app-sidebar>
+
+  <main class="flex-1 bg-gray-100 overflow-auto p-6">
+    <router-outlet></router-outlet>
+  </main>
+</div>
