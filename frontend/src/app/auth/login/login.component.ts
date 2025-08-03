@@ -41,7 +41,7 @@ export class LoginComponent {
           const role = payload.role;
 
           if (role === 'ADMIN') {
-            this.router.navigate(['/admin/userAdmin']);
+            this.router.navigate(['/admin']);
           } else {
             this.router.navigate(['/users']);
           }

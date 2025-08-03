@@ -1,5 +1,5 @@
 import {Routes} from '@angular/router';
-import {UserAdminComponent} from "../admin/components/user/user.component";
+import {UserAdminComponent} from "../admin/pages/user/user.component";
 
 export const userRoutes: Routes = [{
   path: '',
