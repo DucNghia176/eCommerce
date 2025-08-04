@@ -43,6 +43,5 @@ export class SidebarComponent {
   isActive(path: string): string {
     return this.router.url.startsWith(path) ?
       'bg-white text-[#0D1B45] font-semibold' : '';
-
   }
 }

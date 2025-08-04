@@ -5,6 +5,7 @@ import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.UserResponse;
 import ecommerce.aipcommon.model.status.RoleStatus;
 import ecommerce.userservice.dto.request.UserUpdateRequest;
+import ecommerce.userservice.dto.respone.CountResponse;
 import ecommerce.userservice.entity.Users;
 import ecommerce.userservice.kafka.KafkaUser;
 import ecommerce.userservice.mapper.UserMapper;
@@ -13,11 +14,13 @@ import ecommerce.userservice.service.CloudinaryService;
 import ecommerce.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -189,25 +192,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<List<UserResponse>> getAllUsers() {
+    public ApiResponse<Page<UserResponse>> getAllUsers(int page, int size, Integer isLock) {
         try {
-            List<Users> usersList = userRepository.findAll();
-            List<UserResponse> responses = usersList.stream()
-                    .map(userMapper::toResponse)
-                    .toList();
-            return ApiResponse.<List<UserResponse>>builder()
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Users> usersPage;
+
+            // Nếu có lọc theo isLock
+            if (isLock == null) {
+                usersPage = userRepository.findAll(pageable);
+            } else {
+                usersPage = userRepository.findByIsLock(isLock, pageable);
+            }
+
+            Page<UserResponse> responses = usersPage.map(userMapper::toResponse);
+
+            return ApiResponse.<Page<UserResponse>>builder()
                     .code(200)
                     .message("Lấy danh sách người dùng thành công")
                     .data(responses)
                     .build();
+
         } catch (Exception e) {
             log.error("Lỗi khi lấy danh sách người dùng: {}", e.getMessage(), e);
-            return ApiResponse.<List<UserResponse>>builder()
+            return ApiResponse.<Page<UserResponse>>builder()
                     .code(500)
                     .message("Đã xảy ra lỗi khi lấy danh sách người dùng")
                     .data(null)
                     .build();
         }
+    }
+
+
+    public ApiResponse<CountResponse> count() {
+        Object[] result = (Object[]) userRepository.countUsersStatus();
+        Long all = ((Number) result[0]).longValue();
+        Long active = ((Number) result[1]).longValue();
+        Long inactive = ((Number) result[2]).longValue();
+
+        CountResponse count = CountResponse.builder()
+                .all(all)
+                .active(active)
+                .inactive(inactive)
+                .build();
+
+        return ApiResponse.<CountResponse>builder()
+                .code(200)
+                .message("Lấy dữ liệu thành công")
+                .data(count)
+                .build();
     }
 
 }

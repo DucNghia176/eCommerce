@@ -1,17 +1,30 @@
 <div class="min-h-screen flex items-center justify-center bg-gray-50">
   <div class="bg-white border border-blue-300 rounded-lg p-8 w-full max-w-md shadow-md">
-    <h1 class="font-bold text-2xl text-center text-gray-900">Confirm Email</h1>
-    <p class="text-center text-gray-600 mt-1 text-sm">Check Your Email and Enter Confirmation Code</p>
+    <h1 class="font-bold text-2xl text-center text-gray-900">Xác nhận email</h1>
+    <p class="text-center text-gray-600 mt-1 text-sm">
+      Vui lòng kiểm tra email và nhập mã xác nhận
+    </p>
 
+    <!-- Thông báo lỗi -->
+    <div *ngIf="errorMessage" class="text-red-500 text-sm text-center mt-2">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Thông báo thành công -->
+    <div *ngIf="resendSuccess" class="text-green-600 text-sm text-center mt-2">
+      {{ resendSuccess }}
+    </div>
+
+    <!-- Form nhập mã -->
     <form (ngSubmit)="confirmEmail()" class="mt-8 space-y-4">
       <div>
-        <label class="text-sm block font-medium text-gray-500" for="code">Confirmation Code</label>
+        <label class="text-sm block font-medium text-gray-500" for="code">Mã xác nhận</label>
         <input
           [(ngModel)]="code"
           class="mt-1 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block w-full border border-gray-300 rounded-md"
           id="code"
           name="code"
-          placeholder="Enter Code"
+          placeholder="Nhập mã"
           required
           type="text"
         >
@@ -19,23 +32,39 @@
 
       <button
         class="w-full bg-indigo-950 text-white font-semibold py-2 rounded-md hover:bg-indigo-800 transition duration-300"
-        type="submit">
-        Confirm Email
+        type="submit"
+      >
+        Xác nhận email
       </button>
     </form>
 
+    <!-- Gửi lại mã -->
     <div class="mt-9">
       <hr class="my-5 border-gray-300">
-      <span class="block text-gray-500 text-center ">Haven't received your code?</span>
+      <span class="block text-gray-500 text-center">Không nhận được mã?</span>
     </div>
 
-    <form (ngSubmit)="resendCode()" class="mt-8 space-y-4">
+    <form (ngSubmit)="resendCode()" class="mt-6 space-y-4">
       <button
-        class="w-full mt-5 border border-gray-400 px-4 py-2 bg-white text-blue-700 font-semibold rounded-md hover:bg-gray-200 transition duration-300"
+        [disabled]="resendCooldown > 0"
+        class="w-full border border-gray-400 px-4 py-2 bg-white text-blue-700 font-semibold rounded-md hover:bg-gray-200 transition duration-300"
         type="submit"
       >
-        Resend Code
+        Gửi lại mã
+        <span *ngIf="resendCooldown > 0"> ({{ resendCooldown }}s)</span>
       </button>
     </form>
   </div>
+</div>
+
+<!-- Toast Notification -->
+<div
+  *ngIf="toastMessage"
+  [ngClass]="{
+    'bg-green-500': toastType === 'success',
+    'bg-red-500': toastType === 'error'
+  }"
+  class="fixed bottom-5 left-5 max-w-xs w-full px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium animate-fade"
+>
+  {{ toastMessage }}
 </div>

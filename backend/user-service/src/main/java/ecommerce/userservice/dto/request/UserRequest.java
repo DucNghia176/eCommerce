@@ -1,10 +1,7 @@
 package ecommerce.userservice.dto.request;
 
 import ecommerce.aipcommon.model.status.GenderStatus;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -29,6 +26,7 @@ public class UserRequest {
     @NotBlank(message = "Email không được trống")
     @Email(message = "Email phải đúng định dạng")
     private String email;
+    @NotNull(message = "Giới tính không được để trống")
     private GenderStatus gender;
     private LocalDate dateOfBirth;
 }

@@ -1,11 +1,11 @@
 import {Routes} from '@angular/router';
-import {UserAdminComponent} from "../admin/pages/user/user.component";
+import {HomeComponent} from "./pages/home/home.component";
 
 export const userRoutes: Routes = [{
   path: '',
   canActivate: [],
   children: [
-    {path: 'userAdmin', component: UserAdminComponent},
-    {path: '**', redirectTo: ''}
+    {path: '', component: HomeComponent},
+    {path: '**', redirectTo: '', pathMatch: 'full'}
   ]
 }];

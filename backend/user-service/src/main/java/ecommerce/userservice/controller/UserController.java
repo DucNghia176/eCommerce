@@ -3,13 +3,13 @@ package ecommerce.userservice.controller;
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.UserResponse;
 import ecommerce.userservice.dto.request.UserUpdateRequest;
+import ecommerce.userservice.dto.respone.CountResponse;
 import ecommerce.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -25,7 +25,7 @@ public class UserController {
 
     @PutMapping("update")
     public ApiResponse<UserResponse> updateUser(
-            @RequestPart("data") @Valid @ModelAttribute UserUpdateRequest request,
+            @RequestPart("data") @Valid UserUpdateRequest request,
             @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
         return userService.updateUser(request, avatar);
     }
@@ -41,7 +41,16 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ApiResponse<List<UserResponse>> getAllUsers() {
-        return userService.getAllUsers();
+    public ApiResponse<Page<UserResponse>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer isLock
+    ) {
+        return userService.getAllUsers(page, size, isLock);
+    }
+
+    @GetMapping("/count")
+    public ApiResponse<CountResponse> count() {
+        return userService.count();
     }
 }

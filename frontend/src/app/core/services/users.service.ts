@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {catchError, map, Observable, throwError} from 'rxjs';
-import {UserResponse} from '../models/user.model';
+import {CountResponse, UserResponse, UserUpdateRequest} from '../models/user.model';
 import {ApiResponse} from "../models/common.model";
+import {Page} from "../models/page.model";
 
 @Injectable({
   providedIn: 'root'
@@ -13,16 +14,96 @@ export class UsersService {
   constructor(private http: HttpClient) {
   }
 
-  getAllUsers(): Observable<UserResponse[]> {
-    return this.http.get<ApiResponse<UserResponse[]>>(`${this.apiUrl}/all`)
+  getUserById(): Observable<UserResponse> {
+    return this.http.get<ApiResponse<UserResponse>>(`${this.apiUrl}`)
       .pipe(
         map(response => {
           if (response.code === 200 && response.data) {
             return response.data;
           }
-          throw new Error(response.message || 'Something went wrong');
+          throw new Error(response.message);
         }), catchError(this.handleError)
-      );
+      )
+  }
+
+  getAllUsers(page: number = 0, size: number = 10, isLock?: number): Observable<Page<UserResponse>> {
+    // Dùng object rỗng rồi thêm params nếu có
+    const params: any = {
+      page: page,
+      size: size,
+    };
+
+    if (isLock !== undefined && isLock !== null) {
+      params.isLock = isLock;
+    }
+
+    return this.http.get<ApiResponse<Page<UserResponse>>>(`${this.apiUrl}/all`, {
+      params
+    }).pipe(
+      map(response => {
+        if (response.code === 200 && response.data) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Something went wrong');
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+
+  updateUser(request: UserUpdateRequest, avatar ?: File): Observable<UserResponse> {
+    const formData = new FormData();
+
+    formData.append('data', new Blob([JSON.stringify(request)], {type: 'application/json'}));
+    if (avatar) {
+      formData.append('avatar', avatar);
+    }
+
+    return this.http.put<ApiResponse<UserResponse>>(`${this.apiUrl}/update`, formData)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data;
+          }
+          throw new Error(response.message || 'Cập nhật thất bại');
+        }), catchError(this.handleError)
+      )
+  }
+
+  toggleLock(id: string): Observable<UserResponse> {
+    return this.http.put<ApiResponse<UserResponse>>(`${this.apiUrl}/toggle/lock/${id}`, null)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data;
+          }
+          throw new Error(response.message || 'Đổi trạng thái thất bại');
+        }), catchError(this.handleError)
+      )
+  }
+
+  toggleRole(id: string): Observable<UserResponse> {
+    return this.http.put<ApiResponse<UserResponse>>(`${this.apiUrl}/toggle/role/${id}`, null)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data;
+          }
+          throw new Error(response.message || 'Đổi quyền thất bại');
+        }), catchError(this.handleError)
+      )
+  }
+
+  count(): Observable<CountResponse> {
+    return this.http.get<ApiResponse<CountResponse>>(`${this.apiUrl}/count`)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data;
+          }
+          throw new Error(response.message || 'Không thể lấy dữ liệu thống kê người dùng');
+        })
+      )
   }
 
   private handleError(error: any): Observable<never> {
