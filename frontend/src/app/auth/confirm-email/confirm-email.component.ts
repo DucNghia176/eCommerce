@@ -3,6 +3,7 @@ import {FormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../core/services/auth.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-confirm-email',
@@ -16,8 +17,13 @@ export class ConfirmEmailComponent {
   email: string = '';
   flow: 'register' | 'forgot' = 'register';
   errorMessage: string | null = null;
+  resendSuccess = '';
+  resendCooldown = 0;
+  toastMessage: string | null = null;
+  toastType: 'success' | 'error' | null = null;
+  resendInterval: any;
 
-  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private toastr: ToastrService) {
     this.route.queryParams.subscribe(params => {
       this.email = params['email'] || '';
       this.flow = params['flow'] || 'register';
@@ -27,6 +33,7 @@ export class ConfirmEmailComponent {
   confirmEmail() {
     if (!this.code || !this.email) {
       this.errorMessage = 'Thiếu mã xác thực';
+      this.toastr.error(this.errorMessage)
       return;
     }
 
@@ -38,14 +45,35 @@ export class ConfirmEmailComponent {
   }
 
   resendCode() {
+    if (this.resendCooldown > 0) return;
+
     this.authService.sendOtp(this.email).subscribe({
       next: () => {
-        alert('Gửi lại email thành công.');
+        this.toastr.success('Mã xác nhận đã được gửi lại thành công!')
+        this.resendSuccess = 'Mã xác nhận đã được gửi lại!';
+        this.errorMessage = null;
+        this.startCooldown();
       },
       error: (err: any) => {
         this.errorMessage = err.message || 'Gửi mã email thất bại.';
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.resendInterval) {
+      clearInterval(this.resendInterval);
+    }
+  }
+
+  startCooldown() {
+    this.resendCooldown = 60; // 60 giây đếm ngược
+    this.resendInterval = setInterval(() => {
+      this.resendCooldown--;
+      if (this.resendCooldown === 0) {
+        clearInterval(this.resendInterval);
+      }
+    }, 1000);
   }
 
   private confirmRegister() {
@@ -73,5 +101,4 @@ export class ConfirmEmailComponent {
       }
     });
   }
-
 }

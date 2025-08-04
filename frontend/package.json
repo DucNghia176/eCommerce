@@ -10,7 +10,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^17.3.0",
+    "@angular/animations": "^17.3.12",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",
     "@angular/core": "^17.3.0",
@@ -22,6 +22,10 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@garygrossgarten/ng-add-tailwind": "^0.1.2",
+    "apexcharts": "^3.54.1",
+    "chart.js": "^4.5.0",
+    "ng-apexcharts": "^1.7.4",
+    "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"

@@ -3,9 +3,9 @@ package ecommerce.userservice.service;
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.UserResponse;
 import ecommerce.userservice.dto.request.UserUpdateRequest;
+import ecommerce.userservice.dto.respone.CountResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 
 public interface UserService {
@@ -17,5 +17,7 @@ public interface UserService {
 
     ApiResponse<UserResponse> toggleUserRole(Long id);
 
-    ApiResponse<List<UserResponse>> getAllUsers();
+    ApiResponse<Page<UserResponse>> getAllUsers(int page, int size, Integer isLock);
+
+    ApiResponse<CountResponse> count();
 }

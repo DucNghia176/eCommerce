@@ -5,6 +5,7 @@ import {Router, RouterModule} from "@angular/router";
 import {AuthService} from "../../core/services/auth.service";
 import {AuthRequest} from "../../core/models/auth.model";
 import {validateAndFocusFirstError} from "../../shared/utils/validation";
+import {Role} from "../../shared/status/role";
 
 @Component({
   selector: 'app-login',
@@ -40,7 +41,7 @@ export class LoginComponent {
           const payload = JSON.parse(atob(token.split('.')[1]));
           const role = payload.role;
 
-          if (role === 'ADMIN') {
+          if (role === Role.admin) {
             this.router.navigate(['/admin']);
           } else {
             this.router.navigate(['/users']);

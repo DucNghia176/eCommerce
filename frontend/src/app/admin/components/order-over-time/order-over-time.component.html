@@ -1,4 +1,11 @@
 <div class="bg-white p-4 rounded-xl shadow border border-blue-100">
-  <h3 class="text-lg font-semibold mb-2">Orders Over Time</h3>
-  <canvas id="ordersChart"></canvas>
+  <apx-chart
+    [chart]="chartOptions.chart!"
+    [dataLabels]="chartOptions.dataLabels"
+    [grid]="chartOptions.grid"
+    [series]="chartOptions.series"
+    [stroke]="chartOptions.stroke"
+    [title]="chartOptions.title"
+    [xaxis]="chartOptions.xaxis"
+  ></apx-chart>
 </div>

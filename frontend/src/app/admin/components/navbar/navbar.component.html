@@ -8,33 +8,58 @@
 
     <!-- Search box -->
     <div class="relative text-gray-400">
+      <fa-icon [icon]="search" class="absolute top-2.5 left-3 text-gray-400"></fa-icon>
       <input
         class="bg-[#13214b] text-white rounded-md py-1.5 px-3 pl-9 w-64 focus:outline-none focus:ring focus:ring-blue-500"
         placeholder="Search..."
         type="text"/>
-      <i class="fas fa-search absolute top-2.5 left-3 text-gray-400"></i>
     </div>
   </div>
 
   <!-- Icons + User -->
   <div class="flex items-center gap-6">
-    <!-- Notifications -->
-    <button class="text-lg hover:text-blue-400">
-      <i class="fas fa-bell"></i>
-    </button>
-
     <!-- Chat or Message -->
     <button class="text-lg hover:text-blue-400">
-      <i class="fas fa-comment-alt"></i>
+      <fa-icon [icon]="message" class="text-gray-400"></fa-icon>
+    </button>
+
+    <!-- Notifications -->
+    <button class="text-lg hover:text-blue-400">
+      <fa-icon [icon]="notification" class="text-gray-400"></fa-icon>
     </button>
 
     <!-- User Avatar -->
-    <div class="flex items-center gap-2">
-      <div class="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
-        R
+    <div *ngIf="user" class="flex items-center gap-2 group relative">
+      <button (click)="toggleDropdown()" class="flex items-center gap-2 focus:outline-none">
+        <div
+          [ngClass]="user.avatar ? '' : 'bg-blue-500 text-white'"
+          class=" text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+        >
+          <img
+            [ngSrc]="user.avatar"
+            alt="avatar" class="rounded-full object-cover"
+            height="50"
+            width="50"
+          >
+          <span *ngIf="!user.avatar">{{ user.fullName.charAt(0) }}</span>
+        </div>
+        <span class="text-sm">{{ user.fullName }}</span>
+
+
+        <fa-icon [icon]="dowm" class="text-xs"></fa-icon>
+      </button>
+
+      <div
+        *ngIf="dropdownOpen"
+        class="absolute right-0 top-10 bg-white text-black rounded shadow-md w-32 z-50 animate-fade-in"
+      >
+        <button
+          (click)="logout()"
+          class="block w-full text-left px-4 py-2 hover:bg-gray-100"
+        >
+          Logout
+        </button>
       </div>
-      <span class="text-sm">Randhir kumar</span>
-      <i class="fas fa-chevron-down text-xs"></i>
     </div>
   </div>
 </nav>

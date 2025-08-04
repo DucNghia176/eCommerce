@@ -86,10 +86,11 @@
 
       <!-- Giới tính -->
       <div>
-        <label class="block text-sm font-medium text-gray-700">Giới tính</label>
+        <label class="block text-sm font-medium text-gray-700 label-required">Giới tính</label>
         <div class="mt-1 flex gap-4">
           <label class="inline-flex items-center">
             <input
+              #genderRef="ngModel"
               [(ngModel)]="gender"
               [value]=Gender.NAM
               class="text-blue-600"
@@ -104,10 +105,15 @@
               [value]=Gender.NU
               class="text-blue-600"
               name="gender"
+              required
               type="radio"
             />
             <span class="ml-2">Nữ</span>
           </label>
+
+          <div *ngIf="genderRef.invalid && genderRef.touched" class="text-red-600 text-sm mt-1">
+            Vui lòng chọn giới tính để tiếp tục.
+          </div>
         </div>
       </div>
 

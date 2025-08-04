@@ -3,9 +3,9 @@ import {CommonModule} from "@angular/common";
 import {FormsModule, NgForm} from "@angular/forms";
 import {AuthService} from "../../core/services/auth.service";
 import {Router, RouterModule} from "@angular/router";
-import {UserRequest} from "../../core/models/user.model";
 import {validateAndFocusFirstError} from "../../shared/utils/validation";
 import {Gender} from "../../shared/status/gender";
+import {RegisterRequest} from "../../core/models/auth.model";
 
 @Component({
   selector: 'app-register',
@@ -44,13 +44,10 @@ export class RegisterComponent {
     }
   }
 
-  register(form: NgForm) {
-    console.log('✅ Hàm register đã được gọi');
-    console.log('Form valid:', form.valid);
-    console.log('Form values:', form.value);
+  register(form: NgForm,) {
     if (!validateAndFocusFirstError(form, this.formRef)) return;
 
-    const request: UserRequest = {
+    const request: RegisterRequest = {
       username: this.username,
       password: this.password,
       fullName: this.fullName,

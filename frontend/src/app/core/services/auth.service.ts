@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, catchError, map, Observable, throwError} from "rxjs";
 import {ApiResponse} from "../models/common.model";
-import {AuthRequest} from "../models/auth.model";
-import {UserRequest, UserResponse} from "../models/user.model";
+import {AuthRequest, RegisterRequest} from "../models/auth.model";
+import {UserResponse} from "../models/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,7 @@ export class AuthService {
     this.clearToken();
   }
 
-  register(request: UserRequest, avatar ?: File): Observable<ApiResponse<UserResponse>> {
+  register(request: RegisterRequest, avatar ?: File): Observable<ApiResponse<UserResponse>> {
     const formData = new FormData();
 
     formData.append('data', new Blob([JSON.stringify(request)], {type: 'application/json'}));

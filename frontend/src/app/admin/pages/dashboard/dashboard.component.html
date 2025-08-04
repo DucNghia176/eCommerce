@@ -1,9 +1,31 @@
-<!-- dashboard.component.html -->
-<h1 class="text-xl font-bold mb-4">Dashboard</h1>
-
 <!-- Top stats -->
 <div class="grid grid-cols-4 gap-4 mb-6">
-  <app-revenue-card growth="22.45%" title="Total Revenue" value="$10.54"></app-revenue-card>
-  <app-revenue-card growth="15.34%" title="Orders" value="1,056"></app-revenue-card>
-  ...
+  <app-revenue-card
+    *ngFor="let stat of stats"
+    [growth]="stat.growth"
+    [title]="stat.title"
+    [value]="stat.value">
+  </app-revenue-card>
+</div>
+
+<!-- Orders Chart -->
+<app-order-over-time
+  [data21]="data21"
+  [data22]="data22"
+  [labels]="labels">
+</app-order-over-time>
+
+<!-- Transactions + Top Products -->
+<div class="grid grid-cols-2 gap-4 mt-6">
+  <app-recent-transactions
+    [transactions]="transactions"
+  >
+
+  </app-recent-transactions>
+
+  <app-top-product
+    [products]="topProducts"
+  >
+
+  </app-top-product>
 </div>

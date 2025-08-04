@@ -1,1 +1,103 @@
-<p>products works!</p>
+<!--header-->
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold">Khách hàng</h1>
+  <div class="flex gap-2">
+    <button class="bg-white text-blue-500 border px-4 py-2 rounded">
+      <fa-icon [icon]="faFileExport"></fa-icon>
+      <span class="ml-2">Xuất file Exel</span>
+    </button>
+    <button class="bg-blue-600 text-white border px-4 py-2 rounded">
+      <fa-icon [icon]="faAdd"></fa-icon>
+      <span class="ml-2">Thêm khách hàng</span>
+    </button>
+  </div>
+</div>
+
+<div class="flex justify-between items-center mb-4 mt-4">
+  <div class="flex items-center gap-2 w-auto">
+    <fa-icon
+      [icon]="faSearch"
+      class="absolute ml-3 text-gray-800 text-sm"
+    ></fa-icon>
+    <input
+      class="pl-10 border px-3 py-2 rounded pr-3"
+      placeholder="Tìm kiếm..."
+      type="text"
+    />
+  </div>
+
+  <button class=" text-red-600 px-4 py-2 rounded ml-2">
+    <fa-icon [icon]="faTrash"></fa-icon>
+  </button>
+</div>
+
+<table class="w-full text-sm text-left border-t">
+  <thead>
+  <tr class="border-gray-200 text-gray-600 items-center">
+    <th><input type="checkbox"/></th>
+    <th class="p-2">Tên đăng nhập</th>
+    <th class="p-2">Email</th>
+    <th class="p-2">Họ tên</th>
+    <th class="p-2">Ngày sinh</th>
+    <th class="p-2">Giới tính</th>
+    <th class="p-2">Vai trò</th>
+    <th class="p-2">Trạng thái</th>
+  </tr>
+  </thead>
+  <tbody>
+  <ng-container *ngIf="users.length > 0; else noData">
+    <tr *ngFor="let user of users" class="border-b border-gray-200">
+      <td><input type="checkbox"/></td>
+      <td class="p-2 flex items-center gap-2">
+        <ng-container *ngIf="user.avatar; else noAvatar">
+          <img
+            [src]="user.avatar"
+            alt="avatar"
+            class="w-8 h-8 rounded-full object-cover"
+          />
+        </ng-container>
+        <ng-template #noAvatar>
+          <div
+            class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold"
+          >
+            {{ user.fullName.charAt(0).toUpperCase() }}
+          </div>
+        </ng-template>
+        <span>{{ user.username }}</span>
+      </td>
+      <td class="p-2">{{ user.email }}</td>
+      <td class="p-2">{{ user.fullName }}</td>
+      <td class="p-2">{{ user.dateOfBirth }}</td>
+      <td class="p-2">{{ user.gender }}</td>
+      <td class="p-2 ">{{ user.role }}</td>
+      <td class="p-2 flex justify-center items-center">
+        <fa-icon
+          (click)="toggleLock(user.id.toString())"
+          [icon]="user.isLock === 1 ? faLock : faUnlock"
+          [ngClass]="{
+              'text-red-500': user.isLock === 1,
+              'text-green-500': user.isLock === 0,
+              'cursor-pointer': true
+            }"
+        ></fa-icon>
+      </td>
+    </tr>
+  </ng-container>
+  <ng-template #noData>
+    <tr>
+      <td class="text-center text-gray-500 py-4" colspan="8">
+        Không có dữ liệu người dùng
+      </td>
+    </tr>
+  </ng-template>
+  </tbody>
+</table>
+
+<app-page
+  (pageChange)="loadUser($event.page)"
+  (pageSizeChange)="onPageSizeChange($event)"
+  [currentPage]="currentPage"
+  [pageSize]="pageSize"
+  [pageSizes]="pageSizes"
+  [totalItems]="totalItems"
+></app-page>
