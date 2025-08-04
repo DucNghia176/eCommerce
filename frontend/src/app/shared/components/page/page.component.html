@@ -1,0 +1,67 @@
+<div class="flex justify-between items-center mt-4 text-sm text-gray-700">
+  <!-- Pagination Summary -->
+  <div>
+    {{ currentPage * pageSize + 1 }} -
+    {{ Math.min((currentPage + 1) * pageSize, totalItems) }}
+    / {{ totalItems }} bản ghi
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="flex items-center space-x-1">
+    <!-- First page -->
+    <button
+      (click)="changePage(0)"
+      [disabled]="currentPage === 0"
+      class="px-2 py-1 border rounded hover:bg-gray-100
+             disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+      «
+    </button>
+
+    <!-- Previous page -->
+    <button
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 0"
+      class="px-2 py-1 border rounded hover:bg-gray-100
+             disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+      <
+    </button>
+
+    <!-- Hiển thị danh sách số trang -->
+    <ng-container *ngFor="let page of pageNumbers">
+      <button
+        (click)="changePage(page)"
+        [class.bg-blue-600]="page === currentPage"
+        [class.text-gray-700]="page !== currentPage"
+        [class.text-white]="page === currentPage"
+        class="px-3 py-1 rounded border hover:bg-gray-100">
+        {{ page + 1 }}
+      </button>
+    </ng-container>
+
+    <!-- Next page -->
+    <button
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage >= totalPages - 1"
+      class="px-2 py-1 border rounded hover:bg-gray-100
+             disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+      >
+    </button>
+
+    <!-- Last page -->
+    <button
+      (click)="changePage(totalPages - 1)"
+      [disabled]="currentPage >= totalPages - 1"
+      class="px-2 py-1 border rounded hover:bg-gray-100
+             disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+      »
+    </button>
+
+    <!-- Page size select -->
+    <select
+      (change)="onPageSizeChange($event)"
+      [value]="pageSize"
+      class="ml-2 border px-2 py-1 rounded">
+      <option *ngFor="let size of pageSizes" [value]="size">{{ size }}/Trang</option>
+    </select>
+  </div>
+</div>
