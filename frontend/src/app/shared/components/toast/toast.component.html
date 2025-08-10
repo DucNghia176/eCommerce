@@ -1,0 +1,18 @@
+<div class="fixed bottom-4 right-4 space-y-2 z-50 w-60">
+  <div
+    *ngFor="let toast of toasts"
+    [ngClass]="{
+      'bg-green-500': toast.type === 'p',
+      'bg-red-500': toast.type === 'f'
+    }"
+    class="relative text-white px-3 py-4 rounded shadow animate-fade-in-out text-sm flex justify-between items-start"
+  >
+    <span>{{ toast.message }}</span>
+    <button
+      (click)="closeToast(toast.id)"
+      class="ml-4 text-white hover:opacity-80"
+    >
+      <fa-icon [icon]="faClose"></fa-icon>
+    </button>
+  </div>
+</div>
