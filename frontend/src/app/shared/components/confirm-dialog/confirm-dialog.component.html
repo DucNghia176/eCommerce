@@ -1,0 +1,27 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+  <div class="bg-white rounded-lg p-4 w-96 shadow-lg relative">
+    <h2 class="text-2xl font-bold mb-4 text-gray-800" mat-dialog-title>
+      {{ data.title }}
+    </h2>
+
+    <mat-dialog-content>
+      <p class="text-gray-600">{{ data.message }}</p>
+    </mat-dialog-content>
+
+    <div class="flex justify-center mt-4 gap-4">
+      <button
+        (click)="close(false)"
+        class="px-4 py-2 border border-gray-300 flex items-center rounded-lg hover:bg-gray-100 hover:text-gray-800 transition duration-200"
+      >
+        Hủy
+      </button>
+
+      <button
+        (click)="close(true)"
+        class="px-4 py-2 flex items-center border rounded-lg bg-blue-600 text-white hover:bg-gray-100  hover:text-gray-800 transition duration-200"
+      >
+        {{ data.type === 'add' ? 'Lưu thông tin' : 'Xóa thông tin' }}
+      </button>
+    </div>
+  </div>
+</div>
