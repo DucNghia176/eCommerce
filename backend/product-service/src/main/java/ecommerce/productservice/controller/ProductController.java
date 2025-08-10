@@ -7,6 +7,7 @@ import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,13 +15,14 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/create")
-    public ApiResponse<ProductResponse> createProduct(@RequestPart("data") @ModelAttribute ProductRequest request,
+    public ApiResponse<ProductResponse> createProduct(@RequestPart("data") ProductRequest request,
                                                       @RequestPart(value = "images", required = false) List<MultipartFile> images) {
         return productService.createProduct(request, images);
     }
@@ -49,8 +51,11 @@ public class ProductController {
     }
 
     @GetMapping
-    public ApiResponse<List<ProductResponse>> getAllProduct() {
-        return productService.getAllProduct();
+    public ApiResponse<Page<ProductResponse>> getAllProduct(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return productService.getAllProduct(page, size);
     }
 
     @PostMapping("search")

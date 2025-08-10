@@ -135,6 +135,7 @@
         <label class="block text-sm font-medium text-gray-700" for="avatar">Ảnh đại diện (tùy chọn)</label>
         <input
           (change)="onFileSelected($event)"
+          [ngModel]="avatar"
           accept="image/*"
           class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-white focus:outline-none"
           id="avatar"
@@ -185,3 +186,6 @@
     </div>
   </div>
 </div>
+
+<app-toast></app-toast>
+

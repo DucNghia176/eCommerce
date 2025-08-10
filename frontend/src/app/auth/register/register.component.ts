@@ -6,11 +6,13 @@ import {Router, RouterModule} from "@angular/router";
 import {validateAndFocusFirstError} from "../../shared/utils/validation";
 import {Gender} from "../../shared/status/gender";
 import {RegisterRequest} from "../../core/models/auth.model";
+import {ToastComponent} from "../../shared/components/toast/toast.component";
+import {ToastService} from "../../core/services/toast.service";
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ToastComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -22,13 +24,12 @@ export class RegisterComponent {
   gender?: Gender;
   dateOfBirth?: Date;
   avatar?: File;
-  errorMessages: string | null = null;
   today = new Date().toISOString().split('T')[0]
   avatarPreview?: string;
   @ViewChild('formRef') formRef!: ElementRef;
   protected readonly Gender = Gender;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router, private toastService: ToastService) {
   }
 
 
@@ -58,13 +59,11 @@ export class RegisterComponent {
 
     this.authService.register(request, this.avatar).subscribe({
       next: () => {
-        console.log('Gửi thành công');
-        alert('Đăng ký thành công, gửi OTP...');
-        console.log('Gọi sendOtpAndRedirect');
+        this.toastService.show("Đăng ký thành công.", "p")
         this.sendOtpAndRedirect();
       },
       error: (err) => {
-        this.errorMessages = err.message || 'Đăng ký thất bại';
+        this.toastService.show(`Đăng ký thất bại + ${err.message}`, "f")
       }
     });
   }
@@ -72,13 +71,12 @@ export class RegisterComponent {
   sendOtpAndRedirect() {
     this.authService.sendOtp(this.email).subscribe({
       next: () => {
-        console.log('Gửi OTP thành công');
         this.router.navigate(['/auth/confirm'], {
           queryParams: {email: this.email, flow: 'register'}
         });
       },
       error: (err) => {
-        this.errorMessages = 'Gửi OTP thất bại: ' + err.message;
+        this.toastService.show("Gửi OTP thất bại: " + err.message, "f");
       }
     });
   }

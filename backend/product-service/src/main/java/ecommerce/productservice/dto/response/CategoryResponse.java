@@ -12,4 +12,5 @@ public class CategoryResponse {
     private String name;
     private Long parentId;
     private Integer isActive;
+    private String image;
 }

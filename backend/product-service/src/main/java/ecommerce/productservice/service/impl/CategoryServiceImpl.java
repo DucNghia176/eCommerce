@@ -8,6 +8,7 @@ import ecommerce.productservice.entity.Category;
 import ecommerce.productservice.mapper.CategoryMapper;
 import ecommerce.productservice.repository.CategoryRepository;
 import ecommerce.productservice.service.CategoryService;
+import ecommerce.productservice.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     public ApiResponse<CategoryResponse> createCategory(CategoryRequest request) {
@@ -32,9 +34,17 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             Category category = categoryMapper.toEntity(request);
+
+
             category.setParent(parent);
             Category saved = categoryRepository.save(category);
 
+            if (request.getImage() != null && !request.getImage().isEmpty()) {
+                String url = cloudinaryService.uploadFileProduct(request.getImage(), category.getId());
+                category.setImage(url);
+                categoryRepository.save(category);
+
+            }
             CategoryResponse response = categoryMapper.toResponse(saved);
 
             return ApiResponse.<CategoryResponse>builder()

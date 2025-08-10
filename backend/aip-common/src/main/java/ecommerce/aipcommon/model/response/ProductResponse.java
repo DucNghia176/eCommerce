@@ -23,6 +23,7 @@ public class ProductResponse {
     String categoryName;
     String brandId;
     String unit;
+    int quantity;
     Integer isActive;
     List<String> tags;
     List<String> imageUrls;

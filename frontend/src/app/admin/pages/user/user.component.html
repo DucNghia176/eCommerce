@@ -52,7 +52,13 @@
 <table class="w-full text-sm text-left border-t">
   <thead>
   <tr class="border-gray-200 text-gray-600 items-center">
-    <th><input type="checkbox"/></th>
+    <th>
+      <input
+        (change)="onCheckboxAll($event)"
+        [checked]="selectionService.isAllSelected"
+        type="checkbox"
+      />
+    </th>
     <th class="p-2">Tên đăng nhập</th>
     <th class="p-2">Email</th>
     <th class="p-2">Họ tên</th>
@@ -65,7 +71,13 @@
   <tbody>
   <ng-container *ngIf="users.length > 0; else noData">
     <tr *ngFor="let user of users" class="border-b border-gray-200">
-      <td><input type="checkbox"/></td>
+      <td>
+        <input
+          (change)="onCheckbox(user.id,$event)"
+          [checked]="selectionService.selectedItems.includes(user.id)"
+          type="checkbox"
+        />
+      </td>
       <td class="p-2 flex items-center gap-2">
         <ng-container *ngIf="user.avatar; else noAvatar">
           <img

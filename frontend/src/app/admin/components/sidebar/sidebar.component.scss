@@ -1,0 +1,11 @@
+.btn-hover {
+  @apply hover:bg-white hover:text-[#0D1B45] hover:font-semibold;
+}
+
+:host aside {
+  transition: width 0.4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.btn-active {
+  @apply bg-blue-600 text-white font-semibold;
+}
