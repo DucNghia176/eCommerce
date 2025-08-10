@@ -1,13 +1,16 @@
-<!-- NAVBAR: luôn nằm trên cùng -->
-<body class="h-screen overflow-hidden">
-<app-navbar></app-navbar>
-
-<!-- WRAPPER FLEX -->
-<div class="flex h-[calc(100vh-64px)]"> <!-- giả sử navbar cao 64px (h-16) -->
-  <!-- SIDEBAR: bên trái -->
+<body class="h-screen overflow-hidden flex">
+<!-- SIDEBAR -->
+<div class="overflow-y-auto scrollbar-hide h-full">
   <app-sidebar></app-sidebar>
+</div>
 
-  <main class="flex-1 bg-gray-100 overflow-auto p-6">
+<!-- MAIN: Navbar + Content -->
+<div class="flex-1 flex flex-col h-full overflow-hidden ">
+  <!-- NAVBAR -->
+  <app-navbar class="h-14 shrink-0"></app-navbar>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto bg-gray-100 p-6">
     <router-outlet></router-outlet>
   </main>
 </div>

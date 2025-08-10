@@ -2,14 +2,11 @@ import {Component, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {UsersService} from '../../../core/services/users.service';
 import {UserResponse} from "../../../core/models/user.model";
-import {AuthService} from "../../../core/services/auth.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
   faAdd,
   faDeleteLeft,
-  faFileExcel,
   faFileExport,
-  faFileImport,
   faLock,
   faSearch,
   faTrash,
@@ -18,6 +15,7 @@ import {
 import {FormsModule} from "@angular/forms";
 import {PageComponent} from "../../../shared/components/page/page.component";
 import {PageSize} from "../../../shared/status/page-size";
+import {SelectionService} from "../../../core/services/selection.service";
 
 @Component({
   selector: 'app-user',
@@ -39,18 +37,15 @@ export class UserAdminComponent implements OnInit {
   isLock: number = -1;
   avatar?: File;
   pageSizes: number[] = PageSize;
+  public selectionService = inject(SelectionService<number>);
   protected readonly faAdd = faAdd;
   protected readonly faSearch = faSearch;
   protected readonly faLock = faLock;
   protected readonly faUnlock = faUnlock;
-  protected readonly Math = Math;
-  protected readonly faFileImport = faFileImport;
   protected readonly faFileExport = faFileExport;
-  protected readonly faFileExcel = faFileExcel;
   protected readonly faTrash = faTrash;
   protected readonly faDeleteLeft = faDeleteLeft;
   private userService = inject(UsersService);
-  private authService = inject(AuthService);
 
   ngOnInit() {
     this.loadUser();
@@ -113,6 +108,18 @@ export class UserAdminComponent implements OnInit {
     this.loadUser(0);
   }
 
+  onCheckbox(id: number, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    const ids = this.users.map(user => user.id);
+    this.selectionService.toggleSelection(id, checked, ids);
+  }
+
+  onCheckboxAll(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    const ids = this.users.map(user => user.id);
+    this.selectionService.toggleAll(checked, ids);
+  }
+
   private countUsers(): void {
     this.userService.count().subscribe({
       next: (data) => {
@@ -127,4 +134,5 @@ export class UserAdminComponent implements OnInit {
       }
     });
   }
+
 }

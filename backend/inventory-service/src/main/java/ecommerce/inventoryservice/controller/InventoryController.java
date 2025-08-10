@@ -17,6 +17,11 @@ import java.util.Optional;
 class InventoryController {
     private final InventoryService inventoryService;
 
+    @GetMapping("/quantity")
+    public int getQuantity(@RequestParam("skuCode") String skuCode) {
+        return inventoryService.getQuantity(skuCode);
+    }
+
     @GetMapping("/check")
     public boolean isInStock(@RequestParam String skuCode, @RequestParam int quantity) {
         return inventoryService.isInStock(skuCode, quantity);

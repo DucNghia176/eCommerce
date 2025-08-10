@@ -14,7 +14,7 @@ import java.util.Map;
 public class CloudinaryService {
     private final Cloudinary cloudinary;
 
-    public String uploadFile(MultipartFile file, Long id) {
+    public String uploadFileProduct(MultipartFile file, Long id) {
         try {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
                     "folder", "product/" + id + "/"
@@ -63,4 +63,16 @@ public class CloudinaryService {
             throw new RuntimeException("Không thể xoá folder ảnh trên Cloudinary", e);
         }
     }
+
+    public String uploadFileCategory(MultipartFile file, Long id) {
+        try {
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+                    "folder", "category/" + id + "/"
+            ));
+            return uploadResult.get("secure_url").toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Không thể upload ảnh lên Cloudinary", e);
+        }
+    }
+
 }

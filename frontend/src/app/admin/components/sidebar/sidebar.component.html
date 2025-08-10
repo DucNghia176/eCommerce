@@ -1,166 +1,231 @@
-<aside class="w-64 bg-[#0D1B45] text-white h-screen flex flex-col">
-  <!-- MENU CHÍNH -->
-  <nav class="flex-1 overflow-y-auto px-4 mt-5">
-    <ul class="space-y-2 text-sm">
-      <!-- Trang chủ -->
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+<aside
+  [ngClass]="{
+    'w-64': !isCollapsed,
+    'w-16': isCollapsed,
+  }"
+  class="w-64 bg-[#0D1B45] text-white flex flex-col transition-all duration-300 h-full"
+>
+
+  <div class="flex-1 overflow-y-auto scrollbar-hide">
+    <div class="sticky top-0 z-10 bg-[#0D1B45] flex items-center px-3 py-4 h-14">
+      <div class="flex-1 flex left-1 justify-start items-center overflow-hidden">
+        <img
+          *ngIf="!isCollapsed"
+          alt="Fastcart"
+          class="h-28 w-28 object-contain text-2xl"
+          src="assets/logo1.png"
+        />
+      </div>
+
+      <!-- Toggle -->
+      <div class="flex items-center justify-center w-14 h-14">
+        <button
+          (click)="toggleSidebar()"
+          class="p-2 hover:bg-[#1E2E5C] rounded-full transition-all duration-300"
         >
-          <fa-icon [icon]="home" class="w-4"></fa-icon>
-          <span>Bảng điều khiển</span>
-        </a>
-      </li>
+          <fa-icon
+            [icon]="faBars"
+            [ngClass]="{
+            'rotate-180': isCollapsed,
+            'rotate-0': !isCollapsed
+          }"
+            class="transition-transform duration-300 text-2xl h-full"
+          ></fa-icon>
+        </button>
+      </div>
+    </div>
 
-      <!-- Đơn hàng -->
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/orders']"
-          class="flex items-center justify-between px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <div class="flex items-center gap-3">
-            <fa-icon [icon]="orders" class="w-4"></fa-icon>
-            Đơn hàng
-          </div>
-        </a>
-      </li>
+    <!-- MENU CHÍNH -->
+    <nav class="flex-1 px-4 mt-2">
+      <ul class="space-y-2 text-sm mt-2">
+        <!-- Trang chủ -->
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin']"
+            class="flex items-center gap-3 px-3 py-2 rounded  btn-hover"
+            routerLinkActive="btn-active"
+            title="Bảng điều khiển"
+          >
+            <fa-icon [icon]="home"></fa-icon>
+            <span *ngIf="!isCollapsed">Trang chủ</span>
+          </a>
+        </li>
 
-      <!-- Sản phẩm -->
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/product']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="product" class="w-4"></fa-icon>
-          Sản phẩm
-        </a>
-      </li>
+        <!-- Đơn hàng -->
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/orders']"
+            class="flex items-center justify-center px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Đơn hàng"
+          >
+            <div class="flex items-center gap-3">
+              <fa-icon [icon]="orders" class="w-4"></fa-icon>
+              <span *ngIf="!isCollapsed">Đơn hàng</span>
+            </div>
+          </a>
+        </li>
 
-      <!-- Danh mục -->
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/category']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="category" class="w-4"></fa-icon>
-          Danh mục
-        </a>
-      </li>
+        <!-- Sản phẩm -->
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/product']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Sản phầm"
+          >
+            <fa-icon [icon]="product" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed"> Sản phẩm</span>
+          </a>
+        </li>
 
-      <!-- Khách hàng -->
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/users']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="user" class="w-4"></fa-icon>
-          Khách hàng
-        </a>
-      </li>
+        <!-- Danh mục -->
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/category']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Danh mục"
+          >
+            <fa-icon [icon]="category" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Danh mục</span>
+          </a>
+        </li>
 
-      <!-- Báo cáo -->
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/reports']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="reports" class="w-4"></fa-icon>
-          Báo cáo
-        </a>
-      </li>
+        <!-- Khách hàng -->
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/users']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Khách hàng"
+          >
+            <fa-icon [icon]="user" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Khách hàng</span>
+          </a>
+        </li>
 
-      <!-- Mã giảm giá -->
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/coupons']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="coupon" class="w-4"></fa-icon>
-          Mã giảm giá
-        </a>
-      </li>
+        <!-- Báo cáo -->
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/reports']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Báo cáo"
+          >
+            <fa-icon [icon]="reports" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Báo cáo</span>
+          </a>
+        </li>
 
-      <!-- Hộp thư -->
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/inbox']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="inbox" class="w-4"></fa-icon>
-          Hộp thư
-        </a>
-      </li>
+        <!-- Mã giảm giá -->
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/coupons']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Mã giảm giá"
+          >
+            <fa-icon [icon]="coupon" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Mã giảm giá</span>
+          </a>
+        </li>
 
-      <!-- Thông tin khác -->
-      <li class="mt-6 text-xs uppercase text-gray-400">Thông tin khác</li>
+        <!-- Hộp thư -->
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/inbox']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Hộp thư"
+          >
+            <fa-icon [icon]="inbox" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Hộp thư</span>
+          </a>
+        </li>
 
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/knowledge']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="know" class="w-4"></fa-icon>
-          Cơ sở kiến thức
-        </a>
-      </li>
+        <!-- Thông tin khác -->
+        <li class="mt-6 text-xs uppercase text-gray-400">
+          <span *ngIf="!isCollapsed">Thông tin khác</span>
+        </li>
 
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/product-updates']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="productUpdate" class="w-4"></fa-icon>
-          Cập nhật sản phẩm
-        </a>
-      </li>
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/knowledge']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Cơ sở kiến thức"
+          >
+            <fa-icon [icon]="know" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Cơ sở kiến thức</span>
+          </a>
+        </li>
 
-      <!-- Cài đặt -->
-      <li class="mt-6 text-xs uppercase text-gray-400">Cài đặt</li>
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/product-updates']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="btn-active"
+            title="Cập nhật sản phẩm"
+          >
+            <fa-icon [icon]="productUpdate" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Cập nhật sản phẩm</span>
+          </a>
+        </li>
 
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/personal-settings']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="personal" class="w-4"></fa-icon>
-          Cài đặt cá nhân
-        </a>
-      </li>
+        <!-- Cài đặt -->
+        <li class="mt-6 text-xs uppercase text-gray-400">
+          <span *ngIf="!isCollapsed">Cài đặt</span>
+        </li>
 
-      <li>
-        <a
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="['/admin/global-settings']"
-          class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#1E2E5C]"
-          routerLinkActive="bg-white text-[#0D1B45] font-semibold"
-        >
-          <fa-icon [icon]="global" class="w-4"></fa-icon>
-          Cài đặt hệ thống
-        </a>
-      </li>
-    </ul>
-  </nav>
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/personal-settings']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+            title="Cài đặt cá nhân"
+          >
+            <fa-icon [icon]="personal" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Cài đặt cá nhân</span>
+          </a>
+        </li>
+
+        <li>
+          <a
+            [ngClass]="{ 'justify-center': isCollapsed }"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="['/admin/global-settings']"
+            class="flex items-center gap-3 px-3 py-2 rounded btn-hover"
+            routerLinkActive="bg-white text-[#0D1B45] font-semibold"
+            title="Cài đặt hệ thống"
+          >
+            <fa-icon [icon]="global" class="w-4"></fa-icon>
+            <span *ngIf="!isCollapsed">Cài đặt hệ thống</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </aside>

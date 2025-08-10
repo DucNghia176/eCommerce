@@ -145,4 +145,14 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
+    @Override
+    public int getQuantity(String skuCode) {
+        try {
+            Inventory inventory = inventoryRepository.findById(skuCode).orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+            return inventory.getQuantity();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

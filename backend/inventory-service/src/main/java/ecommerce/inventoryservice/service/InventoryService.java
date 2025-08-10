@@ -20,4 +20,5 @@ public interface InventoryService {
 
     ApiResponse<InventoryResponse> cancelOrder(InventoryRequest request);
 
+    int getQuantity(String skuCode);
 }

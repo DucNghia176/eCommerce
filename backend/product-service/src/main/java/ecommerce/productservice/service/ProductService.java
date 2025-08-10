@@ -5,6 +5,7 @@ import ecommerce.aipcommon.model.response.ProductResponse;
 import ecommerce.productservice.dto.request.ProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +22,7 @@ public interface ProductService {
 
     ApiResponse<ProductResponse> updateProductImage(Long id, List<MultipartFile> imageUrls);
 
-    ApiResponse<List<ProductResponse>> getAllProduct();
+    ApiResponse<Page<ProductResponse>> getAllProduct(int page, int size);
 
     ApiResponse<ProductResponse> deleteProduct(Long id);
 

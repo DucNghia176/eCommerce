@@ -1,7 +1,8 @@
 package ecommerce.productservice.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -16,6 +17,4 @@ public class Tag {
 
     @Column(name = "NAME", nullable = false)
     private String name;
-
-    // Getters & Setters
 }

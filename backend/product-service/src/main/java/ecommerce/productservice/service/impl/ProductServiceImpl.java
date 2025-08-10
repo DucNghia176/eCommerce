@@ -3,6 +3,7 @@ package ecommerce.productservice.service.impl;
 import ecommerce.aipcommon.kafka.event.ProductCreateEvent;
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.ProductResponse;
+import ecommerce.productservice.client.InventoryClient;
 import ecommerce.productservice.dto.request.ProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
@@ -18,6 +19,10 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -40,7 +45,9 @@ public class ProductServiceImpl implements ProductService {
     private final CloudinaryService cloudinaryService;
     private final KafkaTemplate<String, ProductCreateEvent> productKafka;
     private final KafkaTemplate<String, NotificationEvent> notificationKafka;
+    private final InventoryClient inventoryClient;
 
+    @Transactional
     @Override
     public ApiResponse<ProductResponse> createProduct(ProductRequest request, List<MultipartFile> imageUrls) {
         try {
@@ -63,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
                 for (int i = 0; i < imageUrls.size(); i++) {
                     MultipartFile file = imageUrls.get(i);
                     if (!file.isEmpty()) {
-                        String url = cloudinaryService.uploadFile(file, product.getId());
+                        String url = cloudinaryService.uploadFileProduct(file, product.getId());
 
                         ProductImage newImage = new ProductImage();
                         newImage.setProduct(product);
@@ -93,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
 
             ProductResponse response = productMapper.toResponse(saved);
             response.setTags(tagName);
-            List<ProductImage> imageEntities = productImageRepository.findByProductId(product.getId());
+            List<ProductImage> imageEntities = productImageRepository.findByProductId(saved.getId());
             response.setImageUrls(imageEntities.stream().map(ProductImage::getImageUrl).toList());
             response.setThumbnailUrl(
                     imageEntities.stream()
@@ -255,7 +262,7 @@ public class ProductServiceImpl implements ProductService {
                 for (int i = 0; i < imageUrls.size(); i++) {
                     MultipartFile file = imageUrls.get(i);
                     if (!file.isEmpty()) {
-                        String url = cloudinaryService.uploadFile(file, product.getId());
+                        String url = cloudinaryService.uploadFileProduct(file, product.getId());
 
                         ProductImage newImage = new ProductImage();
                         newImage.setProduct(product);
@@ -294,15 +301,42 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiResponse<List<ProductResponse>> getAllProduct() {
+    public ApiResponse<Page<ProductResponse>> getAllProduct(int page, int size) {
         try {
-            List<Product> product = productRepository.findAllByIsActive(1);
+            Pageable pageable = PageRequest.of(page, size);
 
-            List<ProductResponse> response = product.stream()
-                    .map(productMapper::toResponse)
-                    .toList();
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+            Page<Product> productPage = productRepository.findAllByIsActive(1, pageable);
 
-            return ApiResponse.<List<ProductResponse>>builder()
+            Page<ProductResponse> response = productPage.map(product -> {
+                ProductResponse res = productMapper.toResponse(product);
+
+                // Lấy tags
+                List<String> tagNames = productTagRepository.findByProduct_Id(product.getId())
+                        .stream()
+                        .map(pt -> pt.getTag().getName())
+                        .toList();
+                res.setTags(tagNames);
+
+                // Lấy ảnh
+                List<ProductImage> imageEntities = productImageRepository.findByProductId(product.getId());
+                res.setImageUrls(imageEntities.stream().map(ProductImage::getImageUrl).toList());
+
+                // Thumbnail
+                String thumbnail = imageEntities.stream()
+                        .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail() == 1)
+                        .map(ProductImage::getImageUrl)
+                        .findFirst()
+                        .orElse(null);
+                res.setThumbnailUrl(thumbnail);
+
+                int quantity = inventoryClient.getQuantity(productRepository.findSkuCodeById(product.getId()));
+                res.setQuantity(quantity);
+
+                return res;
+            });
+
+            return ApiResponse.<Page<ProductResponse>>builder()
                     .code(200)
                     .message("Lấy product thành công")
                     .data(response)
@@ -310,7 +344,7 @@ public class ProductServiceImpl implements ProductService {
 
         } catch (Exception e) {
             log.error("Lỗi: {}", e.getMessage(), e);
-            return ApiResponse.<List<ProductResponse>>builder()
+            return ApiResponse.<Page<ProductResponse>>builder()
                     .code(500)
                     .message("Đã xảy ra lỗi trong hệ thống.")
                     .data(null)
@@ -326,11 +360,11 @@ public class ProductServiceImpl implements ProductService {
 
             product.setIsActive(0);
             productRepository.save(product);
-
+            ProductResponse response = productMapper.toResponse(product);
             return ApiResponse.<ProductResponse>builder()
                     .code(200)
                     .message("Xóa product thành công")
-                    .data(null)
+                    .data(response)
                     .build();
 
         } catch (Exception e) {

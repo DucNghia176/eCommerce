@@ -24,6 +24,9 @@ public class Category {
     @JoinColumn(name = "PARENT_ID")
     private Category parent;
 
+    @Column(name = "IMAGE")
+    private String image;
+
     @Column(name = "IS_ACTIVE")
     private Integer isActive;
 }
