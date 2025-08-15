@@ -20,6 +20,9 @@ public class AuthController {
     private final AuthService authService;
     private final EmailService emailService;
 
+
+    //    http://localhost:8085/api/auth/login/oauth2/google
+
     @PostMapping("/login")
     public ApiResponse<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         return authService.login(request);
