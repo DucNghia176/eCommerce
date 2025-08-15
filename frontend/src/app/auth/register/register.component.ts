@@ -8,11 +8,13 @@ import {Gender} from "../../shared/status/gender";
 import {RegisterRequest} from "../../core/models/auth.model";
 import {ToastComponent} from "../../shared/components/toast/toast.component";
 import {ToastService} from "../../core/services/toast.service";
+import {LoadingSpinnerComponent} from "../../shared/components/loading-spinner/loading-spinner.component";
+import {finalize} from "rxjs";
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ToastComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ToastComponent, LoadingSpinnerComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -21,6 +23,7 @@ export class RegisterComponent {
   password: string = '';
   fullName?: string = '';
   email: string = '';
+  isLoading = false;
   gender?: Gender;
   dateOfBirth?: Date;
   avatar?: File;
@@ -56,16 +59,18 @@ export class RegisterComponent {
       gender: this.gender,
       dateOfBirth: this.dateOfBirth,
     }
-
-    this.authService.register(request, this.avatar).subscribe({
-      next: () => {
-        this.toastService.show("Đăng ký thành công.", "p")
-        this.sendOtpAndRedirect();
-      },
-      error: (err) => {
-        this.toastService.show(`Đăng ký thất bại + ${err.message}`, "f")
-      }
-    });
+    this.isLoading = true;
+    this.authService.register(request, this.avatar)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: () => {
+          this.toastService.show("Đăng ký thành công.", "p")
+          this.sendOtpAndRedirect();
+        },
+        error: (err) => {
+          this.toastService.show(`Đăng ký thất bại + ${err.message}`, "f")
+        }
+      });
   }
 
   sendOtpAndRedirect() {

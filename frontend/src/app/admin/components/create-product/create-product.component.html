@@ -13,7 +13,11 @@
           <fa-icon [icon]="faClose"></fa-icon>
           <span class="ml-2" routerLink="/admin/product">Cancel</span>
         </button>
-        <button class="bg-blue-600 text-white border px-4 py-2 rounded" type="submit">
+        <button
+          [disabled]="isLoading"
+          class="bg-blue-600 text-white border px-4 py-2 rounded"
+          type="submit"
+        >
           <fa-icon [icon]="faSave"></fa-icon>
           <span class="ml-2">Save</span>
         </button>
@@ -132,7 +136,7 @@
                 name="price"
                 placeholder="Enter price"
                 required
-                type="number"
+                type="text"
               >
               <div *ngIf="priceRef.invalid && priceRef.touched" class="text-red-600 text-sm mt-1">
                 <div *ngIf="priceRef.errors?.['required']">Vui lòng nhập giá tiền để tiếp tục.</div>
@@ -159,22 +163,22 @@
     <!--    right-->
     <div class="space-y-6">
       <!--    category-->
-      <section class="bg-white p-4 rounded-xl shadow">
+      <section class="bg-white p-4 rounded-xl shadow ">
         <h2 class="font-semibold mb-4">Categories</h2>
         <!-- category checkboxes -->
-        <div
-          *ngFor="let category of categories"
-          class="max-h-48 overflow-y-auto scrollbar-hide"
-        >
+
+        <div *ngFor="let category of categories; let i = index" class="max-h-48 overflow-y-auto scrollbar-hide">
           <label class="flex items-center gap-2">
-            <input [(ngModel)]="categoryId"
-                   [value]="category.id"
-                   name="categoryId"
-                   type="radio"/>
+            <input
+              [(ngModel)]="categoryId"
+              [value]="category.id"
+              name="categoryId"
+              required
+              type="radio"
+            />
             {{ category.name }}
           </label>
         </div>
-
         <button
           (click)="toggleMiniForm()"
           type="button"
@@ -210,3 +214,6 @@
 </form>
 
 <app-toast></app-toast>
+<div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <app-loading-spinner [show]="true"></app-loading-spinner>
+</div>

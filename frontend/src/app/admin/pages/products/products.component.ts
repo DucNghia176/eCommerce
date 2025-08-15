@@ -2,13 +2,13 @@ import {Component, inject, OnInit} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgForOf, NgIf} from "@angular/common";
 import {PageComponent} from "../../../shared/components/page/page.component";
-import {faAdd, faFileExport, faSearch, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faAdd, faEdit, faFileExport, faSearch, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {ProductResponse} from "../../../core/models/product.model";
 import {PageSize} from "../../../shared/status/page-size";
 import {ProductService} from "../../../core/services/product.service";
 import {RouterLink} from "@angular/router";
 import {SelectionService} from "../../../core/services/selection.service";
-import {forkJoin} from "rxjs";
+import {finalize, forkJoin} from "rxjs";
 import {DialogService} from "../../../core/services/dialog.service";
 
 @Component({
@@ -40,11 +40,13 @@ export class ProductsComponent implements OnInit {
   category: string = '';
   status: string = '';
   pageSizes: number[] = PageSize
+  isLoading = false
   public selectionService = inject(SelectionService<number>);
   protected readonly faFileExport = faFileExport;
   protected readonly faAdd = faAdd;
   protected readonly faSearch = faSearch;
   protected readonly faTrash = faTrash;
+  protected readonly faEdit = faEdit;
   private productService = inject(ProductService)
   private dialogService = inject(DialogService);
 
@@ -53,21 +55,24 @@ export class ProductsComponent implements OnInit {
   }
 
   public loadProduct(page: number = 0): void {
-    this.productService.getAllProduct(page, this.pageSize).subscribe({
-      next: (data) => {
-        const allProduct = data.content;
-        this.currentPage = data.number;
-        this.totalItems = data.totalElements;
-        this.totalPages = data.totalPages;
+    this.isLoading = true;
+    this.productService.getAllProduct(page, this.pageSize)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: (data) => {
+          const allProduct = data.content;
+          this.currentPage = data.number;
+          this.totalItems = data.totalElements;
+          this.totalPages = data.totalPages;
 
-        this.products = allProduct;
-        this.errorMessage = null;
-      },
-      error: (err) => {
-        this.products = [];
-        this.errorMessage = err.message;
-      }
-    });
+          this.products = allProduct;
+          this.errorMessage = null;
+        },
+        error: (err) => {
+          this.products = [];
+          this.errorMessage = err.message;
+        }
+      });
   }
 
   onPageSizeChange(newSize: number) {
