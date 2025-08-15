@@ -58,4 +58,8 @@ export class LoginComponent {
         }
       });
   }
+
+  loginWithGoogle() {
+    window.location.href = 'http://localhost:8085/oauth2/authorization/google';
+  }
 }
