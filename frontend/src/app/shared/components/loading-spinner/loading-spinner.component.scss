@@ -1,0 +1,44 @@
+.loading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.balls {
+  display: flex;
+  gap: 10px;
+}
+
+.balls div {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.balls div:nth-child(1) {
+  background-color: #e15b64;
+  animation-delay: 0s;
+}
+
+.balls div:nth-child(2) {
+  background-color: #f8b26a;
+  animation-delay: 0.15s;
+}
+
+.balls div:nth-child(3) {
+  background-color: #abbd81;
+  animation-delay: 0.3s;
+}
+
+.balls div:nth-child(4) {
+  background-color: #81a3bd;
+  animation-delay: 0.45s;
+}
+
+@keyframes bounce {
+  to {
+    transform: translateY(-10px);
+    opacity: 0.7;
+  }
+}
