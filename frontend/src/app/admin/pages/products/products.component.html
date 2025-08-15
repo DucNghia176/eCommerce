@@ -1,10 +1,10 @@
 <!--header-->
 <div class="flex justify-between items-center mb-6">
-  <h1 class="text-2xl font-bold">Products</h1>
+  <h1 class="text-2xl font-bold">Sản phẩm</h1>
   <div class="flex gap-2">
     <button class="bg-white text-blue-500 border px-4 py-2 rounded">
       <fa-icon [icon]="faFileExport"></fa-icon>
-      <span class="ml-2">Export</span>
+      <span class="ml-2">Xuất file</span>
     </button>
     <button
       class="bg-blue-600 text-white border px-4 py-2 rounded"
@@ -12,92 +12,109 @@
       type="button"
     >
       <fa-icon [icon]="faAdd"></fa-icon>
-      <span class="ml-2">Add Product</span>
+      <span class="ml-2">Thêm sản phẩm</span>
     </button>
   </div>
 </div>
 
-<div class="flex justify-between items-center mb-4 mt-4">
-  <div class="flex items-center gap-2 w-auto">
-    <fa-icon
-      [icon]="faSearch"
-      class="ml-3 text-gray-800 text-sm"
-    ></fa-icon>
-    <input
-      class="pl-10 border px-3 py-2 rounded pr-3"
-      placeholder="Tìm kiếm..."
-      type="text"
-    />
+<div class="border rounded-xl bg-white shadow p-6">
+  <div class="flex justify-between items-center mb-4 mt-4">
+    <div class="flex items-center gap-2 w-auto">
+      <fa-icon
+        [icon]="faSearch"
+        class="ml-3 text-gray-800 text-sm"
+      ></fa-icon>
+      <input
+        class="pl-10 border px-3 py-2 rounded pr-3"
+        placeholder="Tìm kiếm..."
+        type="text"
+      />
+    </div>
+
+    <button
+      (click)="deleteProduct(); isConfirmOpen = true"
+      *ngIf="selectionService.selectedItems.length > 0"
+      class="text-red-600 px-4 py-2 rounded ml-2"
+    >
+      <fa-icon [icon]="faTrash"></fa-icon>
+    </button>
   </div>
 
-  <button
-    (click)="deleteProduct(); isConfirmOpen = true"
-    *ngIf="selectionService.selectedItems.length > 0"
-    class=" text-red-600 px-4 py-2 rounded ml-2"
-  >
-    <fa-icon [icon]="faTrash"></fa-icon>
-  </button>
+  <div class="overflow-x-auto overflow-y-hidden">
+    <table class="text-left min-w-[900px]">
+      <thead>
+      <tr class="border-gray-400 text-gray-600 items-center text-base font-medium border-b ">
+        <th class="transform scale-125 text-center px-2">
+          <input
+            (change)="onCheckboxAll($event)"
+            [checked]="selectionService.isAllSelected"
+            type="checkbox"
+          />
+        </th>
+        <th class="p-3">Tên sản phẩm</th>
+        <th class="p-3 text-center">Số lượng</th>
+        <th class="p-3">Giá</th>
+        <th class="p-3">Thương hiệu</th>
+        <th class="p-3">Mô tả</th>
+        <th class="flex p-3 bg-gray-50 sticky right-0 z-10 border-l border-gray-200 items-center justify-center">
+          Thao tác
+        </th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <ng-container *ngIf="!isLoading && products.length > 0; else noData">
+        <tr *ngFor="let product of products" class="border-b border-gray-200">
+          <th class="transform scale-125 text-center px-2">
+            <input
+              (change)="onCheckbox(product.id, $event)"
+              [checked]="selectionService.selectedItems.includes(product.id)"
+              type="checkbox"
+            />
+          </th>
+          <td class="p-3 flex items-center gap-2">
+            <img
+              [src]="product.thumbnailUrl"
+              alt="Ảnh sản phẩm"
+              class="w-8 h-8 object-cover"
+            />
+            <div class="flex flex-col">
+              <span class="font-medium">{{ product.name }}</span>
+              <span class="text-gray-500 text-sm">{{ product.categoryName }}</span>
+            </div>
+          </td>
+          <td class="p-3 text-center">{{ product.quantity }}</td>
+          <td class="p-3">{{ product.price }}</td>
+          <td class="p-3">{{ product.brandId }}</td>
+          <td class="p-3">{{ product.description }}</td>
+          <td class="p-3 sticky right-0 bg-gray-50 border-l border-gray-200 z-10 text-center">
+            <button
+              class="text-blue-500 hover:text-blue-600"
+              routerLink="/admin/product/edit/{{ product.id }}"
+              type="button"
+            >
+              <fa-icon [icon]="faEdit"></fa-icon>
+            </button>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <td class="text-center text-gray-500 py-4" colspan="8">
+            Không có dữ liệu
+          </td>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+  </div>
+
+  <app-page
+    (pageChange)="loadProduct($event.page)"
+    (pageSizeChange)="onPageSizeChange($event)"
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    [pageSizes]="pageSizes"
+    [totalItems]="totalItems"
+  ></app-page>
 </div>
-
-<table class="w-full text-sm text-left border-t">
-  <thead>
-  <tr class="border-gray-200 text-gray-600 items-center">
-    <th>
-      <input
-        (change)="onCheckboxAll($event)"
-        [checked]="selectionService.isAllSelected"
-        type="checkbox"
-      />
-    </th>
-    <th class="p-2">Product</th>
-    <th class="p-2">Inventory</th>
-    <th class="p-2">Price</th>
-    <th class="p-2">Brand</th>
-    <th class="p-2">Des</th>
-  </tr>
-  </thead>
-  <tbody>
-  <ng-container *ngIf="products.length > 0; else noData">
-    <tr *ngFor="let product of products" class="border-b border-gray-200">
-      <th>
-        <input
-          (change)="onCheckbox(product.id,$event)"
-          [checked]="selectionService.selectedItems.includes(product.id)"
-          type="checkbox"
-        />
-      </th>
-      <td class="p-2 flex items-center gap-2">
-        <img
-          [src]="product.thumbnailUrl"
-          alt="avatar"
-          class="w-8 h-8 rounded-full object-cover"
-        />
-        <div class="flex flex-col">
-          <span class="font-medium">{{ product.name }}</span>
-          <span class="text-gray-500 text-sm">{{ product.categoryName }}</span>
-        </div>
-      </td>
-      <td class="p-2">{{ product.quantity }}</td>
-      <td class="p-2">{{ product.price }}</td>
-      <td class="p-2">{{ product.brandId }}</td>
-      <td class="p-2">{{ product.description }}</td>
-    </tr>
-  </ng-container>
-  <ng-template #noData>
-    <tr>
-      <td class="text-center text-gray-500 py-4" colspan="8">
-        Không có dữ liệu
-      </td>
-    </tr>
-  </ng-template>
-  </tbody>
-</table>
-
-<app-page
-  (pageChange)="loadProduct($event.page)"
-  (pageSizeChange)="onPageSizeChange($event)"
-  [currentPage]="currentPage"
-  [pageSize]="pageSize"
-  [pageSizes]="pageSizes"
-  [totalItems]="totalItems"
-></app-page>

@@ -151,6 +151,7 @@
 
       <!-- Nút đăng ký -->
       <button
+        [disabled]="isLoading"
         class="w-full bg-indigo-950 text-white font-semibold py-2 rounded-md hover:bg-indigo-800 transition duration-300"
         type="submit"
       >
@@ -188,4 +189,6 @@
 </div>
 
 <app-toast></app-toast>
-
+<div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <app-loading-spinner [show]="true"></app-loading-spinner>
+</div>

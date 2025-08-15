@@ -11,11 +11,13 @@ import {ToastComponent} from "../../../shared/components/toast/toast.component";
 import {ToastService} from "../../../core/services/toast.service";
 import {CategoryRequest, CategoryResponse} from "../../../core/models/category.model";
 import {CategoryService} from "../../../core/services/category.service";
+import {LoadingSpinnerComponent} from "../../../shared/components/loading-spinner/loading-spinner.component";
+import {finalize} from "rxjs";
 
 @Component({
   selector: 'app-create-product',
   standalone: true,
-  imports: [CommonModule, RouterModule, FaIconComponent, FormsModule, ToastComponent],
+  imports: [CommonModule, RouterModule, FaIconComponent, FormsModule, ToastComponent, LoadingSpinnerComponent],
   templateUrl: './create-product.component.html',
   styleUrl: './create-product.component.scss'
 })
@@ -32,7 +34,7 @@ export class CreateProductComponent implements OnInit {
   imagesPreview: File[] = [];
   categoryName: string = '';
   brandName: string = '';
-
+  isLoading = false;
   categories: CategoryResponse[] = [];
   @ViewChild('formRef') formRef!: ElementRef;
   showMiniForm = false;
@@ -95,22 +97,26 @@ export class CreateProductComponent implements OnInit {
     }
     const images = this.images;
 
-    this.productService.createProduct(request, images).subscribe({
-      next: () => {
-        this.toastService.show("Tạo sản phẩm thành công", "p")
+    this.isLoading = true;
 
-        form.resetForm(); // reset toàn bộ form
-        this.images = [];
-        this.imagesPreview = [];
-        this.categoryId = null;
-        this.tags = [];
-        this.units = '';
-        this.brandId = null;
-      },
-      error: (err) => {
-        this.toastService.show(`Tạo sản phẩm thất bại: ${err.message}`, "f");
-      }
-    });
+    this.productService.createProduct(request, images)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: () => {
+          this.toastService.show("Tạo sản phẩm thành công", "p")
+
+          form.resetForm(); // reset toàn bộ form
+          this.images = [];
+          this.imagesPreview = [];
+          this.categoryId = null;
+          this.tags = [];
+          this.units = '';
+          this.brandId = null;
+        },
+        error: (err) => {
+          this.toastService.show(`Tạo sản phẩm thất bại: ${err.message}`, "f");
+        }
+      });
   }
 
   loadCategory() {
