@@ -1,5 +1,5 @@
-import {SidebarComponent} from "../../components/sidebar/sidebar.component";
-import {NavbarComponent} from "../../components/navbar/navbar.component";
+import {SidebarComponent} from "../../components/layout/sidebar/sidebar.component";
+import {NavbarComponent} from "../../components/layout/navbar/navbar.component";
 import {CommonModule} from "@angular/common";
 import {Component} from "@angular/core";
 import {RouterOutlet} from "@angular/router";

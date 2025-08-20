@@ -51,6 +51,36 @@ export class ProductService {
     );
   }
 
+  getProductById(id: number): Observable<ProductResponse> {
+    return this.http.get<ApiResponse<ProductResponse>>(`${this.apiUrl}/${id}`)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data;
+          }
+          throw new Error(response.message || 'Something went wrong');
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  updateProduct(id: number, request: ProductRequest, images ?: File[]): Observable<ProductResponse> {
+    const formData = new FormData();
+    formData.append('data', new Blob([JSON.stringify(request)], {type: 'application/json'}));
+    if (images) {
+      images.forEach(image => formData.append('images', image));
+    }
+    return this.http.put<ApiResponse<ProductResponse>>(`${this.apiUrl}/update/${id}`, formData)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data;
+          }
+          throw new Error(response.message);
+        }), catchError(this.handleError)
+      );
+  }
+
   deleteProduct(id: number): Observable<ProductResponse> {
     return this.http.delete<ApiResponse<ProductResponse>>(`${this.apiUrl}/delete/${id}`)
       .pipe(

@@ -2,6 +2,9 @@ package ecommerce.productservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,4 +32,11 @@ public class Category {
 
     @Column(name = "IS_ACTIVE")
     private Integer isActive;
+
+    @Column(name = "IS_VISIBLE")
+    private Integer isVisible;
+
+    @CreationTimestamp
+    @Column(name = "CREATE_AT")
+    private LocalDateTime createAt;
 }

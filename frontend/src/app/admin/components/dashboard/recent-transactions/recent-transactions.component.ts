@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {CommonModule} from "@angular/common";
-import {PaymentStatus} from "../../../shared/status/payment-status";
+import {PaymentStatus} from "../../../../shared/status/payment-status";
 
 @Component({
   selector: 'app-recent-transactions',

@@ -43,7 +43,7 @@ public class Product {
     private Category category;
 
     @Column(name = "BRAND_ID")
-    private String brandId;
+    private Long brandId;
 
     @Column(name = "UNIT")
     private String unit;

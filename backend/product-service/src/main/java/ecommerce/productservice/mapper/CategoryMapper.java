@@ -12,6 +12,7 @@ public interface CategoryMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isActive", constant = "1")
     @Mapping(target = "parent", ignore = true)
+    @Mapping(target = "isVisible", ignore = true)
     Category toEntity(CategoryRequest request);
 
     @Mapping(source = "parent.id", target = "parentId")

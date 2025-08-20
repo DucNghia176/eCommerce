@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +18,7 @@ public class ProductUpdateInfoRequest {
     private BigDecimal price;
     private BigDecimal discountPrice;
     private Long categoryId;
-    private String brandId;
+    private Long brandId;
+    private List<Long> tags;
     private String unit;
 }

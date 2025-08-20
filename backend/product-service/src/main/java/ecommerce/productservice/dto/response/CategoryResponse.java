@@ -13,4 +13,6 @@ public class CategoryResponse {
     private Long parentId;
     private Integer isActive;
     private String image;
+    private Long productCount;
+    private Integer isVisible;
 }

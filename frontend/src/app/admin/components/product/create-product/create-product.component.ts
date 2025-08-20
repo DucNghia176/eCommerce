@@ -1,18 +1,21 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {ProductService} from "../../../core/services/product.service";
-import {ProductRequest} from "../../../core/models/product.model";
+import {ProductService} from "../../../../core/services/product.service";
+import {ProductRequest} from "../../../../core/models/product.model";
 import {FormsModule, NgForm} from "@angular/forms";
-import {validateAndFocusFirstError} from "../../../shared/utils/validation";
+import {validateAndFocusFirstError} from "../../../../shared/utils/validation";
 import {faArrowLeft, faCancel, faClose, faSave} from "@fortawesome/free-solid-svg-icons";
 import {CommonModule, Location} from "@angular/common";
-import {RouterModule} from "@angular/router";
+import {ActivatedRoute, RouterModule} from "@angular/router";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {ToastComponent} from "../../../shared/components/toast/toast.component";
-import {ToastService} from "../../../core/services/toast.service";
-import {CategoryRequest, CategoryResponse} from "../../../core/models/category.model";
-import {CategoryService} from "../../../core/services/category.service";
-import {LoadingSpinnerComponent} from "../../../shared/components/loading-spinner/loading-spinner.component";
+import {ToastComponent} from "../../../../shared/components/toast/toast.component";
+import {ToastService} from "../../../../core/services/toast.service";
+import {CategoryRequest, CategoryResponse} from "../../../../core/models/category.model";
+import {CategoryService} from "../../../../core/services/category.service";
+import {LoadingSpinnerComponent} from "../../../../shared/components/loading-spinner/loading-spinner.component";
 import {finalize} from "rxjs";
+import {TagBrandService} from "../../../../core/services/brand.service";
+import {BrandResponse, TagResponse} from "../../../../core/models/TagBrand.model";
+import {ImagePreview} from "../../../../core/models/image.model";
 
 @Component({
   selector: 'app-create-product',
@@ -28,14 +31,14 @@ export class CreateProductComponent implements OnInit {
   units: string = '';
   categoryId: number | null = null;
   description: string = '';
-  tags: string[] = [];
+  selectTag: number[] = [];
   brandId: number | null = null;
-  images: File[] = [];
-  imagesPreview: File[] = [];
+  images: ImagePreview[] = [];
   categoryName: string = '';
-  brandName: string = '';
   isLoading = false;
   categories: CategoryResponse[] = [];
+  brands: BrandResponse[] = [];
+  tags: TagResponse[] = [];
   @ViewChild('formRef') formRef!: ElementRef;
   showMiniForm = false;
   protected readonly faArrowLeft = faArrowLeft;
@@ -46,9 +49,19 @@ export class CreateProductComponent implements OnInit {
   private toastService = inject(ToastService);
   private categoryService = inject(CategoryService);
   private location = inject(Location);
+  private tagBrandService = inject(TagBrandService);
+  private route = inject(ActivatedRoute);
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      const categoryId = params['categoryId'];
+      if (categoryId) {
+        this.categoryId = +categoryId;
+      }
+    });
     this.loadCategory();
+    this.loadBrand();
+    this.loadTag();
   }
 
   onFileSelected(event: Event): void {
@@ -59,17 +72,12 @@ export class CreateProductComponent implements OnInit {
     for (const file of files) {
       if (!file.type.startsWith('image/')) {
         this.toastService.show("Chỉ được phép chọn tệp ảnh (jpg, png, gif...)", "f");
-        this.images.push(
-          file
-        );
         continue;
       }
 
-      this.images.push(file);
-
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.imagesPreview.push(e.target.result);
+        this.images.push({src: e.target.result as string, file: file});
       };
       reader.readAsDataURL(file);
     }
@@ -79,7 +87,6 @@ export class CreateProductComponent implements OnInit {
 
   removeImage(index: number): void {
     this.images?.splice(index, 1);
-    this.imagesPreview?.splice(index, 1);
   }
 
   addProduct(form: NgForm) {
@@ -91,15 +98,15 @@ export class CreateProductComponent implements OnInit {
       price: this.price,
       discount: this.discount,
       categoryId: this.categoryId,
-      tags: this.tags,
+      tags: this.selectTag,
       unit: this.units,
       brandId: this.brandId
     }
-    const images = this.images;
+    const files: File[] = this.images.map(image => image.file!);
 
     this.isLoading = true;
 
-    this.productService.createProduct(request, images)
+    this.productService.createProduct(request, files)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: () => {
@@ -107,7 +114,6 @@ export class CreateProductComponent implements OnInit {
 
           form.resetForm(); // reset toàn bộ form
           this.images = [];
-          this.imagesPreview = [];
           this.categoryId = null;
           this.tags = [];
           this.units = '';
@@ -130,11 +136,32 @@ export class CreateProductComponent implements OnInit {
     });
   }
 
+  loadBrand() {
+    this.tagBrandService.getAllBrand().subscribe({
+      next: (res) => {
+        this.brands = res;
+      },
+      error: (err) => {
+        this.toastService.show("Lấy dữ liệu thương hiệu thất bại " + err.message, "f")
+      }
+    })
+  }
+
+  loadTag() {
+    this.tagBrandService.getAllTag().subscribe({
+      next: (res) => {
+        this.tags = res;
+      },
+      error: (err) => {
+        this.toastService.show("Lấy dữ liệu nhãn thất bại " + err.message, "f")
+      }
+    })
+  }
+
   addCategory() {
     const request: CategoryRequest = {
       name: this.categoryName,
       parentId: undefined,
-      image: undefined,
     }
     this.categoryService.createCategory(request).subscribe({
       next: () => {
@@ -161,5 +188,13 @@ export class CreateProductComponent implements OnInit {
     // Reset form
     this.categoryName = '';
     this.showMiniForm = false;
+  }
+
+  onTagChange(event: any, id: number) {
+    if (event.target.checked) {
+      this.selectTag.push(id);
+    } else {
+      this.selectTag = this.selectTag.filter(x => x !== id);
+    }
   }
 }

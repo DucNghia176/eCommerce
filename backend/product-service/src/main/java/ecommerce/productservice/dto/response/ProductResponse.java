@@ -1,4 +1,4 @@
-package ecommerce.aipcommon.model.response;
+package ecommerce.productservice.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,12 +20,13 @@ public class ProductResponse {
     String description;
     BigDecimal price;
     BigDecimal discountPrice;
+    Long categoryId;
     String categoryName;
-    String brandId;
+    BrandResponse brand;
     String unit;
     int quantity;
     Integer isActive;
-    List<String> tags;
+    List<TagResponse> tags;
     List<String> imageUrls;
     String thumbnailUrl;
     LocalDateTime createdAt;

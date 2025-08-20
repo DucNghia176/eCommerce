@@ -1,7 +1,7 @@
 package ecommerce.productservice.mapper;
 
-import ecommerce.aipcommon.model.response.ProductResponse;
 import ecommerce.productservice.dto.request.ProductRequest;
+import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,6 +17,7 @@ public interface ProductMapper {
     Product toEntity(ProductRequest request);
 
 
+    @Mapping(source = "category.id", target = "categoryId")
     @Mapping(source = "category.name", target = "categoryName")
     @Mapping(target = "tags", ignore = true)
     @Mapping(target = "imageUrls", ignore = true)

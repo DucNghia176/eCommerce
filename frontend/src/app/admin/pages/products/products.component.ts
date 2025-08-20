@@ -47,7 +47,7 @@ export class ProductsComponent implements OnInit {
   protected readonly faSearch = faSearch;
   protected readonly faTrash = faTrash;
   protected readonly faEdit = faEdit;
-  private productService = inject(ProductService)
+  private productService = inject(ProductService);
   private dialogService = inject(DialogService);
 
   ngOnInit() {
@@ -64,7 +64,6 @@ export class ProductsComponent implements OnInit {
           this.currentPage = data.number;
           this.totalItems = data.totalElements;
           this.totalPages = data.totalPages;
-
           this.products = allProduct;
           this.errorMessage = null;
         },

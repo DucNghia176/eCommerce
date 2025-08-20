@@ -3,10 +3,12 @@ export interface CategoryResponse {
   name: string,
   parentId: number,
   image: string,
+  productCount: number
+  isVisible: number,
 }
 
 export interface CategoryRequest {
   name: string,
   parentId?: number,
-  image?: File,
+  isVisible?: number,
 }

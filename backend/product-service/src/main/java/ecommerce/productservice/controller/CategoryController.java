@@ -4,10 +4,13 @@ package ecommerce.productservice.controller;
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.productservice.dto.request.CategoryRequest;
 import ecommerce.productservice.dto.response.CategoryResponse;
+import ecommerce.productservice.dto.response.ProductSummaryResponse;
 import ecommerce.productservice.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,8 +22,10 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<CategoryResponse> createCategory(@ModelAttribute CategoryRequest request) {
-        return categoryService.createCategory(request);
+    public ApiResponse<CategoryResponse> createCategory(
+            @RequestPart("data") CategoryRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        return categoryService.createCategory(request, image);
     }
 
     @GetMapping
@@ -29,12 +34,28 @@ public class CategoryController {
     }
 
     @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<CategoryResponse> updateCategory(@PathVariable Long id, @ModelAttribute CategoryRequest request) {
-        return categoryService.updateCategory(id, request);
+    public ApiResponse<CategoryResponse> updateCategory(
+            @PathVariable Long id,
+            @RequestPart CategoryRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        return categoryService.updateCategory(id, request, image);
     }
 
     @DeleteMapping("/delete/{id}")
     public ApiResponse<CategoryResponse> deleteCategory(@PathVariable Long id) {
         return categoryService.deleteCategory(id);
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<CategoryResponse> getCategoryById(@PathVariable Long id) {
+        return categoryService.getCategoryById(id);
+    }
+
+    @GetMapping("/{id}/products")
+    public ApiResponse<Page<ProductSummaryResponse>> getProductsByCategory(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return categoryService.getProductsByCategory(id, page, size);
     }
 }
