@@ -12,7 +12,7 @@ public class GateWayRouter {
         return builder.routes()
                 .route("USER-SERVICE", r -> r.path("/api/users/**", "/api/auth/**")
                         .uri("lb://USER-SERVICE/"))
-                .route("PRODUCT-SERVICE", r -> r.path("/api/product/**", "/api/category/**")
+                .route("PRODUCT-SERVICE", r -> r.path("/api/product/**", "/api/category/**", "/api/brand/**", "/api/tag/**")
                         .uri("lb://PRODUCT-SERVICE/"))
                 .route("ORDER-SERVICE", r -> r.path("/api/orders/**")
                         .uri("lb://ORDER-SERVICE/"))

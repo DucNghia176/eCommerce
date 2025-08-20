@@ -1,16 +1,19 @@
+import {BrandResponse, TagResponse} from "./TagBrand.model";
+
 export interface ProductResponse {
   id: number,
   name: string,
   description: string,
   price: string,
   discountPrice: string,
+  categoryId: number,
   categoryName: string,
   thumbnailUrl: string,
   imageUrls: string[],
-  tags: string[]
+  tags: TagResponse[],
   unit: string,
   quantity: number,
-  brandId: string,
+  brand: BrandResponse,
 }
 
 export interface ProductRequest {
@@ -19,7 +22,7 @@ export interface ProductRequest {
   price: string,
   discount: string,
   categoryId: number | null,
-  tags: string[],
+  tags: number[] | null,
   unit: string,
   brandId: number | null,
 }

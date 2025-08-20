@@ -1,10 +1,10 @@
 package ecommerce.productservice.controller;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.response.ProductResponse;
 import ecommerce.productservice.dto.request.ProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
+import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,16 +33,12 @@ public class ProductController {
 //        return productService.updateProduct(id, request);
 //    }
 
-    @PutMapping("update/info/{id}")
-    public ApiResponse<ProductResponse> updateInfoProduct(@PathVariable Long id,
-                                                          @RequestBody ProductUpdateInfoRequest request) {
-        return productService.updateProductInfo(id, request);
-    }
-
-    @PutMapping("update/image/{id}")
-    public ApiResponse<ProductResponse> updateProductImage(@PathVariable Long id,
-                                                           @RequestPart("images") List<MultipartFile> images) {
-        return productService.updateProductImage(id, images);
+    @PutMapping("update/{id}")
+    public ApiResponse<ProductResponse> updateInfoProduct(
+            @PathVariable Long id,
+            @RequestPart("data") ProductUpdateInfoRequest request,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+        return productService.updateProduct(id, request, images);
     }
 
     @DeleteMapping("delete/{id}")
@@ -71,5 +67,10 @@ public class ProductController {
     @GetMapping("/{id}/price")
     public BigDecimal getPrice(@PathVariable Long id) {
         return productService.getPriceByProductId(id);
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<ProductResponse> getProductById(@PathVariable Long id) {
+        return productService.getProductById(id);
     }
 }

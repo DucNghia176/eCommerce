@@ -1,10 +1,10 @@
 import {Component, HostListener} from '@angular/core';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {faBell, faChevronDown, faCommentAlt, faSearch} from "@fortawesome/free-solid-svg-icons";
-import {UserResponse} from "../../../core/models/user.model";
-import {UsersService} from "../../../core/services/users.service";
+import {UserResponse} from "../../../../core/models/user.model";
+import {UsersService} from "../../../../core/services/users.service";
 import {CommonModule, NgOptimizedImage} from "@angular/common";
-import {AuthService} from "../../../core/services/auth.service";
+import {AuthService} from "../../../../core/services/auth.service";
 import {Router} from "@angular/router";
 
 @Component({

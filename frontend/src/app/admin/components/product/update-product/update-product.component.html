@@ -1,17 +1,17 @@
-<form #form="ngForm" #formRef (ngSubmit)="addProduct(form)" class="mt-1 space-y-4">
+<form #form="ngForm" #formRef (ngSubmit)="updateProduct(form)" class="mt-1 space-y-4">
   <!--header-->
-  <div class="bg-gray-100 border-gray-200 p-2">
+  <header class="bg-gray-100 border-gray-200 p-2">
     <button class="text-gray-500 flex items-center hover:text-gray-700" type="button">
       <fa-icon [icon]="faArrowLeft"></fa-icon>
       <span (click)="goBack()" class="ml-2">Back</span>
     </button>
 
     <div class="flex justify-between items-center">
-      <h1 class="text-xl font-bold">Add Product</h1>
+      <h1 class="text-xl font-bold">Update Product</h1>
       <div class="flex gap-2">
         <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
           <fa-icon [icon]="faClose"></fa-icon>
-          <span class="ml-2" routerLink="/admin/product">Cancel</span>
+          <span (click)="goBack()" class="ml-2">Cancel</span>
         </button>
         <button
           [disabled]="isLoading"
@@ -23,7 +23,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </header>
   <!--main-->
   <div class="grid lg:grid-cols-3 gap-4 mb-6">
     <!--    left-->
@@ -98,11 +98,11 @@
           <!-- Preview List -->
           <div class="mt-4 flex flex-wrap gap-4">
             <div
-              *ngFor="let img of imagesPreview; let i = index"
+              *ngFor="let img of images; let i = index"
               class="relative group w-24 h-24 rounded border overflow-hidden"
             >
               <img
-                [src]="img"
+                [src]="img.src"
                 alt="Preview"
                 class="w-full h-full object-cover rounded"
               />
@@ -204,13 +204,54 @@
       <!--    tag-->
       <section class="bg-white p-4 rounded-xl shadow">
         <h2 class="font-semibold mb-4">Tags</h2>
+        <div *ngFor="let tag of tags; let i = index" class="max-h-48 overflow-y-auto scrollbar-hide">
+          <label class="flex items-center gap-2">
+            <input
+              (change)="onTagChange($event, tag.id)"
+              [checked]="selectTag.includes(tag.id)"
+              [value]="tag.id"
+              name="tagId"
+              type="checkbox"
+            />
+            {{ tag.name }}
+          </label>
+        </div>
       </section>
       <!--    brand-->
       <section class="bg-white p-4 rounded-xl shadow">
         <h2 class="font-semibold mb-4">Brand</h2>
+        <div class="max-h-48 overflow-y-auto scrollbar-hide">
+          <label *ngFor="let brand of brands; let i = index" class="flex items-center gap-2">
+            <input
+              [(ngModel)]="brandId"
+              [value]="brand.id"
+              name="brandId"
+              type="radio"
+            />
+            {{ brand.name }}
+          </label>
+        </div>
       </section>
     </div>
   </div>
+
+  <footer class="bg-gray-100 border-gray-200 justify-end">
+    <div class="flex gap-2">
+      <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
+        <fa-icon [icon]="faClose"></fa-icon>
+        <span (click)="goBack()" class="ml-2">Cancel</span>
+      </button>
+      <button
+        [disabled]="isLoading"
+        class="bg-blue-600 text-white border px-4 py-2 rounded"
+        type="submit"
+      >
+        <fa-icon [icon]="faSave"></fa-icon>
+        <span class="ml-2">Save</span>
+      </button>
+    </div>
+  </footer>
+
 </form>
 
 <app-toast></app-toast>

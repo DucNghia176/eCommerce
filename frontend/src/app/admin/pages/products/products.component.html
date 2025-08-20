@@ -41,7 +41,7 @@
   </div>
 
   <div class="overflow-x-auto overflow-y-hidden">
-    <table class="text-left min-w-[900px]">
+    <table class="text-left w-full">
       <thead>
       <tr class="border-gray-400 text-gray-600 items-center text-base font-medium border-b ">
         <th class="transform scale-125 text-center px-2">
@@ -85,12 +85,15 @@
           </td>
           <td class="p-3 text-center">{{ product.quantity }}</td>
           <td class="p-3">{{ product.price }}</td>
-          <td class="p-3">{{ product.brandId }}</td>
+          <td class="p-3">
+            <ng-container *ngIf="product.brand; else noBrand">{{ product.brand.name }}</ng-container>
+            <ng-template #noBrand></ng-template>
+          </td>
           <td class="p-3">{{ product.description }}</td>
           <td class="p-3 sticky right-0 bg-gray-50 border-l border-gray-200 z-10 text-center">
             <button
+              [routerLink]="['/admin/product/update', product.id]"
               class="text-blue-500 hover:text-blue-600"
-              routerLink="/admin/product/edit/{{ product.id }}"
               type="button"
             >
               <fa-icon [icon]="faEdit"></fa-icon>

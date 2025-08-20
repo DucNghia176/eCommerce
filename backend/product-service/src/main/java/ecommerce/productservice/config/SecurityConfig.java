@@ -28,6 +28,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/product/search").permitAll()
                         .requestMatchers("/api/product/*/**").permitAll()
+                        .requestMatchers("/api/brand/**").permitAll()
+                        .requestMatchers("/api/tag/**").permitAll()
                         .requestMatchers("/api/product/create").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/product/update/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/product/delete/**").hasAnyAuthority("ADMIN")

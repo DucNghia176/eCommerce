@@ -1,9 +1,11 @@
 import {Component} from '@angular/core';
 import {CommonModule} from "@angular/common";
-import {RevenueCardComponent} from "../../components/revenue-card/revenue-card.component";
-import {OrderOverTimeComponent} from "../../components/order-over-time/order-over-time.component";
-import {RecentTransactionsComponent} from "../../components/recent-transactions/recent-transactions.component";
-import {TopProductComponent} from "../../components/top-product/top-product.component";
+import {RevenueCardComponent} from "../../components/dashboard/revenue-card/revenue-card.component";
+import {OrderOverTimeComponent} from "../../components/dashboard/order-over-time/order-over-time.component";
+import {
+  RecentTransactionsComponent
+} from "../../components/dashboard/recent-transactions/recent-transactions.component";
+import {TopProductComponent} from "../../components/dashboard/top-product/top-product.component";
 import {PaymentStatus} from "../../../shared/status/payment-status";
 import {NgApexchartsModule} from "ng-apexcharts";
 

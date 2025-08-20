@@ -1,0 +1,259 @@
+<form #form="ngForm" #formRef (ngSubmit)="addProduct(form)" class="mt-1 space-y-4">
+  <!--header-->
+  <header class="bg-gray-100 border-gray-200 p-2">
+    <button class="text-gray-500 flex items-center hover:text-gray-700" type="button">
+      <fa-icon [icon]="faArrowLeft"></fa-icon>
+      <span (click)="goBack()" class="ml-2">Back</span>
+    </button>
+
+    <div class="flex justify-between items-center">
+      <h1 class="text-xl font-bold">Add Product</h1>
+      <div class="flex gap-2">
+        <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
+          <fa-icon [icon]="faClose"></fa-icon>
+          <span (click)="goBack()" class="ml-2">Cancel</span>
+        </button>
+        <button
+          [disabled]="isLoading"
+          class="bg-blue-600 text-white border px-4 py-2 rounded"
+          type="submit"
+        >
+          <fa-icon [icon]="faSave"></fa-icon>
+          <span class="ml-2">Save</span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <!--main-->
+  <div class="grid lg:grid-cols-3 gap-4 mb-6">
+    <!--    left-->
+    <div class="lg:col-span-2 ">
+      <section class="bg-white p-6 rounded-xl shadow space-y-6 gap-3">
+        <!--      information-->
+        <div class="space-y-4 border-b border-gray-300 pb-7">
+          <h2 class=" font-semibold text-lg mb-4"> Information </h2>
+          <!--        name-->
+          <div class="">
+            <label class="text-gray-600 label-required block font-medium" for="name">
+              Product Name
+            </label>
+            <input
+              #nameRef="ngModel"
+              [(ngModel)]="name"
+              class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              id="name"
+              name="name"
+              placeholder="Enter product name"
+              required
+              type="text"
+            />
+            <div *ngIf="nameRef.invalid && nameRef.touched" class="text-red-600 text-sm mt-1">
+              <div *ngIf="nameRef.errors?.['required']">Vui lòng nhập tên sản phầm để tiếp tục.</div>
+            </div>
+          </div>
+          <!--        description-->
+          <div>
+            <label class="text-gray-600 block font-medium" for="description">
+              Product Description
+            </label>
+            <textarea
+              [(ngModel)]="description"
+              class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-24 resize-none"
+              id="description"
+              name="description"
+              placeholder="Enter description"
+            >
+            </textarea>
+          </div>
+        </div>
+        <!--    image-->
+        <!-- Image Upload Section -->
+        <div class="border-b border-gray-300 pb-7">
+          <h2 class="font-semibold mb-2">Images</h2>
+
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-md flex flex-col justify-center items-center space-y-2 h-40"
+          >
+            <!-- Add File Button -->
+            <label
+              class="bg-white text-blue-600 border rounded px-4 py-2 font-medium hover:bg-gray-100"
+              for="images"
+              type="button"
+            >
+              Add File
+            </label>
+            <input
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              hidden
+              id="images"
+              multiple
+              name="images"
+              type="file"
+            />
+
+            <p class="text-sm text-gray-500">Or drag and drop files</p>
+          </div>
+
+          <!-- Preview List -->
+          <div class="mt-4 flex flex-wrap gap-4">
+            <div
+              *ngFor="let img of images; let i = index"
+              class="relative group w-24 h-24 rounded border overflow-hidden"
+            >
+              <img
+                [src]="img.src"
+                alt="Preview"
+                class="w-full h-full object-cover rounded"
+              />
+              <!-- Remove Button -->
+              <button
+                (click)="removeImage(i)"
+                class="absolute top-1 right-1 bg-white text-red-500 rounded-full w-5 h-5 flex items-center justify-center text-xs shadow group-hover:scale-110 transition-transform"
+                title="Remove"
+                type="button"
+              >
+                <fa-icon [icon]="faClose"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!--    price-->
+        <div>
+          <h2 class="font-semibold text-lg mb-4"> Price </h2>
+          <!--          price + discount-->
+          <div class="flex gap-4">
+            <div class="flex flex-col w-1/2">
+              <label class="text-gray-600 block font-medium label-required" for="price">
+                Price
+              </label>
+              <input
+                #priceRef="ngModel"
+                [(ngModel)]="price"
+                class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                id="price"
+                name="price"
+                placeholder="Enter price"
+                required
+                type="text"
+              >
+              <div *ngIf="priceRef.invalid && priceRef.touched" class="text-red-600 text-sm mt-1">
+                <div *ngIf="priceRef.errors?.['required']">Vui lòng nhập giá tiền để tiếp tục.</div>
+              </div>
+            </div>
+
+            <div class="flex flex-col w-1/2">
+              <label class="text-gray-600 block font-medium" for="discount">
+                Discount Price
+              </label>
+              <input
+                [(ngModel)]="discount"
+                class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                id="discount"
+                name="discount"
+                placeholder="Enter discount price"
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!--    right-->
+    <div class="space-y-6">
+      <!--    category-->
+      <section class="bg-white p-4 rounded-xl shadow ">
+        <h2 class="font-semibold mb-4">Categories</h2>
+        <!-- category checkboxes -->
+
+        <div *ngFor="let category of categories; let i = index" class="max-h-48 overflow-y-auto scrollbar-hide">
+          <label class="flex items-center gap-2">
+            <input
+              [(ngModel)]="categoryId"
+              [disabled]="categoryId !== null && categoryId !== category.id"
+              [value]="category.id"
+              name="categoryId"
+              required
+              type="radio"
+            />
+            {{ category.name }}
+          </label>
+        </div>
+        <button
+          (click)="toggleMiniForm()"
+          type="button"
+        >
+          <span *ngIf="!categoryId" class="text-sm text-blue-500">Add Category</span>
+        </button>
+        <div *ngIf="showMiniForm" class="mt-4 p-4 border rounded bg-gray-50 shadow space-y-3 w-full max-w-sm">
+          <label class="block text-sm font-medium text-gray-700">Product Name</label>
+          <input
+            [(ngModel)]="categoryName"
+            class="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            name="categoryName"
+            placeholder="Enter product name"
+            type="text"
+          />
+          <div class="flex justify-end gap-2">
+            <button (click)="toggleMiniForm()" class="px-4 py-2 bg-gray-300 rounded" type="button">Cancel</button>
+            <button (click)="saveMiniProduct()" class="px-4 py-2 bg-blue-600 text-white rounded" type="button">Save
+            </button>
+          </div>
+        </div>
+      </section>
+      <!--    tag-->
+      <section class="bg-white p-4 rounded-xl shadow">
+        <h2 class="font-semibold mb-4">Tags</h2>
+        <div *ngFor="let tag of tags; let i = index" class="max-h-48 overflow-y-auto scrollbar-hide">
+          <label class="flex items-center gap-2">
+            <input
+              (change)="onTagChange($event, tag.id)"
+              [checked]="selectTag.includes(tag.id)"
+              [value]="tag.id"
+              name="tagId"
+              type="checkbox"
+            />
+            {{ tag.name }}
+          </label>
+        </div>
+      </section>
+      <!--    brand-->
+      <section class="bg-white p-4 rounded-xl shadow">
+        <h2 class="font-semibold mb-4">Brand</h2>
+        <div class="max-h-48 overflow-y-auto scrollbar-hide">
+          <label *ngFor="let brand of brands; let i = index" class="flex items-center gap-2">
+            <input
+              [(ngModel)]="brandId"
+              [value]="brand.id"
+              name="brandId"
+              type="radio"
+            />
+            {{ brand.name }}
+          </label>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer class=" border-t border-gray-200 p-4 mt-6 flex justify-end gap-2">
+    <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
+      <fa-icon [icon]="faClose"></fa-icon>
+      <span (click)="goBack()" class="ml-2">Cancel</span>
+    </button>
+    <button
+      [disabled]="isLoading"
+      class="bg-blue-600 text-white border px-4 py-2 rounded"
+      type="submit"
+    >
+      <fa-icon [icon]="faSave"></fa-icon>
+      <span class="ml-2">Save</span>
+    </button>
+  </footer>
+
+</form>
+
+<app-toast></app-toast>
+<div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <app-loading-spinner [show]="true"></app-loading-spinner>
+</div>

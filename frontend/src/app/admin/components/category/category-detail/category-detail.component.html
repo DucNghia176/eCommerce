@@ -1,0 +1,168 @@
+<!--header-->
+<header class="bg-gray-100 border-gray-200 p-2">
+  <button class="text-gray-500 flex items-center hover:text-gray-700" type="button">
+    <fa-icon [icon]="faArrowLeft"></fa-icon>
+    <span (click)="goBack()" class="ml-2">Back</span>
+  </button>
+</header>
+<!--main-->
+<div class="grid lg:grid-cols-3 gap-4 mb-6">
+  <!--  product-->
+  <div class="lg:col-span-2 bg-white rounded-lg shadow p-4 flex flex-col">
+
+    <button
+      [queryParams]="{ categoryId: categoryId }"
+      [routerLink]="['/admin/product/create']"
+      class="bg-white text-blue-600 border px-4 py-2 rounded"
+      type="button"
+    >
+      <fa-icon [icon]="faAdd"></fa-icon>
+      <span class="ml-2">Add Product</span>
+    </button>
+
+    <div
+      *ngFor="let product of products"
+      class="bg-white rounded-lg shadow cursor-pointer mt-3 flex items-center gap-2 items-justify"
+    >
+      <img
+        [src]="product.image"
+        class="w-12 h-12 object-cover rounded"
+      />
+      <span>{{ product.name }}</span>
+    </div>
+    <app-page
+      (pageChange)="loadProductsByCategory($event.page)"
+      (pageSizeChange)="onPageSizeChange($event)"
+      [currentPage]="currentPage"
+      [pageSize]="pageSize"
+      [pageSizes]="pageSizes"
+      [totalItems]="totalItems"
+    ></app-page>
+  </div>
+
+  <!--  category-->
+  <form #form="ngForm" #formRef (ngSubmit)="updateProduct(form)" class="space-y-6">
+    <!--    category visibility-->
+    <div class="bg-white p-4 rounded-xl shadow ">
+      <h2 class="font-semibold mb-4">Category Visiable</h2>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input
+          [(ngModel)]="isVisible"
+          class="sr-only peer"
+          name="isVisible"
+          type="checkbox"
+        >
+        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600
+              after:content-[''] after:absolute after:top-0.5 after:left-[2px]
+              after:bg-white after:border-gray-300 after:border after:rounded-full
+              after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full">
+        </div>
+      </label>
+    </div>
+
+    <!--    category info-->
+    <div class="bg-white p-4 rounded-xl shadow flex flex-col gap-2">
+      <h2 class="font-semibold mb-4">Category Info</h2>
+      <div class="">
+        <label class="text-gray-600 label-required block font-medium" for="name">
+          Category Name
+        </label>
+        <input
+          #nameRef="ngModel"
+          [(ngModel)]="categoryName"
+          class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+          id="name"
+          name="name"
+          placeholder="Enter product name"
+          type="text"
+        />
+      </div>
+      <div class="">
+        <label class="text-gray-600 label-required block font-medium" for="parentId">
+          Category Parent
+        </label>
+        <select
+          #parentIdRef="ngModel"
+          [(ngModel)]="parentId"
+          class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+          id="parentId"
+          name="parentId"
+        >
+          <option [ngValue]="null">-- None --</option>
+          <option *ngFor="let category of categories" [ngValue]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+      <!--    image-->
+      <!-- Image Upload -->
+      <div class=" border-gray-300 pb-7">
+        <h2 class="font-semibold mb-2">Image</h2>
+
+        <div
+          class="border-2 border-dashed border-gray-300 rounded-md flex flex-col justify-center items-center space-y-2 h-40"
+        >
+          <!-- Add File Button -->
+          <label
+            class="bg-white text-blue-600 border rounded px-4 py-2 font-medium hover:bg-gray-100"
+            for="images"
+            type="button"
+          >
+            Add File
+          </label>
+          <input
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            hidden
+            id="images"
+            multiple
+            name="images"
+            type="file"
+          />
+
+          <p class="text-sm text-gray-500">Or drag and drop files</p>
+        </div>
+
+        <!-- Preview Image -->
+        <div class="mt-4 w-32 h-32 relative">
+          <img
+            *ngIf="image"
+            [src]="image.src"
+            alt="Preview"
+            class="w-full h-full object-cover rounded border"
+          />
+
+          <!-- Remove Button -->
+          <button
+            (click)="removeImage()"
+            *ngIf="image"
+            class="absolute top-1 right-1 bg-white text-red-500 rounded-full w-6 h-6 flex items-center justify-center text-sm shadow hover:scale-110 transition-transform"
+            title="Remove"
+            type="button"
+          >
+            <fa-icon [icon]="faClose"></fa-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-2 justify-end">
+      <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
+        <fa-icon [icon]="faClose"></fa-icon>
+        <span (click)="goBack()" class="ml-2">Cancel</span>
+      </button>
+      <button
+        [disabled]="isLoading"
+        class="bg-blue-600 text-white border px-4 py-2 rounded"
+        type="submit"
+      >
+        <fa-icon [icon]="faSave"></fa-icon>
+        <span class="ml-2">Save</span>
+      </button>
+    </div>
+  </form>
+
+</div>
+<app-toast></app-toast>
+<div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <app-loading-spinner [show]="true"></app-loading-spinner>
+</div>
