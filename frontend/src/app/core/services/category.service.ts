@@ -49,7 +49,7 @@ export class CategoryService {
 
   updateCategory(id: number, request: CategoryRequest, image ?: File): Observable<CategoryResponse> {
     const formData = new FormData();
-    
+
     formData.append('request', new Blob([JSON.stringify(request)], {type: 'application/json'}));
     if (image) {
       formData.append('image', image);
@@ -111,7 +111,7 @@ export class CategoryService {
     );
   }
 
-  private handleError(error: any): Observable<never> {
+  public handleError(error: any): Observable<never> {
     let errorMessage = 'Đã xảy ra lỗi';
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;

@@ -13,6 +13,7 @@ export interface ProductResponse {
   tags: TagResponse[],
   unit: string,
   quantity: number,
+  skuCode: string,
   brand: BrandResponse,
 }
 
@@ -25,4 +26,15 @@ export interface ProductRequest {
   tags: number[] | null,
   unit: string,
   brandId: number | null,
+}
+
+export interface ProductSearchRequest {
+  name?: string;
+  priceFrom?: number;
+  priceTo?: number;
+  price?: number;
+  discountPrice?: number;
+  categoryName?: string;
+  tagName?: number[];
+  hasDiscount?: boolean;
 }

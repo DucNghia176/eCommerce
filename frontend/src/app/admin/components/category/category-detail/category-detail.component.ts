@@ -1,5 +1,5 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {CommonModule, Location} from "@angular/common";
+import {CommonModule, Location, NgOptimizedImage} from "@angular/common";
 import {CategoryService} from "../../../../core/services/category.service";
 import {PageSize} from "../../../../shared/status/page-size";
 import {finalize} from "rxjs";
@@ -9,8 +9,7 @@ import {CategoryRequest, CategoryResponse} from "../../../../core/models/categor
 import {ImagePreview} from "../../../../core/models/image.model";
 import {ToastService} from "../../../../core/services/toast.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faAdd, faArrowLeft, faClose, faSave} from "@fortawesome/free-solid-svg-icons";
-import {LoadingSpinnerComponent} from "../../../../shared/components/loading-spinner/loading-spinner.component";
+import {faAdd, faArrowLeft, faClose, faEdit, faSave} from "@fortawesome/free-solid-svg-icons";
 import {ToastComponent} from "../../../../shared/components/toast/toast.component";
 import {PageComponent} from "../../../../shared/components/page/page.component";
 import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
@@ -19,7 +18,7 @@ import {validateAndFocusFirstError} from "../../../../shared/utils/validation";
 @Component({
   selector: 'app-category-detail',
   standalone: true,
-  imports: [CommonModule, FaIconComponent, LoadingSpinnerComponent, ToastComponent, PageComponent, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, FaIconComponent, ToastComponent, PageComponent, ReactiveFormsModule, FormsModule, RouterLink, NgOptimizedImage],
   templateUrl: './category-detail.component.html',
   styleUrl: './category-detail.component.scss'
 })
@@ -40,10 +39,13 @@ export class CategoryDetailComponent implements OnInit {
   pageSize: number = 10;
   pageSizes: number[] = PageSize
   errorMessages: string | null = null;
+  isOpen = false;
+  selectedCategory: any = null;
   protected readonly faArrowLeft = faArrowLeft;
   protected readonly faClose = faClose;
   protected readonly faSave = faSave;
   protected readonly faAdd = faAdd;
+  protected readonly faEdit = faEdit;
   private location = inject(Location);
   private categoryService = inject(CategoryService);
   private route = inject(ActivatedRoute);
@@ -55,7 +57,7 @@ export class CategoryDetailComponent implements OnInit {
       if (id) {
         this.categoryId = +id;
         this.loadProductsByCategory();
-        this.loadCategory();
+        void this.loadCategory();
         this.loadCategories();
       }
     })
@@ -117,12 +119,12 @@ export class CategoryDetailComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: () => {
-          this.toastService.show("Cập nhật sản phẩm thành công", "p")
+          this.toastService.show("Cập nhật danh mục thành công", "p")
           this.loadProductsByCategory()
           this.loadCategory();
         },
         error: (err) => {
-          this.toastService.show(`Cập nhật sản phẩm thất bại: ${err.message}`, "f");
+          this.toastService.show(`Cập nhật danh mục thất bại: ${err.message}`, "f");
         }
       });
   }
@@ -166,6 +168,12 @@ export class CategoryDetailComponent implements OnInit {
   onPageSizeChange(newSize: number) {
     this.pageSize = newSize;
     this.loadProductsByCategory(0);
+  }
+
+  selectCategory(category: any) {
+    this.selectedCategory = category;
+    this.parentId = category ? category.id : null;
+    this.isOpen = false;
   }
 
   private loadCategories() {

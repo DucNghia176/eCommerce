@@ -36,6 +36,7 @@ public class InventoryServiceImpl implements InventoryService {
         try {
             Inventory inventory = inventoryRepository.findById(request.getSkuCode())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+            
             inventory.setQuantity(inventory.getQuantity() + request.getQuantity());
             inventory.setImportedAt(LocalDateTime.now());
             inventoryRepository.save(inventory);

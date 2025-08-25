@@ -24,7 +24,7 @@ public interface ProductService {
 
     ApiResponse<ProductResponse> deleteProduct(Long id);
 
-    ApiResponse<List<ProductResponse>> searchProduct(ProductSearchRequest request);
+    ApiResponse<Page<ProductResponse>> searchProduct(ProductSearchRequest request, int page, int size);
 
     String getSkuCodeByProductId(Long productId);
 

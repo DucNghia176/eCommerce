@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {catchError, map, Observable, throwError} from "rxjs";
-import {ProductRequest, ProductResponse} from "../models/product.model";
+import {ProductRequest, ProductResponse, ProductSearchRequest} from "../models/product.model";
 import {ApiResponse} from "../models/common.model";
 import {Page} from "../models/page.model";
 
@@ -83,6 +83,19 @@ export class ProductService {
 
   deleteProduct(id: number): Observable<ProductResponse> {
     return this.http.delete<ApiResponse<ProductResponse>>(`${this.apiUrl}/delete/${id}`)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data;
+          }
+          throw new Error(response.message || 'Something went wrong');
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  searchProduct(request: ProductSearchRequest, page: number = 0, size: number = 10): Observable<Page<ProductResponse>> {
+    return this.http.post<ApiResponse<Page<ProductResponse>>>(`${this.apiUrl}/search`, request)
       .pipe(
         map(response => {
           if (response.code === 200 && response.data) {

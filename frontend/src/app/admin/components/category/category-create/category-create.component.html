@@ -1,1 +1,178 @@
-<p>category-create works!</p>
+<form #form="ngForm" #formRef (ngSubmit)="createCategory(form)" class="mt-1 space-y-4">
+  <header class="bg-gray-100 border-gray-200 p-2">
+    <button class="text-gray-500 flex items-center hover:text-gray-700" type="button">
+      <fa-icon [icon]="faArrowLeft"></fa-icon>
+      <span (click)="goBack()" class="ml-2">Quay lại</span>
+    </button>
+
+    <div class="flex justify-between items-center">
+      <h1 class="text-xl font-bold">Thêm danh mục</h1>
+      <div class="flex gap-2">
+        <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
+          <fa-icon [icon]="faClose"></fa-icon>
+          <span (click)="goBack()" class="ml-2">Hủy</span>
+        </button>
+        <button
+          [disabled]="isLoading"
+          class="bg-blue-600 text-white border px-4 py-2 rounded"
+          type="submit"
+        >
+          <fa-icon [icon]="faSave"></fa-icon>
+          <span class="ml-2">Lưu</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!--main-->
+  <div class="grid lg:grid-cols-3 gap-4 mb-6">
+    <div class="lg:col-span-2 ">
+      <div class="bg-white p-6 rounded-xl shadow space-y-6 gap-3">
+        <!--      thông tin-->
+        <div class="space-y-4">
+          <h2 class=" font-semibold text-lg mb-4"> Thông tin </h2>
+          <!--        tên-->
+          <label class="text-gray-600 label-required block font-medium" for="name">
+            Tên danh mục
+          </label>
+          <input
+            #nameRef="ngModel"
+            [(ngModel)]="name"
+            class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            id="name"
+            name="name"
+            placeholder="Nhập tên danh mục"
+            required
+            type="text"
+          />
+          <div *ngIf="(nameRef.touched || submitted) && nameRef.invalid  " class="text-red-600 text-sm mt-1">
+            <div *ngIf="nameRef.errors?.['required']">Vui lòng nhập tên danh mục để tiếp tục.</div>
+          </div>
+        </div>
+        <!--        cha-->
+        <div class="relative">
+          <button
+            (click)="isOpen = !isOpen"
+            class="w-full flex justify-between items-center border px-4 py-2 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="button"
+          >
+            {{ selectedCategory?.name || '-- Không có --' }}
+            <svg class="w-5 h-5 text-gray-500" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2"/>
+            </svg>
+          </button>
+
+          <!-- dropdown list -->
+          <ul *ngIf="isOpen"
+              class="absolute w-full mt-2 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto z-10">
+            <li
+              (click)="selectCategory(null)"
+              class="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-md"
+            >
+              -- Không có --
+            </li>
+            <li
+              (click)="selectCategory(category)"
+              *ngFor="let category of categories"
+              class="px-4 py-2 hover:bg-blue-100 cursor-pointer rounded-md"
+            >
+              {{ category.name }}
+            </li>
+          </ul>
+        </div>
+
+
+        <!-- Hình ảnh -->
+        <div class="border-gray-300 pb-7">
+          <h2 class="font-semibold mb-2">Hình Ảnh</h2>
+
+          <!-- Upload zone (chỉ hiển thị khi chưa có ảnh) -->
+          <div
+            *ngIf="!image"
+            class="border-2 border-dashed border-gray-300 rounded-md flex flex-col justify-center items-center space-y-2 h-40"
+          >
+            <label
+              class="bg-white text-blue-600 border rounded px-4 py-2 font-medium hover:bg-gray-100 cursor-pointer"
+              for="images"
+            >
+              Thêm tệp
+            </label>
+            <input
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              hidden
+              id="images"
+              multiple
+              name="images"
+              type="file"
+            />
+            <p class="text-sm text-gray-500">Hoặc kéo và thả tệp vào đây</p>
+          </div>
+
+          <!-- Preview -->
+          <div *ngIf="image" class="mt-4 relative group w-40 aspect-square">
+            <img
+              [src]="image.src"
+              alt="Xem trước"
+              class="w-full h-full object-cover rounded-md border shadow"
+            />
+            <!-- Overlay hover -->
+            <div
+              class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 rounded-md"
+            >
+              <!-- Thay ảnh -->
+              <label
+                class="bg-white text-blue-600 p-2 rounded-full cursor-pointer hover:scale-110 transition"
+              >
+                <fa-icon [icon]="faEdit"></fa-icon>
+                <input
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                  hidden
+                  type="file"
+                />
+              </label>
+
+              <!-- Xoá ảnh -->
+              <button
+                (click)="removeImage()"
+                class="bg-white text-red-500 p-2 rounded-full hover:scale-110 transition"
+                type="button"
+              >
+                <fa-icon [icon]="faClose"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      <div class="bg-white p-4 rounded-xl shadow">
+        <h2 class="font-semibold mb-4">Hiển thị danh mục</h2>
+        <div class="flex items-center gap-2 ">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              [(ngModel)]="isVisible"
+              class="sr-only peer"
+              name="isVisible"
+              type="checkbox"
+            >
+            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600
+              after:content-[''] after:absolute after:top-0.5 after:left-[2px]
+              after:bg-white after:border-gray-300 after:border after:rounded-full
+              after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full">
+            </div>
+          </label>
+          <span class="">Hiển thị trên website</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+<app-toast></app-toast>
+<div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <app-loading-spinner [show]="true"></app-loading-spinner>
+</div>
