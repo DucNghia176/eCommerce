@@ -31,7 +31,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "FROM Product p " +
             "LEFT JOIN ProductImage pi ON pi.product.id = p.id " +
             "WHERE p.category.id IN :categoryIds " +
-            "AND pi.isThumbnail = 1 AND p.category.isActive = 1 AND p.isActive = 1")
+            "AND p.category.isActive = 1 AND p.isActive = 1")
     Page<ProductSummaryResponse> findProductsByCategory(@Param("categoryIds") Set<Long> categoryIds, Pageable pageable);
 
 

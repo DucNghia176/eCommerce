@@ -55,9 +55,14 @@ public class ProductController {
     }
 
     @PostMapping("search")
-    public ApiResponse<List<ProductResponse>> searchProduct(@RequestBody ProductSearchRequest request) {
-        return productService.searchProduct(request);
+    public ApiResponse<Page<ProductResponse>> searchProduct(
+            @RequestBody ProductSearchRequest request,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return productService.searchProduct(request, page, size);
     }
+
 
     @GetMapping("/{id}/skuCode")
     public String getSkuCode(@PathVariable Long id) {

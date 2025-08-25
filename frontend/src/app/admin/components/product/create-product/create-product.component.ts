@@ -3,7 +3,7 @@ import {ProductService} from "../../../../core/services/product.service";
 import {ProductRequest} from "../../../../core/models/product.model";
 import {FormsModule, NgForm} from "@angular/forms";
 import {validateAndFocusFirstError} from "../../../../shared/utils/validation";
-import {faArrowLeft, faCancel, faClose, faSave} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft, faCancel, faClose, faEdit, faSave} from "@fortawesome/free-solid-svg-icons";
 import {CommonModule, Location} from "@angular/common";
 import {ActivatedRoute, RouterModule} from "@angular/router";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -16,6 +16,7 @@ import {finalize} from "rxjs";
 import {TagBrandService} from "../../../../core/services/brand.service";
 import {BrandResponse, TagResponse} from "../../../../core/models/TagBrand.model";
 import {ImagePreview} from "../../../../core/models/image.model";
+import {handleImagesSelected} from "../../../../shared/utils/file-upload.util";
 
 @Component({
   selector: 'app-create-product',
@@ -45,6 +46,7 @@ export class CreateProductComponent implements OnInit {
   protected readonly faCancel = faCancel;
   protected readonly faSave = faSave;
   protected readonly faClose = faClose;
+  protected readonly faEdit = faEdit;
   private productService = inject(ProductService);
   private toastService = inject(ToastService);
   private categoryService = inject(CategoryService);
@@ -55,7 +57,7 @@ export class CreateProductComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const categoryId = params['categoryId'];
-      if (categoryId) {
+      if (params['categoryId']) {
         this.categoryId = +categoryId;
       }
     });
@@ -65,24 +67,11 @@ export class CreateProductComponent implements OnInit {
   }
 
   onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files) return;
-
-    const files = Array.from(input.files);
-    for (const file of files) {
-      if (!file.type.startsWith('image/')) {
-        this.toastService.show("Chỉ được phép chọn tệp ảnh (jpg, png, gif...)", "f");
-        continue;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.images.push({src: e.target.result as string, file: file});
-      };
-      reader.readAsDataURL(file);
-    }
-
-    input.value = '';
+    handleImagesSelected(event, (newImages) => {
+      this.images = [...this.images, ...newImages];
+    }, (msg) => {
+      this.toastService.show(msg, "f");
+    });
   }
 
   removeImage(index: number): void {
@@ -112,12 +101,18 @@ export class CreateProductComponent implements OnInit {
         next: () => {
           this.toastService.show("Tạo sản phẩm thành công", "p")
 
-          form.resetForm(); // reset toàn bộ form
-          this.images = [];
-          this.categoryId = null;
-          this.tags = [];
+          this.name = '';
+          this.price = '';
+          this.discount = '';
           this.units = '';
+          this.description = '';
+          this.images = [];
+          this.tags = [];
           this.brandId = null;
+
+          // Nếu muốn form vẫn valid và error cleared
+          form.control.markAsPristine();
+          form.control.markAsUntouched();
         },
         error: (err) => {
           this.toastService.show(`Tạo sản phẩm thất bại: ${err.message}`, "f");

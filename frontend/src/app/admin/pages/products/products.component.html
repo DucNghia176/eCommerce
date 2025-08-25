@@ -19,13 +19,12 @@
 
 <div class="border rounded-xl bg-white shadow p-6">
   <div class="flex justify-between items-center mb-4 mt-4">
-    <div class="flex items-center gap-2 w-auto">
-      <fa-icon
-        [icon]="faSearch"
-        class="ml-3 text-gray-800 text-sm"
-      ></fa-icon>
+    <div class="relative w-1/2">
+      <fa-icon [icon]="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></fa-icon>
       <input
-        class="pl-10 border px-3 py-2 rounded pr-3"
+        (input)="searchProduct($event)"
+        [(ngModel)]="searchTerm"
+        class="border rounded-md py-1.5 px-3 pl-9 w-64 focus:outline-none focus:ring focus:ring-blue-500"
         placeholder="Tìm kiếm..."
         type="text"
       />
@@ -90,14 +89,25 @@
             <ng-template #noBrand></ng-template>
           </td>
           <td class="p-3">{{ product.description }}</td>
+
           <td class="p-3 sticky right-0 bg-gray-50 border-l border-gray-200 z-10 text-center">
-            <button
-              [routerLink]="['/admin/product/update', product.id]"
-              class="text-blue-500 hover:text-blue-600"
-              type="button"
-            >
-              <fa-icon [icon]="faEdit"></fa-icon>
-            </button>
+            <div class="flex justify-center items-center gap-3">
+              <button
+                [routerLink]="['/admin/product/update', product.id]"
+                class="text-blue-500 hover:text-blue-600"
+                type="button"
+              >
+                <fa-icon [icon]="faEdit" title="Chỉnh sửa"></fa-icon>
+              </button>
+
+              <button
+                (click)="openQuantityModal(product)"
+                class="text-blue-500 hover:text-blue-600"
+                type="button"
+              >
+                <fa-icon [icon]="faWarehouse" title="Thêm số lượng"></fa-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </ng-container>
@@ -121,3 +131,46 @@
     [totalItems]="totalItems"
   ></app-page>
 </div>
+
+<div
+  *ngIf="isQuantityModalOpen"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div class="bg-white p-6 rounded-xl w-96">
+    <h2 class="text-xl font-bold mb-4">Cập nhật số lượng: {{ selectedProduct?.name }}</h2>
+
+    <div class="mb-4">
+      <label class="block mb-1">Số lượng thêm:</label>
+      <input
+        #quantityInput
+        (keyup.enter)="updateQuantity()"
+        [(ngModel)]="addQuantity"
+        class="w-full border px-3 py-2 rounded"
+        min="1"
+        placeholder="0"
+        type="number"
+      />
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <button
+        (click)="closeQuantityModal()"
+        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+      >
+        Hủy
+      </button>
+      <button
+        (click)="updateQuantity()"
+        class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+      >
+        Cập nhật
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-toast></app-toast>
+<div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <app-loading-spinner [show]="true"></app-loading-spinner>
+</div>
+

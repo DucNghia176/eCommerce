@@ -305,9 +305,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiResponse<List<ProductResponse>> searchProduct(ProductSearchRequest request) {
+    public ApiResponse<Page<ProductResponse>> searchProduct(ProductSearchRequest request, int page, int size) {
         try {
-            Specification<Product> spec = null;
+            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+            Specification<Product> spec = (root, query, cb) -> cb.equal(root.get("isActive"), 1);
 
             if (request.getName() != null && !request.getName().isBlank()) {
                 Specification<Product> nameSpec = (root, query, cb) ->
@@ -345,38 +347,67 @@ public class ProductServiceImpl implements ProductService {
             if (request.getTagName() != null && !request.getTagName().isEmpty()) {
                 spec = and(spec, (root, query, cb) -> {
                     Join<Product, ProductTag> tagJoin = root.join("productTags", JoinType.INNER);
-                    query.distinct(true); // Tránh trùng
+                    query.distinct(true); // tránh trùng
                     return tagJoin.get("tag").get("id").in(request.getTagName());
                 });
             }
 
-            List<Product> products = productRepository.findAll(spec);
-            List<ProductResponse> responses = products.stream()
-                    .map(productMapper::toResponse)
-                    .toList();
-            if (responses.isEmpty()) {
-                return ApiResponse.<List<ProductResponse>>builder()
-                        .code(200)
-                        .message("Không tìm thấy sản phẩm phù hợp")
-                        .data(List.of()) // vẫn trả về danh sách rỗng
-                        .build();
-            } else {
-                return ApiResponse.<List<ProductResponse>>builder()
-                        .code(200)
-                        .message("Tìm kiếm thành công")
-                        .data(responses)
-                        .build();
-            }
+            // Sử dụng findAll với Pageable
+            Page<Product> productPage = productRepository.findAll(spec, pageable);
+
+            Page<ProductResponse> responsePage = productPage.map(productMapper::toResponse);
+
+            responsePage = productPage.map(product -> {
+                ProductResponse res = productMapper.toResponse(product);
+
+                // Lấy tags
+                List<TagResponse> tags = productTagRepository.findByProduct_Id(product.getId())
+                        .stream()
+                        .map(pt -> new TagResponse(pt.getTag().getId(), pt.getTag().getName()))
+                        .toList();
+                res.setTags(tags);
+
+                // Lấy ảnh
+                List<ProductImage> imageEntities = productImageRepository.findByProductId(product.getId());
+                res.setImageUrls(imageEntities.stream().map(ProductImage::getImageUrl).toList());
+
+                // Thumbnail
+                String thumbnail = imageEntities.stream()
+                        .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail() == 1)
+                        .map(ProductImage::getImageUrl)
+                        .findFirst()
+                        .orElse(null);
+                res.setThumbnailUrl(thumbnail);
+
+                // Brand
+                if (product.getBrandId() != null) {
+                    brandRepository.findById(product.getBrandId())
+                            .ifPresent(brand -> res.setBrand(new BrandResponse(brand.getId(), brand.getName())));
+                }
+
+                // Quantity
+                int quantity = inventoryClient.getQuantity(productRepository.findSkuCodeById(product.getId()));
+                res.setQuantity(quantity);
+
+                return res;
+            });
+
+            return ApiResponse.<Page<ProductResponse>>builder()
+                    .code(200)
+                    .message(responsePage.isEmpty() ? "Không tìm thấy sản phẩm phù hợp" : "Tìm kiếm thành công")
+                    .data(responsePage)
+                    .build();
 
         } catch (Exception e) {
             log.error("Không tìm thấy sản phẩm " + e.getMessage(), e);
-            return ApiResponse.<List<ProductResponse>>builder()
+            return ApiResponse.<Page<ProductResponse>>builder()
                     .code(500)
                     .message("Đã xảy ra lỗi khi tìm kiếm")
                     .data(null)
                     .build();
         }
     }
+
 
     @Override
     public String getSkuCodeByProductId(Long productId) {

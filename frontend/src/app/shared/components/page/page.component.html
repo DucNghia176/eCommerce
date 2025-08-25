@@ -12,7 +12,7 @@
     <button
       (click)="changePage(0)"
       [disabled]="currentPage === 0"
-      class="px-2 py-1 border rounded hover:bg-gray-100
+      class="px-2 py-1 border rounded hover:bg-gray-200
              disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
       «
     </button>
@@ -21,7 +21,7 @@
     <button
       (click)="changePage(currentPage - 1)"
       [disabled]="currentPage === 0"
-      class="px-2 py-1 border rounded hover:bg-gray-100
+      class="px-2 py-1 border rounded hover:bg-gray-200
              disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
       <
     </button>
@@ -30,10 +30,11 @@
     <ng-container *ngFor="let page of pageNumbers">
       <button
         (click)="changePage(page)"
-        [class.bg-blue-600]="page === currentPage"
-        [class.text-gray-700]="page !== currentPage"
-        [class.text-white]="page === currentPage"
-        class="px-3 py-1 rounded border hover:bg-gray-100">
+        [ngClass]="{
+          'bg-blue-600 text-white': page === currentPage,
+          'text-gray-700 hover:bg-gray-300': page !== currentPage
+        }"
+        class="px-3 py-1 rounded border">
         {{ page + 1 }}
       </button>
     </ng-container>
@@ -42,7 +43,7 @@
     <button
       (click)="changePage(currentPage + 1)"
       [disabled]="currentPage >= totalPages - 1"
-      class="px-2 py-1 border rounded hover:bg-gray-100
+      class="px-2 py-1 border rounded hover:bg-gray-200
              disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
       >
     </button>
@@ -51,7 +52,7 @@
     <button
       (click)="changePage(totalPages - 1)"
       [disabled]="currentPage >= totalPages - 1"
-      class="px-2 py-1 border rounded hover:bg-gray-100
+      class="px-2 py-1 border rounded hover:bg-gray-200
              disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
       »
     </button>

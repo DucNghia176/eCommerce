@@ -22,6 +22,7 @@ public interface ProductMapper {
     @Mapping(target = "tags", ignore = true)
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "thumbnailUrl", ignore = true)
+    @Mapping(source = "skuCode", target = "skuCode")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "discountPrice", target = "discountPrice")
     ProductResponse toResponse(Product product);

@@ -1,15 +1,21 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgForOf, NgIf} from "@angular/common";
 import {PageComponent} from "../../../shared/components/page/page.component";
-import {faAdd, faEdit, faFileExport, faSearch, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {ProductResponse} from "../../../core/models/product.model";
+import {faAdd, faEdit, faFileExport, faSearch, faTrash, faWarehouse} from "@fortawesome/free-solid-svg-icons";
+import {ProductResponse, ProductSearchRequest} from "../../../core/models/product.model";
 import {PageSize} from "../../../shared/status/page-size";
 import {ProductService} from "../../../core/services/product.service";
 import {RouterLink} from "@angular/router";
 import {SelectionService} from "../../../core/services/selection.service";
-import {finalize, forkJoin} from "rxjs";
+import {debounceTime, finalize, forkJoin, Subject, switchMap} from "rxjs";
 import {DialogService} from "../../../core/services/dialog.service";
+import {InventoryRequest} from "../../../core/models/inventory.model";
+import {InventoryService} from "../../../core/services/inventory.service";
+import {ToastService} from "../../../core/services/toast.service";
+import {LoadingSpinnerComponent} from "../../../shared/components/loading-spinner/loading-spinner.component";
+import {ToastComponent} from "../../../shared/components/toast/toast.component";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-products',
@@ -19,13 +25,17 @@ import {DialogService} from "../../../core/services/dialog.service";
     NgForOf,
     NgIf,
     PageComponent,
-    RouterLink
+    RouterLink,
+    LoadingSpinnerComponent,
+    ToastComponent,
+    FormsModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })
 export class ProductsComponent implements OnInit {
 
+  @ViewChild('quantityInput') quantityInput!: ElementRef;
   products: ProductResponse[] = [];
   errorMessage: string | null = null;
   images?: File[];
@@ -33,10 +43,15 @@ export class ProductsComponent implements OnInit {
   currentPage = 0;
   totalItems: number = 0;
   pageSize: number = 10;
-  inventory: number = 0;
+  addQuantity?: number;
+  skuCode: string = '';
+  selectedProduct: any = null;
+  isQuantityModalOpen = false;
   isConfirmOpen = false;
   price: number = 0;
   name: string = '';
+  searchTerm: string = '';
+  searchTerm$ = new Subject<string>();
   category: string = '';
   status: string = '';
   pageSizes: number[] = PageSize
@@ -44,20 +59,40 @@ export class ProductsComponent implements OnInit {
   public selectionService = inject(SelectionService<number>);
   protected readonly faFileExport = faFileExport;
   protected readonly faAdd = faAdd;
-  protected readonly faSearch = faSearch;
   protected readonly faTrash = faTrash;
   protected readonly faEdit = faEdit;
+  protected readonly faWarehouse = faWarehouse;
+  protected readonly search = faSearch;
   private productService = inject(ProductService);
   private dialogService = inject(DialogService);
+  private inventoryService = inject(InventoryService);
+  private toastService = inject(ToastService);
 
   ngOnInit() {
+    this.searchTerm$.pipe(debounceTime(300),        // Delay 300ms sau khi gõ xong
+      switchMap(term => {
+        const request: ProductSearchRequest = {name: term};
+        return this.productService.searchProduct(request, 0, 10);
+      })
+    )
+      .subscribe({
+        next: (data) => {
+          const allProduct = data.content;
+          this.currentPage = data.number;
+          this.totalItems = data.totalElements;
+          this.totalPages = data.totalPages;
+          this.products = allProduct;
+          this.errorMessage = null;
+        },
+        error: (err) => {
+          this.toastService.show("Lỗi hệ thống: " + err, "f");
+        }
+      });
     this.loadProduct();
   }
 
   public loadProduct(page: number = 0): void {
-    this.isLoading = true;
     this.productService.getAllProduct(page, this.pageSize)
-      .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (data) => {
           const allProduct = data.content;
@@ -112,5 +147,53 @@ export class ProductsComponent implements OnInit {
           });
         }
       });
+  }
+
+  // Khi nhấn icon
+  openQuantityModal(product: any) {
+    this.selectedProduct = product;
+    this.skuCode = product.skuCode;
+    this.isQuantityModalOpen = true;
+    setTimeout(() => {
+      if (this.quantityInput) {
+        this.quantityInput.nativeElement.focus();
+      }
+    }, 100);
+  }
+
+// Đóng modal
+  closeQuantityModal() {
+    this.isQuantityModalOpen = false;
+    this.selectedProduct = null;
+    this.addQuantity = undefined;
+  }
+
+  updateQuantity() {
+    if (!this.addQuantity || this.addQuantity <= 0) {
+      this.toastService.show("Vui lòng nhập số lượng hợp lệ", "f");
+      return;
+    }
+
+    const request: InventoryRequest = {
+      skuCode: this.skuCode,
+      quantity: this.addQuantity
+    }
+    this.inventoryService.updateInventory(request)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: () => {
+          this.toastService.show("Cập nhật số lượng thàng công", "p")
+          this.closeQuantityModal();
+          this.loadProduct();
+
+        }, error: (err) => {
+          this.toastService.show("Cập nhật số lượng thất bại" + err, "f")
+        }
+      })
+  }
+
+  searchProduct(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchTerm$.next(value);
   }
 }

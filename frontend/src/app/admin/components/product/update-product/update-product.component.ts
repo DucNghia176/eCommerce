@@ -4,7 +4,7 @@ import {BrandResponse, TagResponse} from "../../../../core/models/TagBrand.model
 import {ProductService} from "../../../../core/services/product.service";
 import {ToastService} from "../../../../core/services/toast.service";
 import {CategoryService} from "../../../../core/services/category.service";
-import {Location, NgForOf, NgIf} from "@angular/common";
+import {CommonModule, Location, NgForOf, NgIf} from "@angular/common";
 import {TagBrandService} from "../../../../core/services/brand.service";
 import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {validateAndFocusFirstError} from "../../../../shared/utils/validation";
@@ -14,8 +14,9 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {LoadingSpinnerComponent} from "../../../../shared/components/loading-spinner/loading-spinner.component";
 import {ActivatedRoute} from "@angular/router";
 import {ToastComponent} from "../../../../shared/components/toast/toast.component";
-import {faArrowLeft, faClose, faSave} from "@fortawesome/free-solid-svg-icons";
+import {faAdd, faArrowLeft, faClose, faPlus, faSave} from "@fortawesome/free-solid-svg-icons";
 import {ImagePreview} from "../../../../core/models/image.model";
+import {handleImagesSelected} from "../../../../shared/utils/file-upload.util";
 
 @Component({
   selector: 'app-update-product',
@@ -27,7 +28,7 @@ import {ImagePreview} from "../../../../core/models/image.model";
     NgForOf,
     NgIf,
     ReactiveFormsModule,
-    ToastComponent
+    ToastComponent, CommonModule
   ],
   templateUrl: './update-product.component.html',
   styleUrl: './update-product.component.scss'
@@ -54,6 +55,8 @@ export class UpdateProductComponent implements OnInit {
   protected readonly faClose = faClose;
   protected readonly faSave = faSave;
   protected readonly faArrowLeft = faArrowLeft;
+  protected readonly faPlus = faPlus;
+  protected readonly faAdd = faAdd;
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
   private toastService = inject(ToastService);
@@ -77,7 +80,6 @@ export class UpdateProductComponent implements OnInit {
   async loadProduct() {
     this.productService.getProductById(this.productId).subscribe({
       next: (product) => {
-        console.log('Sản phẩm lấy được:', product);
         this.name = product.name;
         this.price = product.price;
         this.discount = product.discountPrice || '';
@@ -92,7 +94,6 @@ export class UpdateProductComponent implements OnInit {
     });
   }
 
-
   async urlToFile(url: string, filename: string): Promise<File> {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -100,25 +101,11 @@ export class UpdateProductComponent implements OnInit {
   }
 
   onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files) return;
-    else {
-      const files = Array.from(input.files)
-      for (const file of files) {
-        if (!file.type.startsWith('image/')) {
-          this.toastService.show("Chỉ được phép chọn tệp ảnh (jpg, png, gif...)", "f");
-          continue;
-        }
-
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.images.push({src: reader.result as string, file: file});
-        };
-        reader.readAsDataURL(file);
-      }
-
-      input.value = '';
-    }
+    handleImagesSelected(event, (newImages) => {
+      this.images = [...this.images, ...newImages];
+    }, (msg) => {
+      this.toastService.show(msg, "f");
+    });
   }
 
   removeImage(index: number): void {

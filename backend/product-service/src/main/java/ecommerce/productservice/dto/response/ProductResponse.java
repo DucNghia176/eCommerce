@@ -31,5 +31,6 @@ public class ProductResponse {
     String thumbnailUrl;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    String skuCode;
 }
 
