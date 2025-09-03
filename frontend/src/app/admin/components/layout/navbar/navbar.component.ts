@@ -18,7 +18,7 @@ export class NavbarComponent {
   search = faSearch;
   message = faCommentAlt;
   notification = faBell;
-  dowm = faChevronDown;
+  down = faChevronDown;
   dropdownOpen = false;
   user: UserResponse | null = null;
 

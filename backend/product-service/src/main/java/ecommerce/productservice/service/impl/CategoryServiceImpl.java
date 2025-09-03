@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category saved = categoryRepository.save(category);
 
             if (image != null && !image.isEmpty()) {
-                String url = cloudinaryService.uploadFileProduct(image, category.getId());
+                String url = cloudinaryService.uploadFileCategory(image, category.getId());
                 category.setImage(url);
                 categoryRepository.save(category);
             }
@@ -96,7 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
             if (image != null && !image.isEmpty()) {
-                String url = cloudinaryService.uploadFileProduct(image, category.getId());
+                String url = cloudinaryService.uploadFileCategory(image, category.getId());
                 category.setImage(url);
             }
 
@@ -136,7 +136,7 @@ public class CategoryServiceImpl implements CategoryService {
                     }
                 }
             }
-            
+
             return ApiResponse.<List<CategoryResponse>>builder()
                     .code(200)
                     .message("Lấy danh sách danh mục thành công")
