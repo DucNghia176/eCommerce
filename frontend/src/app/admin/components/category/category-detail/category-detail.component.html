@@ -26,13 +26,13 @@
       class="bg-white rounded-lg shadow cursor-pointer mt-3 flex items-center gap-2 items-justify"
     >
       <img
-        [alt]="product.name "
-        [ngSrc]="product.image || 'assets/logo1.png'"
+        [src]="product.image"
+        alt="Ảnh"
         class="object-cover ml-3 h-12 w-12"
         height="48"
         width="48"
       />
-      <span>{{ product.name }}</span>
+      <span class="block overflow-hidden whitespace-nowrap text-ellipsis max-w-xs">{{ product.name }}</span>
     </div>
 
     <app-page

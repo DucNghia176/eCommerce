@@ -1,6 +1,6 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {NgForOf, NgIf} from "@angular/common";
+import {CommonModule, NgForOf, NgIf} from "@angular/common";
 import {PageComponent} from "../../../shared/components/page/page.component";
 import {faAdd, faEdit, faFileExport, faSearch, faTrash, faWarehouse} from "@fortawesome/free-solid-svg-icons";
 import {ProductResponse, ProductSearchRequest} from "../../../core/models/product.model";
@@ -8,7 +8,7 @@ import {PageSize} from "../../../shared/status/page-size";
 import {ProductService} from "../../../core/services/product.service";
 import {RouterLink} from "@angular/router";
 import {SelectionService} from "../../../core/services/selection.service";
-import {debounceTime, finalize, forkJoin, Subject, switchMap} from "rxjs";
+import {debounceTime, finalize, forkJoin, Subject, switchMap, takeUntil} from "rxjs";
 import {DialogService} from "../../../core/services/dialog.service";
 import {InventoryRequest} from "../../../core/models/inventory.model";
 import {InventoryService} from "../../../core/services/inventory.service";
@@ -28,7 +28,8 @@ import {FormsModule} from "@angular/forms";
     RouterLink,
     LoadingSpinnerComponent,
     ToastComponent,
-    FormsModule
+    FormsModule,
+    CommonModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
@@ -37,6 +38,7 @@ export class ProductsComponent implements OnInit {
 
   @ViewChild('quantityInput') quantityInput!: ElementRef;
   products: ProductResponse[] = [];
+  isModalOpen = false;
   errorMessage: string | null = null;
   images?: File[];
   totalPages = 0;
@@ -45,7 +47,7 @@ export class ProductsComponent implements OnInit {
   pageSize: number = 10;
   addQuantity?: number;
   skuCode: string = '';
-  selectedProduct: any = null;
+  selectedProduct: ProductResponse | null = null;
   isQuantityModalOpen = false;
   isConfirmOpen = false;
   price: number = 0;
@@ -67,14 +69,18 @@ export class ProductsComponent implements OnInit {
   private dialogService = inject(DialogService);
   private inventoryService = inject(InventoryService);
   private toastService = inject(ToastService);
+  private destroy$ = new Subject<void>();
 
   ngOnInit() {
-    this.searchTerm$.pipe(debounceTime(300),        // Delay 300ms sau khi gõ xong
-      switchMap(term => {
-        const request: ProductSearchRequest = {name: term};
-        return this.productService.searchProduct(request, 0, 10);
-      })
-    )
+    this.searchTerm$
+      .pipe(
+        debounceTime(300),
+        switchMap(term => {
+          const request: ProductSearchRequest = {name: term};
+          return this.productService.searchProduct(request, 0, 10);
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (data) => {
           const allProduct = data.content;
@@ -147,6 +153,15 @@ export class ProductsComponent implements OnInit {
           });
         }
       });
+  }
+
+  openProductDetail(product: ProductResponse) {
+    this.selectedProduct = product;
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
   }
 
   // Khi nhấn icon
