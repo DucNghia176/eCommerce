@@ -2,6 +2,7 @@ package ecommerce.inventoryservice.service.impl;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.inventoryservice.dto.request.InventoryRequest;
+import ecommerce.inventoryservice.dto.response.GetSkuCodeQuantity;
 import ecommerce.inventoryservice.dto.response.InventoryResponse;
 import ecommerce.inventoryservice.entity.Inventory;
 import ecommerce.inventoryservice.repository.InventoryRepository;
@@ -11,7 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,7 +40,7 @@ public class InventoryServiceImpl implements InventoryService {
         try {
             Inventory inventory = inventoryRepository.findById(request.getSkuCode())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
-            
+
             inventory.setQuantity(inventory.getQuantity() + request.getQuantity());
             inventory.setImportedAt(LocalDateTime.now());
             inventoryRepository.save(inventory);
@@ -155,5 +159,15 @@ public class InventoryServiceImpl implements InventoryService {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    @Override
+    public Map<String, Integer> extractSkuCodes(List<String> skuCodes) {
+        List<GetSkuCodeQuantity> inventories = inventoryRepository.findBySkuCodeIn(skuCodes);
+
+        Map<String, Integer> responses = inventories.stream()
+                .collect(Collectors.toMap(GetSkuCodeQuantity::getSkuCode, GetSkuCodeQuantity::getQuantity));
+
+        return responses;
     }
 }

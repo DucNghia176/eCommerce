@@ -5,6 +5,8 @@ import ecommerce.inventoryservice.dto.request.InventoryRequest;
 import ecommerce.inventoryservice.dto.response.InventoryResponse;
 import ecommerce.inventoryservice.entity.Inventory;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface InventoryService {
@@ -21,4 +23,6 @@ public interface InventoryService {
     ApiResponse<InventoryResponse> cancelOrder(InventoryRequest request);
 
     int getQuantity(String skuCode);
+
+    Map<String, Integer> extractSkuCodes(List<String> skuCodes);
 }

@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,8 +21,13 @@ class InventoryController {
     private final InventoryService inventoryService;
 
     @GetMapping("/quantity")
-    public int getQuantity(@RequestParam("skuCode") String skuCode) {
+    public int getQuantities(@RequestParam("skuCode") String skuCode) {
         return inventoryService.getQuantity(skuCode);
+    }
+
+    @GetMapping("/quantities")
+    public Map<String, Integer> getQuantities(@RequestParam("skuCodes") List<String> skuCodes) {
+        return inventoryService.extractSkuCodes(skuCodes);
     }
 
     @GetMapping("/check")

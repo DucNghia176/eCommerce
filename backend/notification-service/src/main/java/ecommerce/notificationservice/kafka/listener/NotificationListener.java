@@ -9,16 +9,13 @@ import org.springframework.stereotype.Service;
 public class NotificationListener {
     @KafkaListener(topics = "order-events", groupId = "notification-group")
     public void listenOrder(String message) {
-        log.info("Received message: {}", message);
     }
 
     @KafkaListener(topics = "user-events", groupId = "notification-group")
     public void listenUser(String message) {
-        log.info("Received message: {}", message);
     }
 
     @KafkaListener(topics = "cart-events", groupId = "notification-group")
     public void listenCart(String message) {
-        log.info("Received message: {}", message);
     }
 }

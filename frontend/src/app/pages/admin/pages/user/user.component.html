@@ -1,0 +1,127 @@
+<div class="relative p-4 rounded-xl shadow bg-white">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold text-gray-800">Khách hàng</h1>
+    <div class="flex gap-3">
+      <button
+        class="flex items-center bg-white text-blue-600 border border-blue-500 px-4 py-2 rounded-xl shadow hover:bg-blue-50 transition">
+        <fa-icon [icon]="faFileExport"></fa-icon>
+        <span class="ml-2 font-medium">Xuất file Excel</span>
+      </button>
+      <button class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition">
+        <fa-icon [icon]="faAdd"></fa-icon>
+        <span class="ml-2 font-medium">Thêm khách hàng</span>
+      </button>
+    </div>
+  </div>
+
+  <!--  &lt;!&ndash; Filter &ndash;&gt;-->
+  <!--  <ul class="flex space-x-4 mb-4">-->
+  <!--    <li>-->
+  <!--      <button (click)="onFilterChange(-1)" [class.font-bold]="isLock === -1">-->
+  <!--        Tất cả ({{ totalItems }})-->
+  <!--      </button>-->
+  <!--    </li>-->
+  <!--    <li>-->
+  <!--      <button (click)="onFilterChange(0)" [class.font-bold]="isLock === 0">-->
+  <!--        Hoạt động ({{ activeCount }})-->
+  <!--      </button>-->
+  <!--    </li>-->
+  <!--    <li>-->
+  <!--      <button (click)="onFilterChange(1)" [class.font-bold]="isLock === 1">-->
+  <!--        Không hoạt động ({{ inactiveCount }})-->
+  <!--      </button>-->
+  <!--    </li>-->
+  <!--  </ul>-->
+
+  <!-- Search + Delete -->
+  <div class="flex justify-between items-center mb-4">
+    <div class="relative w-1/2">
+      <fa-icon [icon]="faSearch" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></fa-icon>
+      <input
+        class="border rounded-lg py-2 px-4 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Tìm kiếm..."
+        type="text"
+      />
+    </div>
+    <button class="flex items-center text-red-600 px-4 py-2 rounded-lg hover:bg-red-50">
+      <fa-icon [icon]="faTrash"></fa-icon>
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto border rounded-xl">
+    <table class="table-auto w-full text-left">
+      <thead class="bg-gray-50 text-gray-600 text-sm font-semibold border-b">
+      <tr>
+        <th class="p-3 text-center">
+          <input (change)="onCheckboxAll($event)" [checked]="selectionService.isAllSelected"
+                 class="w-4 h-4 accent-blue-500 cursor-pointer" type="checkbox"/>
+        </th>
+        <th class="p-3">Full Name</th>
+        <th class="p-3">Address</th>
+        <th class="p-3">Orders</th>
+        <th class="p-3">Spent</th>
+        <th class="p-3 text-center">Trạng thái</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="users1.length > 0; else noData">
+        <tr *ngFor="let user of users1" class="border-b hover:bg-gray-50 transition">
+          <td class="p-3 text-center">
+            <input
+              (change)="onCheckbox(user.id,$event)"
+              [checked]="selectionService.selectedItems.includes(user.id)"
+              class="w-4 h-4 accent-blue-500 cursor-pointer"
+              type="checkbox"/>
+          </td>
+          <td class="p-3 flex items-center gap-2">
+            <ng-container *ngIf="user.avatar; else noAvatar">
+              <img [src]="user.avatar" alt="avatar" class="w-8 h-8 rounded-full object-cover"/>
+            </ng-container>
+            <ng-template #noAvatar>
+              <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">
+                {{ user.name.charAt(0).toUpperCase() }}
+              </div>
+            </ng-template>
+            <span>{{ user.name }}</span>
+          </td>
+          <td class="p-3">{{ user.address }}</td>
+          <td class="p-3">{{ user.totalOrders }}</td>
+          <td class="p-3">{{ user.totalAmount | currency: 'VND' }}</td>
+          <td class="p-3 text-center">
+            <fa-icon
+              (click)="toggleLock(user.id.toString())"
+              [icon]="user.isLock === 1 ? faLock : faUnlock"
+              [ngClass]="{
+                         'text-red-500': user.isLock === 1,
+                         'text-green-500': user.isLock === 0,
+                         'cursor-pointer': true
+                       }"
+            ></fa-icon>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <td class="text-center text-gray-500 py-4" colspan="8">
+            Không có dữ liệu người dùng
+          </td>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-4 p-4 border-t">
+    <app-page
+      (pageChange)="loadUser($event.page)"
+      (pageSizeChange)="onPageSizeChange($event)"
+      [currentPage]="currentPage"
+      [pageSize]="pageSize"
+      [pageSizes]="pageSizes"
+      [totalItems]="totalItems">
+    </app-page>
+  </div>
+</div>

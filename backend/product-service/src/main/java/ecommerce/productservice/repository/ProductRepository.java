@@ -1,5 +1,6 @@
 package ecommerce.productservice.repository;
 
+import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.dto.response.ProductSummaryResponse;
 import ecommerce.productservice.entity.Product;
 import feign.Param;
@@ -27,6 +28,15 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Page<Product> findAllByIsActive(int isActive, Pageable pageable);
 
+    @Query("SELECT new ecommerce.productservice.dto.response.ProductResponse(" +
+            "p.id ,p.name, p.price, c.name, p.description, new ecommerce.productservice.dto.response.BrandResponse(b.id, b.name), pi.imageUrl, p.skuCode)" +
+            " FROM Product p " +
+            "left JOIN Brand b ON b.id = p.brandId " +
+            "left JOIN Category c ON c.id = p.category.id " +
+            "left JOIN ProductImage pi ON pi.product.id = p.id AND pi.isThumbnail = 1" +
+            "WHERE p.isActive = 1")
+    Page<ProductResponse> findAllActiveProducts(Pageable pageable);
+
     @Query("SELECT new ecommerce.productservice.dto.response.ProductSummaryResponse(p.id, p.name, pi.imageUrl) " +
             "FROM Product p " +
             "LEFT JOIN ProductImage pi ON pi.product.id = p.id " +
@@ -34,8 +44,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "AND p.category.isActive = 1 AND p.isActive = 1")
     Page<ProductSummaryResponse> findProductsByCategory(@Param("categoryIds") Set<Long> categoryIds, Pageable pageable);
 
-
     @Query("SELECT COUNT(p) FROM Product p WHERE p.category.id = :categoryId")
     Long countByCategoryId(@Param("categoryId") Long categoryId);
-
 }

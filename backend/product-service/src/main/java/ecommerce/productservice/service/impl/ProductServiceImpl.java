@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -225,42 +226,18 @@ public class ProductServiceImpl implements ProductService {
     public ApiResponse<Page<ProductResponse>> getAllProduct(int page, int size) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-            Page<Product> productPage = productRepository.findAllByIsActive(1, pageable);
 
-            Page<ProductResponse> response = productPage.map(product -> {
-                ProductResponse res = productMapper.toResponse(product);
+            Page<ProductResponse> response = productRepository.findAllActiveProducts(pageable);
 
-                // Lấy tags
-                List<TagResponse> tags = productTagRepository.findByProduct_Id(product.getId())
-                        .stream()
-                        .map(pt -> new TagResponse(pt.getTag().getId(), pt.getTag().getName()))
-                        .toList();
-                res.setTags(tags);
+            List<String> skuCodes = response.getContent()
+                    .stream()
+                    .map(ProductResponse::getSkuCode)
+                    .toList();
 
-                // Lấy ảnh
-                List<ProductImage> imageEntities = productImageRepository.findByProductId(product.getId());
-                res.setImageUrls(imageEntities.stream().map(ProductImage::getImageUrl).toList());
+            Map<String, Integer> quantityMap = inventoryClient.getQuantities(skuCodes);
 
-                // Thumbnail
-                String thumbnail = imageEntities.stream()
-                        .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail() == 1)
-                        .map(ProductImage::getImageUrl)
-                        .findFirst()
-                        .orElse(null);
-                res.setThumbnailUrl(thumbnail);
-
-                if (product.getBrandId() != null) {
-                    brandRepository.findById(product.getBrandId())
-                            .ifPresent(brand -> res.setBrand(
-                                    new BrandResponse(brand.getId(), brand.getName())
-                            ));
-                }
-
-
-                int quantity = inventoryClient.getQuantity(productRepository.findSkuCodeById(product.getId()));
-                res.setQuantity(quantity);
-
-                return res;
+            response.getContent().forEach(product -> {
+                product.setQuantity(quantityMap.getOrDefault(product.getSkuCode(), 0));
             });
 
             return ApiResponse.<Page<ProductResponse>>builder()
@@ -399,7 +376,6 @@ public class ProductServiceImpl implements ProductService {
                     .build();
 
         } catch (Exception e) {
-            log.error("Không tìm thấy sản phẩm " + e.getMessage(), e);
             return ApiResponse.<Page<ProductResponse>>builder()
                     .code(500)
                     .message("Đã xảy ra lỗi khi tìm kiếm")
