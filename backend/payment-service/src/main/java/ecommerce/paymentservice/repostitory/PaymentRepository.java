@@ -1,11 +1,14 @@
 package ecommerce.paymentservice.repostitory;
 
+import ecommerce.paymentservice.dto.response.OrderIdPaymentStatus;
+import ecommerce.paymentservice.dto.response.TotalAmountByUserId;
 import ecommerce.paymentservice.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,4 +20,14 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     String findOrderIdByOrderCode(@Param("orderId") Long orderCode);
 
     Optional<Payment> findByOrderId(Long orderId);
+
+    List<OrderIdPaymentStatus> findByOrderIdIn(List<Long> orderId);
+
+    @Query("""
+            SELECT new ecommerce.paymentservice.dto.response.TotalAmountByUserId(p.userId, sum(p.amountPaid)) 
+                        FROM Payment p 
+                        WHERE p.userId IN :userIds
+                        GROUP BY p.userId
+            """)
+    List<TotalAmountByUserId> totalAmountByUserIds(@Param("userIds") List<Long> userIds);
 }

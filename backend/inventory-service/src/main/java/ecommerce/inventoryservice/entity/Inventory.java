@@ -28,10 +28,10 @@ public class Inventory {
     private String name;
 
     @Column(name = "QUANTITY")
-    private Integer quantity;
+    private int quantity;
 
     @Column(name = "RESERVED_QUANTITY")
-    private Integer reservedQuantity;
+    private int reservedQuantity;
 
     @Column(name = "IMPORT_PRICE")
     private BigDecimal importPrice;

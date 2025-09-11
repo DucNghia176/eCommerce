@@ -1,14 +1,13 @@
 package ecommerce.aipcommon.config;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class TokenInfo {
-
-    @Autowired
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
     public Long getUserId() {
         String id = request.getHeader("X-User-Id");

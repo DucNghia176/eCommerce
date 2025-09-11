@@ -1,5 +1,6 @@
 package ecommerce.productservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,6 +41,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "CATEGORY_ID", nullable = false)
+    @JsonIgnore
     private Category category;
 
     @Column(name = "BRAND_ID")

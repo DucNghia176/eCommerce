@@ -4,22 +4,22 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'user/'
+    redirectTo: 'auth/'
   },
   {
     path: 'admin',
     loadChildren: () =>
-      import('./admin/admin.routes').then(m => m.adminRoutes)
+      import('./pages/admin/admin.routes').then(m => m.adminRoutes)
   },
   {
     path: 'user',
     loadChildren: () =>
-      import('./user/user.routes').then(m => m.userRoutes)
+      import('./pages/user/user.routes').then(m => m.userRoutes)
   },
   {
     path: 'auth',
     loadChildren: () =>
-      import('./auth/auth.routes').then(m => m.authRoutes)
+      import('./pages/auth/auth.routes').then(m => m.authRoutes)
   },
   {
     path: '**',

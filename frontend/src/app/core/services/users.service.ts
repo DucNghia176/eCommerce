@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {catchError, map, Observable, throwError} from 'rxjs';
-import {CountResponse, UserResponse, UserUpdateRequest} from '../models/user.model';
+import {UserOrderDetail, UserOrdersResponse, UserResponse, UserUpdateRequest} from '../models/user.model';
 import {ApiResponse} from "../models/common.model";
 import {Page} from "../models/page.model";
 
@@ -15,7 +15,7 @@ export class UsersService {
   }
 
   getUserById(): Observable<UserResponse> {
-    return this.http.get<ApiResponse<UserResponse>>(`${this.apiUrl}`)
+    return this.http.get<ApiResponse<UserResponse>>(`${this.apiUrl}/{id}`)
       .pipe(
         map(response => {
           if (response.code === 200 && response.data) {
@@ -26,18 +26,37 @@ export class UsersService {
       )
   }
 
-  getAllUsers(page: number = 0, size: number = 10, isLock?: number): Observable<Page<UserResponse>> {
-    // Dùng object rỗng rồi thêm params nếu có
+  // getAllUsers(page: number = 0, size: number = 10, isLock?: number): Observable<Page<UserResponse>> {
+  //   // Dùng object rỗng rồi thêm params nếu có
+  //   const params: any = {
+  //     page: page,
+  //     size: size,
+  //   };
+  //
+  //   if (isLock !== undefined && isLock !== null) {
+  //     params.isLock = isLock;
+  //   }
+  //
+  //   return this.http.get<ApiResponse<Page<UserResponse>>>(`${this.apiUrl}/all`, {
+  //     params
+  //   }).pipe(
+  //     map(response => {
+  //       if (response.code === 200 && response.data) {
+  //         return response.data;
+  //       }
+  //       throw new Error(response.message || 'Something went wrong');
+  //     }),
+  //     catchError(this.handleError)
+  //   );
+  // }
+
+  getAllUsers1(page: number = 0, size: number = 10): Observable<Page<UserOrdersResponse>> {
     const params: any = {
       page: page,
       size: size,
     };
 
-    if (isLock !== undefined && isLock !== null) {
-      params.isLock = isLock;
-    }
-
-    return this.http.get<ApiResponse<Page<UserResponse>>>(`${this.apiUrl}/all`, {
+    return this.http.get<ApiResponse<Page<UserOrdersResponse>>>(`${this.apiUrl}/all/1`, {
       params
     }).pipe(
       map(response => {
@@ -50,6 +69,17 @@ export class UsersService {
     );
   }
 
+  userOrderDetail(userId: number): Observable<UserOrderDetail> {
+    return this.http.get<ApiResponse<UserOrderDetail>>(`${this.apiUrl}/order/${userId}`)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data
+          }
+          throw new Error(response.message);
+        })
+      )
+  }
 
   updateUser(request: UserUpdateRequest, avatar ?: File): Observable<UserResponse> {
     const formData = new FormData();
@@ -94,17 +124,17 @@ export class UsersService {
       )
   }
 
-  count(): Observable<CountResponse> {
-    return this.http.get<ApiResponse<CountResponse>>(`${this.apiUrl}/count`)
-      .pipe(
-        map(response => {
-          if (response.code === 200 && response.data) {
-            return response.data;
-          }
-          throw new Error(response.message || 'Không thể lấy dữ liệu thống kê người dùng');
-        })
-      )
-  }
+  // count(): Observable<CountResponse> {
+  //   return this.http.get<ApiResponse<CountResponse>>(`${this.apiUrl}/count`)
+  //     .pipe(
+  //       map(response => {
+  //         if (response.code === 200 && response.data) {
+  //           return response.data;
+  //         }
+  //         throw new Error(response.message || 'Không thể lấy dữ liệu thống kê người dùng');
+  //       })
+  //     )
+  // }
 
   private handleError(error: any): Observable<never> {
     let errorMessage = 'Đã xảy ra lỗi';

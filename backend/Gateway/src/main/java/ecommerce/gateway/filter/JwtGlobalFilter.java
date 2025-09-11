@@ -19,6 +19,8 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
     private final JwtUtil jwtUtil;
 
+//    private final TokenBlacklistService tokenBlacklistService;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();

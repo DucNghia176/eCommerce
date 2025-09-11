@@ -32,5 +32,16 @@ public class ProductResponse {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     String skuCode;
+
+    public ProductResponse(Long id, String name, BigDecimal price, String categoryName, String description, BrandResponse brand, String thumbnailUrl, String skuCode) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.categoryName = categoryName;
+        this.description = description;
+        this.brand = brand;
+        this.thumbnailUrl = thumbnailUrl;
+        this.skuCode = skuCode;
+    }
 }
 

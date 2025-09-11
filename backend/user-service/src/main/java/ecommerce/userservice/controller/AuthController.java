@@ -2,15 +2,14 @@ package ecommerce.userservice.controller;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.AuthResponse;
-import ecommerce.aipcommon.model.response.UserResponse;
 import ecommerce.userservice.dto.request.AuthRequest;
-import ecommerce.userservice.dto.request.UserRequest;
+import ecommerce.userservice.dto.request.UserCreateRequest;
+import ecommerce.userservice.dto.respone.UserCreateResponse;
 import ecommerce.userservice.service.AuthService;
 import ecommerce.userservice.service.EmailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,23 +19,19 @@ public class AuthController {
     private final AuthService authService;
     private final EmailService emailService;
 
-
-    //    http://localhost:8085/api/auth/login/oauth2/google
-
     @PostMapping("/login")
     public ApiResponse<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         return authService.login(request);
     }
 
-    @PostMapping(value = "register", consumes = {"multipart/form-data", "multipart/form-data;charset=UTF-8"})
-    public ApiResponse<UserResponse> createUser(
-            @RequestPart("data") @Valid UserRequest request,
-            @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
-        return authService.createUser(request, avatar);
+    @PostMapping("/register")
+    public ApiResponse<UserCreateResponse> createUser(
+            @RequestPart("data") @Valid UserCreateRequest request) {
+        return authService.createUser(request);
     }
 
     @PostMapping("/register/confirm")
-    public ApiResponse<UserResponse> confirmCreateUser(
+    public ApiResponse<UserCreateResponse> confirmCreateUser(
             @RequestParam String email,
             @RequestParam String otp) {
         return authService.confirmCreateUser(email, otp);

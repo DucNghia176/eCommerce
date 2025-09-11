@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @Builder
 public class PendingRegistration {
-    private UserRequest userRequest;
+    private UserCreateRequest userRequest;
     private MultipartFile avatar;
 }
 

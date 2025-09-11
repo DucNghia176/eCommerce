@@ -51,11 +51,12 @@ spring:
 
 eureka:
   client:
-    instance:
-      hostname: localhost
-      prefer-ip-address: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+
 
 logging:
   level:

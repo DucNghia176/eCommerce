@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "orderDate", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "orderDate", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "status", constant = "PENDING")
     @Mapping(target = "totalAmount", ignore = true)
     @Mapping(target = "orderCode", ignore = true)

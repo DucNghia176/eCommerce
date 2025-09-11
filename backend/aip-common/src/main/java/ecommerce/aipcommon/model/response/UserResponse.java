@@ -22,8 +22,12 @@ public class UserResponse {
     String role;
     Integer isLock;
     String avatar;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
     String gender;
     LocalDate dateOfBirth;
+    String address;
+    String phone;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+
+
 }

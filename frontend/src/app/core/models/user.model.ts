@@ -1,4 +1,5 @@
 import {Gender} from "../../shared/status/gender";
+import {OrderStatus} from "../../shared/status/order-status";
 
 export interface UserResponse {
   id: number;
@@ -12,6 +13,18 @@ export interface UserResponse {
   avatar: string;
   createdAt: Date;
   updatedAt: Date;
+  address: string;
+  phone: string;
+}
+
+export interface UserOrdersResponse {
+  id: number;
+  name: string;
+  avatar: string;
+  address: string;
+  totalOrders: number;
+  totalAmount: string;
+  isLock: number;
 }
 
 export interface UserRequest {
@@ -33,4 +46,22 @@ export interface CountResponse {
   all: number;
   active: number;
   inactive: number;
+}
+
+export interface UserOrderDetail {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  isLock: number;
+  userOrderDetailResponse: UserOrderDetailResponse[]
+}
+
+export interface UserOrderDetailResponse {
+  orderId: number;
+  orderCode: string;
+  orderDate: string;
+  orderStatus: OrderStatus
+  orderPrice: string
 }

@@ -39,9 +39,6 @@ export class AuthService {
     const formData = new FormData();
 
     formData.append('data', new Blob([JSON.stringify(request)], {type: 'application/json'}));
-    if (avatar) {
-      formData.append('avatar', avatar);
-    }
     return this.http.post<ApiResponse<UserResponse>>(`${this.apiUrl}/register`, formData).pipe(
       map(response => {
         if (response.code === 202 && response.data) {

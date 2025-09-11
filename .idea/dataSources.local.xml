@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="IU-252.23892.409">
+  <component name="dataSourceStorageLocal" created-in="IU-252.25557.131">
     <data-source name="ecommorce" uuid="b7705d5b-ca0c-4041-8bbe-91bdfde3f433">
       <database-info product="Oracle" version="Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production&#10;Version 21.3.0.0.0" jdbc-version="4.3" driver-name="Oracle JDBC driver" driver-version="23.5.0.24.07" dbms="ORACLE" exact-version="21.0.0.0.0" exact-driver-version="23.5">
         <extra-name-characters>$#</extra-name-characters>
@@ -13,11 +13,34 @@
         <introspection-scope>
           <node kind="schema">
             <name qname="CART_DB" />
+            <name qname="DB_TEST" />
+            <name qname="INVENTORY_DB" />
+            <name qname="ORDER_DB" />
+            <name qname="PRODUCT" />
+            <name qname="SYSTEM" />
+            <name qname="USER_DB" />
+          </node>
+        </introspection-scope>
+      </schema-mapping>
+      <load-sources>user_and_system_sources</load-sources>
+    </data-source>
+    <data-source name="service-db" uuid="cb67891a-5982-46cc-a899-8dd7aa6b3919">
+      <database-info product="Oracle" version="Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production&#10;Version 21.3.0.0.0" jdbc-version="4.3" driver-name="Oracle JDBC driver" driver-version="23.5.0.24.07" dbms="ORACLE" exact-version="21.0.0.0.0" exact-driver-version="23.5">
+        <extra-name-characters>$#</extra-name-characters>
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="upper" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>system</user-name>
+      <schema-mapping>
+        <introspection-scope>
+          <node kind="schema">
+            <name qname="@" />
+            <name qname="CART_DB" />
             <name qname="INVENTORY_DB" />
             <name qname="ORDER_DB" />
             <name qname="PRODUCT" />
             <name qname="USER_DB" />
-            <name qname="SYSTEM" />
           </node>
         </introspection-scope>
       </schema-mapping>
