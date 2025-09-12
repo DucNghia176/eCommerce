@@ -8,19 +8,21 @@ import {PageComponent} from "../../../../shared/components/page/page.component";
 import {PageSize} from "../../../../shared/status/page-size";
 import {SelectionService} from "../../../../core/services/selection.service";
 import {faAdd, faFileExport, faLock, faSearch, faTrash, faUnlock} from "@fortawesome/free-solid-svg-icons";
+import {RouterLink} from "@angular/router";
+import {ToastService} from "../../../../core/services/toast.service";
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [CommonModule, FaIconComponent, FormsModule, PageComponent],
+  imports: [CommonModule, FaIconComponent, FormsModule, PageComponent, RouterLink],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss'
 })
 export class UserAdminComponent implements OnInit {
-  users: UserResponse[] = [];
   users1: UserOrdersResponse[] = [];
   errorMessage: string | null = null;
   email: string = '';
+  users: UserResponse[] = [];
   totalPages = 0;
   pageSize: number = 10;
   totalItems: number = 0;
@@ -38,6 +40,7 @@ export class UserAdminComponent implements OnInit {
   protected readonly faLock = faLock;
   protected readonly faUnlock = faUnlock;
   private userService = inject(UsersService);
+  private toastService = inject(ToastService)
 
   ngOnInit() {
     this.loadUser();
@@ -45,11 +48,17 @@ export class UserAdminComponent implements OnInit {
   }
 
   toggleLock(id: string) {
-    this.userService.toggleLock(id).subscribe({
-      next: () => {
-        this.loadUser();
-        // this.countUsers();
-        this.errorMessage = null;
+    this.userService.toggleLock1(id).subscribe({
+      next: (res) => {
+        if (res.data) {
+          const index = this.users1.findIndex(u => u.id.toString() === id);
+          if (index != -1) {
+            this.users1[index].isLock = res.data.isLock;
+          }
+          this.toastService.show(res.message, "p");
+        } else {
+          this.toastService.show(res.message || "Đổi trạng thái thất bại", "f");
+        }
       },
       error: (error) => {
         this.errorMessage = error.message;
@@ -120,13 +129,13 @@ export class UserAdminComponent implements OnInit {
 
   onCheckbox(id: number, event: Event) {
     const checked = (event.target as HTMLInputElement).checked;
-    const ids = this.users.map(user => user.id);
+    const ids = this.users1.map(user => user.id);
     this.selectionService.toggleSelection(id, checked, ids);
   }
 
   onCheckboxAll(event: Event) {
     const checked = (event.target as HTMLInputElement).checked;
-    const ids = this.users.map(user => user.id);
+    const ids = this.users1.map(user => user.id);
     this.selectionService.toggleAll(checked, ids);
   }
 

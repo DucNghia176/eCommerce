@@ -9,6 +9,7 @@ import {CreateProductComponent} from "./components/product/create-product/create
 import {UpdateProductComponent} from "./components/product/update-product/update-product.component";
 import {CategoryCreateComponent} from "./components/category/category-create/category-create.component";
 import {CategoryDetailComponent} from "./components/category/category-detail/category-detail.component";
+import {UserOrderDetailComponent} from "./components/user/user-info/user-order-detail.component";
 
 export const adminRoutes: Routes = [{
   path: '',
@@ -17,6 +18,7 @@ export const adminRoutes: Routes = [{
   children: [
     {path: '', component: DashboardComponent},
     {path: 'users', component: UserAdminComponent},
+    {path: 'users/:id/detail', component: UserOrderDetailComponent},
     {path: 'orders', component: OrdersComponent},
     {path: 'product', component: ProductsComponent},
     {path: 'product/create', component: CreateProductComponent},

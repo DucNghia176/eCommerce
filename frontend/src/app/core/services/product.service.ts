@@ -88,7 +88,7 @@ export class ProductService {
           if (response.code === 200 && response.data) {
             return response.data;
           }
-          throw new Error(response.message || 'Something went wrong');
+          throw new Error(response.message);
         }),
         catchError(this.handleError)
       );

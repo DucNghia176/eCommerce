@@ -229,10 +229,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<UserOrderDetailResponse> getUserOrderDetail(Long id) {
-        Orders orders = orderRepository.findById(id).orElse(null);
-
         List<UserOrderDetailResponse> response = orderRepository.findOrdersDetailByUserId(id);
 
+        response.forEach(UserOrderDetailResponse::setFormattedDate);
         return response;
     }
 }

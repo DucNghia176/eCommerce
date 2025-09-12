@@ -30,4 +30,6 @@ public interface UserService {
     ApiResponse<Page<UserOrdersResponse>> getUsersTOrders(int page, int size);
 
     ApiResponse<UserOrderDetail> getUserOrderDetail(Long id);
+
+    ApiResponse<UserResponse> deleteUser(Long id);
 }

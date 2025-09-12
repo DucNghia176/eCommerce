@@ -4,13 +4,13 @@ import {CategoryResponse} from "../../../../core/models/category.model";
 import {CategoryService} from "../../../../core/services/category.service";
 import {finalize} from "rxjs";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {RouterLink} from "@angular/router";
+import {RouterLink, RouterModule} from "@angular/router";
 import {faAdd, faFileExport} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-category',
   standalone: true,
-  imports: [CommonModule, FaIconComponent, RouterLink],
+  imports: [CommonModule, FaIconComponent, RouterLink, RouterModule],
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss'
 })

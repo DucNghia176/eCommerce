@@ -1,6 +1,7 @@
 package ecommerce.orderservice.dto.response;
 
 import ecommerce.aipcommon.model.status.OrderStatus;
+import ecommerce.aipcommon.model.status.PaymentMethodStatus;
 import ecommerce.aipcommon.model.status.PaymentStatus;
 import lombok.*;
 
@@ -24,14 +25,16 @@ public class OrdersAD {
     private OrderStatus orderStatus;
     private BigDecimal orderAmount;
     private String formattedDate;
+    private PaymentMethodStatus paymentMethod;
 
-    public OrdersAD(Long id, String orderCode, LocalDateTime orderDate, Long customerId, OrderStatus orderStatus, BigDecimal orderAmount) {
+    public OrdersAD(Long id, String orderCode, LocalDateTime orderDate, Long customerId, OrderStatus orderStatus, BigDecimal orderAmount, PaymentMethodStatus paymentMethod) {
         this.id = id;
         this.orderCode = orderCode;
         this.orderDate = orderDate;
         this.customerId = customerId;
         this.orderStatus = orderStatus;
         this.orderAmount = orderAmount;
+        this.paymentMethod = paymentMethod;
     }
 
     public void setFormattedDate() {

@@ -1,15 +1,24 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faAdd, faFileExport} from "@fortawesome/free-solid-svg-icons";
+import {
+  faAdd,
+  faCheck,
+  faCheckCircle,
+  faClipboardCheck,
+  faFileExport,
+  faMoneyBillWave,
+  faTrash
+} from "@fortawesome/free-solid-svg-icons";
 import {SelectionService} from "../../../../core/services/selection.service";
 import {PageSize} from "../../../../shared/status/page-size";
-import {PaymentStatusMeta} from "../../../../shared/status/payment-status";
+import {PaymentStatus, PaymentStatusMeta} from "../../../../shared/status/payment-status";
 import {OrderStatusMeta} from "../../../../shared/status/order-status";
 import {OrdersService} from "../../../../core/services/orders.service";
 import {PageComponent} from "../../../../shared/components/page/page.component";
 import {CurrencyPipe, NgForOf, NgIf} from "@angular/common";
 import {StatusDirective} from "../../../../shared/directive/status.directive";
 import {OrderAD} from "../../../../core/models/orders.model";
+import {PaymentMethodStatus} from "../../../../shared/status/payment-method-status";
 
 
 @Component({
@@ -38,6 +47,13 @@ export class OrdersComponent implements OnInit {
   protected readonly faFileExport = faFileExport;
   protected readonly PaymentStatusMeta = PaymentStatusMeta;
   protected readonly OrderStatusMeta = OrderStatusMeta;
+  protected readonly faCheck = faCheck;
+  protected readonly faCheckCircle = faCheckCircle;
+  protected readonly faClipboardCheck = faClipboardCheck;
+  protected readonly faTrash = faTrash;
+  protected readonly faMoneyBillWave = faMoneyBillWave;
+  protected readonly PaymentStatus = PaymentStatus;
+  protected readonly PaymentMethodStatus = PaymentMethodStatus;
   private orderService = inject(OrdersService);
 
   ngOnInit() {

@@ -73,4 +73,9 @@ public class UserController {
     public ApiResponse<UserOrderDetail> getUserOrderDetails(@PathVariable Long userId) {
         return userService.getUserOrderDetail(userId);
     }
+
+    @DeleteMapping("/{userId}")
+    public ApiResponse<UserResponse> deleteUser(@PathVariable Long userId) {
+        return userService.deleteUser(userId);
+    }
 }

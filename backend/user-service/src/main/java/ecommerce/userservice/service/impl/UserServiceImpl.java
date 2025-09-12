@@ -27,7 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -162,10 +164,9 @@ public class UserServiceImpl implements UserService {
                     .data(response)
                     .build();
         } catch (Exception e) {
-            log.error("Lỗi khi đảo trạng thái khóa: {}", e.getMessage(), e);
             return ApiResponse.<UserResponse>builder()
                     .code(500)
-                    .message("Lỗi hệ thống")
+                    .message("Lỗi hệ thống" + e.getMessage())
                     .data(null)
                     .build();
         }
@@ -311,13 +312,20 @@ public class UserServiceImpl implements UserService {
             UserAcc user = userAccRepository.findById(id).orElseThrow(
                     () -> new RuntimeException("Không tìm thấy user " + id));
 
+            long daysJoined = 0;
+            if (user.getCreatedAt() != null) {
+                daysJoined = ChronoUnit.DAYS.between(user.getCreatedAt().toLocalDate(), LocalDate.now());
+            }
+
             UserOrderDetail response = UserOrderDetail.builder()
                     .id(id)
                     .fullName(user.getUserInfo().getFullName())
                     .email(user.getEmail())
+                    .avatar(user.getUserInfo().getAvatar())
                     .phone(user.getUserInfo().getPhone())
                     .address(user.getUserInfo().getAddress())
                     .isLock(user.getIsLock())
+                    .daysJoined(daysJoined)
                     .userOrderDetailResponse(orderClient.findOrdersDetailByUserId(id))
                     .build();
 
@@ -331,6 +339,31 @@ public class UserServiceImpl implements UserService {
                     .code(500)
                     .data(null)
                     .message("Lỗi hệ thống " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @Override
+    public ApiResponse<UserResponse> deleteUser(Long id) {
+        try {
+            UserAcc userAcc = userAccRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục với ID: " + id));
+
+            userAcc.setIsActive(0);
+            userAccRepository.save(userAcc);
+            UserResponse response = userAccMapper.toDto(userAcc);
+            return ApiResponse.<UserResponse>builder()
+                    .code(200)
+                    .message("Xóa userId = " + id + " thành công")
+                    .data(response)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Lỗi: {}", e.getMessage(), e);
+            return ApiResponse.<UserResponse>builder()
+                    .code(500)
+                    .message("Đã xảy ra lỗi trong hệ thống." + e.getMessage())
+                    .data(null)
                     .build();
         }
     }

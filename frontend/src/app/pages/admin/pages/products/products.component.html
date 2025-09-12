@@ -38,7 +38,8 @@
         <thead>
         <tr class="bg-gray-50 text-gray-600 text-sm font-semibold border-b">
           <th class="p-3 text-center">
-            <input (change)="onCheckboxAll($event)" [checked]="selectionService.isAllSelected"
+            <input (change)="onCheckboxAll($event)"
+                   [checked]="selectionService.isAllSelected"
                    class="w-4 h-4 accent-blue-500 cursor-pointer"
                    type="checkbox"/>
           </th>
