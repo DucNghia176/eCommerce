@@ -9,6 +9,7 @@ import ecommerce.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,11 +23,13 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ApiResponse<UserResponse> getById() {
         return userService.getUserInfoById();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("update")
     public ApiResponse<UserResponse> updateUser(
             @RequestPart("data") @Valid UserInfoUpdateRequest request,
@@ -34,11 +37,13 @@ public class UserController {
         return userService.updateUser(request, avatar);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/toggle/lock/{id}")
     public ApiResponse<UserResponse> toggleUserLock(@PathVariable Long id) {
         return userService.toggleUserLock(id);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/toggle/role/{id}")
     public ApiResponse<UserResponse> toggleUserRole(@PathVariable Long id) {
         return userService.toggleUserRole(id);
@@ -63,17 +68,20 @@ public class UserController {
 //        return userService.count();
 //    }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all/1")
     public ApiResponse<Page<UserOrdersResponse>> getAllUsers(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "10") int size) {
         return userService.getUsersTOrders(page, size);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/order/{userId}")
     public ApiResponse<UserOrderDetail> getUserOrderDetails(@PathVariable Long userId) {
         return userService.getUserOrderDetail(userId);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{userId}")
     public ApiResponse<UserResponse> deleteUser(@PathVariable Long userId) {
         return userService.deleteUser(userId);

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faFacebook, faInstagram, faPinterest, faTwitter, faYoutube} from "@fortawesome/free-brands-svg-icons";
+import {faFacebook, faInstagram, faPinterest, faReddit, faTwitter, faYoutube} from "@fortawesome/free-brands-svg-icons";
 
 @Component({
   selector: 'app-header',
@@ -18,4 +18,5 @@ export class HeaderComponent {
   protected readonly faPinterest = faPinterest;
   protected readonly faYoutube = faYoutube;
   protected readonly faInstagram = faInstagram;
+  protected readonly faReddit = faReddit;
 }
