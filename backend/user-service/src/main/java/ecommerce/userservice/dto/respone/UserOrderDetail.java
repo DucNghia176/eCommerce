@@ -18,6 +18,8 @@ public class UserOrderDetail {
     private String email;
     private String phone;
     private String address;
+    private String avatar;
     private int isLock;
+    private Long daysJoined;
     private List<UserOrderDetailResponse> userOrderDetailResponse;
 }

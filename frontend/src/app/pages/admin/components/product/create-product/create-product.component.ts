@@ -1,9 +1,9 @@
-import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, inject, Input, OnInit, ViewChild} from '@angular/core';
 import {ProductService} from "../../../../../core/services/product.service";
 import {ProductRequest} from "../../../../../core/models/product.model";
 import {FormsModule, NgForm} from "@angular/forms";
 import {validateAndFocusFirstError} from "../../../../../shared/utils/validation";
-import {faArrowLeft, faCancel, faClose, faEdit, faSave} from "@fortawesome/free-solid-svg-icons";
+import {faAdd, faArrowLeft, faCancel, faClose, faEdit, faSave} from "@fortawesome/free-solid-svg-icons";
 import {CommonModule, Location} from "@angular/common";
 import {ActivatedRoute, RouterModule} from "@angular/router";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -40,6 +40,8 @@ export class CreateProductComponent implements OnInit {
   categories: CategoryResponse[] = [];
   brands: BrandResponse[] = [];
   tags: TagResponse[] = [];
+  @Input() fixedCategoryId: number | null = null;
+  fixedCategory: { id: number; name: string } | null = null;
   @ViewChild('formRef') formRef!: ElementRef;
   showMiniForm = false;
   protected readonly faArrowLeft = faArrowLeft;
@@ -47,6 +49,7 @@ export class CreateProductComponent implements OnInit {
   protected readonly faSave = faSave;
   protected readonly faClose = faClose;
   protected readonly faEdit = faEdit;
+  protected readonly faAdd = faAdd;
   private productService = inject(ProductService);
   private toastService = inject(ToastService);
   private categoryService = inject(CategoryService);
@@ -57,8 +60,8 @@ export class CreateProductComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const categoryId = params['categoryId'];
-      if (params['categoryId']) {
-        this.categoryId = +categoryId;
+      if (categoryId) {
+        this.fixedCategoryId = +categoryId;
       }
     });
     this.loadCategory();
@@ -124,6 +127,9 @@ export class CreateProductComponent implements OnInit {
     this.categoryService.getAllCategory().subscribe({
       next: (res) => {
         this.categories = res;
+        if (this.fixedCategoryId) {
+          this.fixedCategory = this.categories.find(c => c.id === this.fixedCategoryId) ?? null;
+        }
       },
       error: (err) => {
         this.toastService.show("Lấy dữ liệu danh mục thất bại " + err.message, "f")

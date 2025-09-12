@@ -107,10 +107,15 @@ export class UsersService {
           if (response.code === 200 && response.data) {
             return response.data;
           }
-          throw new Error(response.message || 'Đổi trạng thái thất bại');
+          throw new Error(response.message);
         }), catchError(this.handleError)
       )
   }
+
+  toggleLock1(id: string): Observable<ApiResponse<UserResponse>> {
+    return this.http.put<ApiResponse<UserResponse>>(`${this.apiUrl}/toggle/lock/${id}`, null)
+  }
+
 
   toggleRole(id: string): Observable<UserResponse> {
     return this.http.put<ApiResponse<UserResponse>>(`${this.apiUrl}/toggle/role/${id}`, null)
@@ -135,6 +140,19 @@ export class UsersService {
   //       })
   //     )
   // }
+
+  deleteUser(id: number): Observable<UserResponse> {
+    return this.http.delete<ApiResponse<UserResponse>>(`${this.apiUrl}/${id}`)
+      .pipe(
+        map(res => {
+          if (res.code === 200 && res.data) {
+            return res.data;
+          }
+          throw new Error(res.message);
+        })
+      );
+  }
+
 
   private handleError(error: any): Observable<never> {
     let errorMessage = 'Đã xảy ra lỗi';

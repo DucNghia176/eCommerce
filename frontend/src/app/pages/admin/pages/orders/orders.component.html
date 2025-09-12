@@ -1,19 +1,21 @@
-<div class=" relative p-4 rounded-xl shadow bg-white">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold text-gray-800">Đơn hàng</h1>
+<div class="relative p-6 rounded-2xl shadow bg-white">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">📦 Quản lý đơn hàng</h1>
     <div class="flex gap-3">
       <button
         class="flex items-center bg-white text-blue-600 border border-blue-500 px-4 py-2 rounded-xl shadow-sm hover:bg-blue-50 transition"
       >
         <fa-icon [icon]="faFileExport"></fa-icon>
-        <span class="ml-2 font-medium">Xuất file</span>
+        <span class="ml-2 font-medium">Xuất tệp</span>
       </button>
     </div>
   </div>
 
+  <!-- Table -->
   <div class="overflow-x-auto border rounded-xl">
     <table class="table-auto text-left border-collapse bg-white rounded-t-xl w-full">
-      <thead class="bg-gray-50 text-gray-400 text-sm">
+      <thead class="bg-gray-100 text-gray-600 text-sm uppercase tracking-wide">
       <tr>
         <th class="p-3 text-center">
           <input
@@ -23,12 +25,14 @@
             type="checkbox"
           />
         </th>
-        <th class="p-3">Order</th>
-        <th class="p-3">Date</th>
-        <th class="p-3">Customer</th>
-        <th class="p-3">Payment Status</th>
-        <th class="p-3">Order Status</th>
-        <th class="p-3">Total</th>
+        <th class="p-3">Mã đơn</th>
+        <th class="p-3">Ngày đặt</th>
+        <th class="p-3">Khách hàng</th>
+        <th class="p-3">Thanh toán</th>
+        <th class="p-3">Trạng thái</th>
+        <th class="p-3">Phương thức</th>
+        <th class="p-3">Tổng tiền</th>
+        <th class="p-3 text-center">Thao tác</th>
       </tr>
       </thead>
       <tbody>
@@ -37,6 +41,7 @@
           *ngFor="let order of orders"
           class="border-b last:border-none hover:bg-gray-50 transition"
         >
+          <!-- Checkbox -->
           <td class="p-3 text-center">
             <input
               (change)="onCheckbox(order.id, $event)"
@@ -45,43 +50,85 @@
               type="checkbox"
             />
           </td>
+
+          <!-- Mã đơn -->
           <td class="p-3">
-          <span class="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-mono">
-            {{ order.orderCode }}
-          </span>
+              <span class="inline-block bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-mono">
+                {{ order.orderCode }}
+              </span>
           </td>
+
+          <!-- Ngày -->
           <td class="p-3 text-gray-800 whitespace-nowrap">
             {{ order.formattedDate }}
           </td>
-          <td class="p-3 text-gray-800 max-w-[200px] truncate">{{ order.customerName }}</td>
-          <td class="p-3">
-            <span
-              [appStatus]="PaymentStatusMeta[order.paymentStatus]"
-              class="inline-block px-2 py-1 rounded-full text-xs "
-            ></span>
+
+          <!-- Khách hàng -->
+          <td class="p-3 text-gray-800 max-w-[200px] truncate">
+            {{ order.customerName }}
           </td>
+
+          <!-- Thanh toán -->
           <td class="p-3">
-            <span
-              [appStatus]="OrderStatusMeta[order.orderStatus]"
-              class="inline-block px-2 py-1 rounded-full text-xs "
-            ></span>
+              <span
+                [appStatus]="PaymentStatusMeta[order.paymentStatus]"
+                class="inline-block px-2 py-1 rounded-full text-xs font-medium"
+              ></span>
           </td>
-          <td class="p-3 text-gray-800  text-right">
+
+          <!-- Trạng thái -->
+          <td class="p-3">
+              <span
+                [appStatus]="OrderStatusMeta[order.orderStatus]"
+                class="inline-block px-2 py-1 rounded-full text-xs font-medium"
+              ></span>
+          </td>
+
+          <!-- Phương thức -->
+          <td class="p-3 text-gray-700">
+            {{ order.paymentMethod }}
+          </td>
+
+          <!-- Tổng tiền -->
+          <td class="p-3 text-gray-800 font-semibold ">
             {{ order.orderAmount | currency: 'VND' }}
+          </td>
+
+          <!-- Actions -->
+          <td class="p-3 text-center">
+            <div class="flex justify-center gap-2">
+              <button
+                class="p-2 text-green-600 rounded-full hover:bg-green-50"
+                title="Xác nhận đơn"
+              >
+                <fa-icon [icon]="faClipboardCheck"></fa-icon>
+              </button>
+              <button
+                *ngIf="order.paymentMethod === PaymentMethodStatus.COD && order.paymentStatus === PaymentStatus.Pending"
+                class="flex items-center text-blue-600 hover:text-blue-800 transition"
+                title="Xác nhận đã thanh toán"
+              >
+                <fa-icon [icon]="faMoneyBillWave"></fa-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </ng-container>
+
+      <!-- No data -->
       <ng-template #noData>
         <tr>
-          <td class="text-center text-gray-500 py-4" colspan="7">
-            Không có dữ liệu
+          <td class="text-center text-gray-500 py-6" colspan="9">
+            Không có đơn hàng nào
           </td>
         </tr>
       </ng-template>
       </tbody>
     </table>
   </div>
-  <div class=" p-4 border-t">
+
+  <!-- Pagination -->
+  <div class="p-4 border-t">
     <app-page
       (pageChange)="loadOrders($event.page)"
       (pageSizeChange)="onPageSizeChange($event)"
@@ -91,5 +138,4 @@
       [totalItems]="totalItems"
     ></app-page>
   </div>
-
 </div>

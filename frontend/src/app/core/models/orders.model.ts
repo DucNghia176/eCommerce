@@ -11,4 +11,5 @@ export interface OrderAD {
   orderStatus: OrderStatus;
   orderAmount: string;
   formattedDate: string;
+  paymentMethod: string;
 }

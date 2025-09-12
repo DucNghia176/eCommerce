@@ -1,245 +1,293 @@
-<form #form="ngForm" #formRef (ngSubmit)="updateProduct(form)" class="mt-1 space-y-4">
-  <!--header-->
-  <header class="bg-gray-100 border-gray-200 p-2">
-    <button class="text-gray-500 flex items-center hover:text-gray-700" type="button">
-      <fa-icon [icon]="faArrowLeft"></fa-icon>
-      <span (click)="goBack()" class="ml-2">Quay lại</span>
-    </button>
+<div class="relative p-4 rounded-xl shadow bg-white">
+  <form #form="ngForm" #formRef (ngSubmit)="updateProduct(form)" class="mt-1 space-y-4">
+    <!--header-->
+    <header class="flex items-center justify-between mb-6">
+      <!-- Nút quay lại -->
+      <button
+        (click)="goBack()"
+        class="flex items-center text-gray-500 hover:text-gray-700"
+        type="button"
+      >
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+        <span class="ml-2">Quay lại</span>
+      </button>
 
-    <div class="flex justify-between items-center">
-      <h1 class="text-xl font-bold">Cập Nhật Sản Phẩm</h1>
-      <div class="flex gap-2">
-        <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
+      <!-- Tiêu đề -->
+      <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
+        Cập nhật sản phẩm
+      </h1>
+
+      <!-- Nút Hủy / Lưu -->
+      <div class="flex gap-3">
+        <button
+          (click)="goBack()"
+          class="flex items-center bg-white text-red-600 border border-red-500 px-4 py-2 rounded-xl shadow hover:bg-red-50 transition"
+          type="button"
+        >
           <fa-icon [icon]="faClose"></fa-icon>
-          <span (click)="goBack()" class="ml-2">Hủy</span>
+          <span class="ml-2 font-medium">Hủy</span>
         </button>
         <button
           [disabled]="isLoading"
-          class="bg-blue-600 text-white border px-4 py-2 rounded"
+          class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition"
           type="submit"
         >
           <fa-icon [icon]="faSave"></fa-icon>
-          <span class="ml-2">Lưu</span>
+          <span class="ml-2 font-medium">Lưu</span>
         </button>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!--main-->
-  <div class="grid lg:grid-cols-3 gap-4 mb-6">
-    <!-- left -->
-    <div class="lg:col-span-2 ">
-      <section class="bg-white p-6 rounded-xl shadow space-y-6 gap-3">
-        <!-- thông tin -->
-        <div class="space-y-4 border-b border-gray-300 pb-7">
-          <h2 class="font-semibold text-lg mb-4">Thông Tin Sản Phẩm</h2>
-          <!-- tên -->
-          <div class="">
-            <label class="text-gray-600 label-required block font-medium" for="name">
-              Tên Sản Phẩm
-            </label>
-            <input
-              #nameRef="ngModel"
-              [(ngModel)]="name"
-              class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-              id="name"
-              name="name"
-              placeholder="Nhập tên sản phẩm"
-              required
-              type="text"
-            />
-            <div *ngIf="nameRef.invalid && nameRef.touched" class="text-red-600 text-sm mt-1">
-              <div *ngIf="nameRef.errors?.['required']">Vui lòng nhập tên sản phẩm để tiếp tục.</div>
+    <!--main-->
+    <div class="grid lg:grid-cols-3 gap-4 mb-6">
+      <!-- left -->
+      <div class="lg:col-span-2 ">
+        <section class="bg-white p-6 rounded-xl shadow space-y-4 gap-3">
+          <!-- thông tin -->
+          <div class="space-y-4 border-b border-gray-300 pb-7">
+            <h2 class="font-semibold text-lg">Thông Tin Sản Phẩm</h2>
+            <!-- tên -->
+            <div class="">
+              <label class="text-gray-600 label-required block font-medium" for="name">
+                Tên Sản Phẩm
+              </label>
+              <input
+                #nameRef="ngModel"
+                [(ngModel)]="name"
+                class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                id="name"
+                name="name"
+                placeholder="Nhập tên sản phẩm"
+                required
+                type="text"
+              />
+              <div *ngIf="nameRef.invalid && nameRef.touched" class="text-red-600 text-sm mt-1">
+                <div *ngIf="nameRef.errors?.['required']">Vui lòng nhập tên sản phẩm để tiếp tục.</div>
+              </div>
             </div>
-          </div>
 
-          <!-- mô tả -->
-          <div>
-            <label class="text-gray-600 block font-medium" for="description">
-              Mô Tả Sản Phẩm
-            </label>
-            <textarea
-              [(ngModel)]="description"
-              class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-24 resize-none"
-              id="description"
-              name="description"
-              placeholder="Nhập mô tả"
-            >
-            </textarea>
-          </div>
-        </div>
-
-        <!-- hình ảnh -->
-        <div class="border-gray-300 pb-7">
-          <h2 class="font-semibold mb-2">Hình Ảnh</h2>
-          <!-- upload zone -->
-          <div
-            *ngIf="images.length === 0"
-            class="border-2 border-dashed border-gray-300 rounded-md flex flex-col justify-center items-center space-y-2 h-40"
-          >
-            <label
-              class="bg-white text-blue-600 border rounded px-4 py-2 font-medium hover:bg-gray-100 cursor-pointer"
-              for="images"
-            >
-              Thêm tệp
-            </label>
-            <input
-              (change)="onFileSelected($event)"
-              accept="image/*"
-              hidden
-              id="images"
-              multiple
-              type="file"
-            />
-            <p class="text-sm text-gray-500">Hoặc kéo và thả tệp vào đây</p>
-          </div>
-
-          <!-- preview list -->
-          <div *ngIf="images.length > 0" class="mt-4 flex flex-wrap gap-4">
-            <div
-              *ngFor="let img of images; let i = index"
-              class="relative group w-24 h-24 rounded border overflow-hidden"
-            >
-              <img [src]="img.src" alt="Xem trước" class="w-full h-full object-cover"/>
-              <!-- xóa ảnh -->
-              <button
-                (click)="removeImage(i)"
-                class="absolute top-1 right-1 bg-white text-red-500 rounded-full w-5 h-5 flex items-center justify-center text-xs shadow group-hover:scale-110 transition-transform"
-                title="Xóa"
-                type="button"
+            <!-- mô tả -->
+            <div>
+              <label class="text-gray-600 block font-medium" for="description">
+                Mô Tả Sản Phẩm
+              </label>
+              <textarea
+                [(ngModel)]="description"
+                class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-24 resize-none"
+                id="description"
+                name="description"
+                placeholder="Nhập mô tả"
               >
-                <fa-icon [icon]="faClose"></fa-icon>
-              </button>
+            </textarea>
             </div>
+          </div>
 
-            <!-- thêm ảnh mới -->
-            <label
-              class="w-24 h-24 border-2 border-dashed flex items-center justify-center text-blue-500 rounded-md cursor-pointer hover:bg-gray-100 "
+          <!-- hình ảnh -->
+          <div class="border-gray-300 pb-7">
+            <h2 class="font-semibold mb-2">Hình Ảnh</h2>
+            <!-- upload zone -->
+            <div
+              *ngIf="images.length === 0"
+              class="border-2 border-dashed border-gray-300 rounded-md flex flex-col justify-center items-center space-y-2 h-40"
             >
-              +
+              <label
+                class="bg-white text-blue-600 border rounded px-4 py-2 font-medium hover:bg-gray-100 cursor-pointer"
+                for="images"
+              >
+                Thêm tệp
+              </label>
               <input
                 (change)="onFileSelected($event)"
                 accept="image/*"
                 hidden
+                id="images"
                 multiple
                 type="file"
               />
-            </label>
-          </div>
-        </div>
+              <p class="text-sm text-gray-500">Hoặc kéo và thả tệp vào đây</p>
+            </div>
 
-        <!-- giá -->
-        <div>
-          <h2 class="font-semibold text-lg mb-4">Giá Sản Phẩm</h2>
-          <div class="flex gap-4">
-            <div class="flex flex-col w-1/2">
-              <label class="text-gray-600 block font-medium label-required" for="price">
-                Giá
-              </label>
-              <input
-                #priceRef="ngModel"
-                [(ngModel)]="price"
-                class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-                id="price"
-                name="price"
-                placeholder="Nhập giá"
-                required
-                type="text"
+            <!-- preview list -->
+            <div *ngIf="images.length > 0" class="mt-4 flex flex-wrap gap-4">
+              <div
+                *ngFor="let img of images; let i = index"
+                class="relative group w-24 h-24 rounded border overflow-hidden"
               >
-              <div *ngIf="priceRef.invalid && priceRef.touched" class="text-red-600 text-sm mt-1">
-                <div *ngIf="priceRef.errors?.['required']">Vui lòng nhập giá để tiếp tục.</div>
+                <img [src]="img.src" alt="Xem trước" class="w-full h-full object-cover"/>
+                <!-- xóa ảnh -->
+                <button
+                  (click)="removeImage(i)"
+                  class="absolute top-1 right-1 bg-white text-red-500 rounded-full w-5 h-5 flex items-center justify-center text-xs shadow group-hover:scale-110 transition-transform"
+                  title="Xóa"
+                  type="button"
+                >
+                  <fa-icon [icon]="faClose"></fa-icon>
+                </button>
+              </div>
+
+              <!-- thêm ảnh mới -->
+              <label
+                class="w-24 h-24 border-2 border-dashed flex items-center justify-center text-blue-500 rounded-md cursor-pointer hover:bg-gray-100 "
+              >
+                +
+                <input
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                  hidden
+                  multiple
+                  type="file"
+                />
+              </label>
+            </div>
+          </div>
+
+          <!-- giá -->
+          <div>
+            <h2 class="font-semibold text-lg mb-4">Giá Sản Phẩm</h2>
+            <div class="flex gap-4">
+              <div class="flex flex-col w-1/2">
+                <label class="text-gray-600 block font-medium label-required" for="price">
+                  Giá
+                </label>
+                <input
+                  #priceRef="ngModel"
+                  [(ngModel)]="price"
+                  class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  id="price"
+                  name="price"
+                  placeholder="Nhập giá"
+                  required
+                  type="text"
+                >
+                <div *ngIf="priceRef.invalid && priceRef.touched" class="text-red-600 text-sm mt-1">
+                  <div *ngIf="priceRef.errors?.['required']">Vui lòng nhập giá để tiếp tục.</div>
+                </div>
+              </div>
+
+              <div class="flex flex-col w-1/2">
+                <label class="text-gray-600 block font-medium" for="discount">
+                  Giá Khuyến Mãi
+                </label>
+                <input
+                  [(ngModel)]="discount"
+                  class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  id="discount"
+                  name="discount"
+                  placeholder="Nhập giá khuyến mãi"
+                >
               </div>
             </div>
+          </div>
+        </section>
+      </div>
 
-            <div class="flex flex-col w-1/2">
-              <label class="text-gray-600 block font-medium" for="discount">
-                Giá Khuyến Mãi
-              </label>
-              <input
-                [(ngModel)]="discount"
-                class="border px-4 py-2 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-                id="discount"
-                name="discount"
-                placeholder="Nhập giá khuyến mãi"
-              >
+      <!-- right -->
+      <div class="space-y-6">
+        <!-- danh mục -->
+        <section class="bg-white p-4 rounded-xl shadow space-y-4">
+          <h2 class="font-semibold">Danh Mục</h2>
+          <div class="max-h-48 overflow-y-auto scrollbar-hide">
+            <label *ngFor="let category of categories" class="flex items-center gap-2">
+              <input [(ngModel)]="categoryId" [value]="category.id" name="categoryId" required type="radio"/>
+              {{ category.name }}
+            </label>
+          </div>
+          <div class="mt-3">
+            <!-- Nút thêm danh mục -->
+            <button
+              (click)="toggleMiniForm()"
+              class="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+              type="button"
+            >
+              <fa-icon [icon]="faAdd"></fa-icon>
+              <span>Thêm Danh Mục</span>
+            </button>
+
+            <!-- Mini form -->
+            <div
+              *ngIf="showMiniForm"
+              class="mt-3 p-4 border border-gray-300 rounded-xl bg-gray-50 shadow space-y-4 animate-fadeIn"
+            >
+              <!-- Input -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tên Danh Mục</label>
+                <input
+                  [(ngModel)]="categoryName"
+                  class="border px-4 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  name="categoryName"
+                  placeholder="Nhập tên danh mục"
+                  type="text"
+                />
+              </div>
+
+              <!-- Buttons -->
+              <div class="flex justify-end gap-3">
+                <button
+                  (click)="toggleMiniForm()"
+                  class="flex items-center bg-white text-red-600 border border-red-500 px-3 py-1.5 rounded-xl shadow hover:bg-red-50 transition"
+                  type="button"
+                >
+                  <fa-icon [icon]="faClose"></fa-icon>
+                  <span class="ml-2 font-medium">Hủy</span>
+                </button>
+
+                <button
+                  (click)="saveMiniProduct()"
+                  class="flex items-center bg-blue-600 text-white px-3 py-1.5 rounded-xl shadow hover:bg-blue-700 transition"
+                  type="button"
+                >
+                  <fa-icon [icon]="faSave"></fa-icon>
+                  <span class="ml-2 font-medium">Lưu</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
 
-    <!-- right -->
-    <div class="space-y-6">
-      <!-- danh mục -->
-      <section class="bg-white p-4 rounded-xl shadow">
-        <h2 class="font-semibold mb-4">Danh Mục</h2>
-        <div *ngFor="let category of categories; let i = index" class="max-h-48 overflow-y-auto scrollbar-hide">
-          <label class="flex items-center gap-2">
-            <input [(ngModel)]="categoryId" [value]="category.id" name="categoryId" required type="radio"/>
-            {{ category.name }}
-          </label>
-        </div>
-        <button (click)="toggleMiniForm()" type="button">
-          <span class="text-sm text-blue-500">Thêm Danh Mục</span>
-        </button>
-        <div *ngIf="showMiniForm" class="mt-4 p-4 border rounded bg-gray-50 shadow space-y-3 w-full max-w-sm">
-          <label class="block text-sm font-medium text-gray-700">Tên Danh Mục</label>
-          <input
-            [(ngModel)]="categoryName"
-            class="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            name="categoryName"
-            placeholder="Nhập tên danh mục"
-            type="text"
-          />
-          <div class="flex justify-end gap-2">
-            <button (click)="toggleMiniForm()" class="px-4 py-2 bg-gray-300 rounded" type="button">Hủy</button>
-            <button (click)="saveMiniProduct()" class="px-4 py-2 bg-blue-600 text-white rounded" type="button">Lưu
-            </button>
+        <!-- nhãn -->
+        <section class="bg-white p-4 rounded-xl shadow space-y-4">
+          <h2 class="font-semibold">Nhãn</h2>
+          <div *ngFor="let tag of tags" class="max-h-48 overflow-y-auto scrollbar-hide">
+            <label class="flex items-center gap-2">
+              <input (change)="onTagChange($event, tag.id)" [checked]="selectTag.includes(tag.id)" [value]="tag.id"
+                     name="tagId" type="checkbox"/>
+              {{ tag.name }}
+            </label>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- nhãn -->
-      <section class="bg-white p-4 rounded-xl shadow">
-        <h2 class="font-semibold mb-4">Nhãn</h2>
-        <div *ngFor="let tag of tags; let i = index" class="max-h-48 overflow-y-auto scrollbar-hide">
-          <label class="flex items-center gap-2">
-            <input (change)="onTagChange($event, tag.id)" [checked]="selectTag.includes(tag.id)" [value]="tag.id"
-                   name="tagId" type="checkbox"/>
-            {{ tag.name }}
-          </label>
-        </div>
-      </section>
-
-      <!-- thương hiệu -->
-      <section class="bg-white p-4 rounded-xl shadow">
-        <h2 class="font-semibold mb-4">Thương Hiệu</h2>
-        <div class="max-h-48 overflow-y-auto scrollbar-hide">
-          <label *ngFor="let brand of brands; let i = index" class="flex items-center gap-2">
-            <input [(ngModel)]="brandId" [value]="brand.id" name="brandId" type="radio"/>
-            {{ brand.name }}
-          </label>
-        </div>
-      </section>
+        <!-- thương hiệu -->
+        <section class="bg-white p-4 rounded-xl shadow space-y-4">
+          <h2 class="font-semibold">Thương Hiệu</h2>
+          <div class="max-h-48 overflow-y-auto scrollbar-hide">
+            <label *ngFor="let brand of brands" class="flex items-center gap-2">
+              <input [(ngModel)]="brandId" [value]="brand.id" name="brandId" type="radio"/>
+              {{ brand.name }}
+            </label>
+          </div>
+        </section>
+      </div>
     </div>
-  </div>
 
-  <!-- footer -->
-  <footer class="bg-gray-100 border-gray-200 justify-end">
-    <div class="flex gap-2">
-      <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
+    <!-- footer -->
+    <footer class="flex justify-end gap-3 mt-6">
+      <button (click)="goBack()"
+              class="flex items-center bg-white text-red-600 border border-red-500 px-4 py-2 rounded-xl shadow hover:bg-red-50 transition"
+              type="button">
         <fa-icon [icon]="faClose"></fa-icon>
-        <span (click)="goBack()" class="ml-2">Hủy</span>
+        <span class="ml-2 font-medium">Hủy</span>
       </button>
-      <button [disabled]="isLoading" class="bg-blue-600 text-white border px-4 py-2 rounded" type="submit">
+      <button [disabled]="isLoading"
+              class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition"
+              type="submit">
         <fa-icon [icon]="faSave"></fa-icon>
-        <span class="ml-2">Lưu</span>
+        <span class="ml-2 font-medium">Lưu</span>
       </button>
-    </div>
-  </footer>
-</form>
+    </footer>
+  </form>
 
-<app-toast></app-toast>
-<div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <app-loading-spinner [show]="true"></app-loading-spinner>
+  <app-toast></app-toast>
+  <div *ngIf="isLoading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <app-loading-spinner [show]="true"></app-loading-spinner>
+  </div>
 </div>

@@ -275,7 +275,7 @@ public class ProductServiceImpl implements ProductService {
             log.error("Lỗi: {}", e.getMessage(), e);
             return ApiResponse.<ProductResponse>builder()
                     .code(500)
-                    .message("Đã xảy ra lỗi trong hệ thống.")
+                    .message("Đã xảy ra lỗi trong hệ thống." + e.getMessage())
                     .data(null)
                     .build();
         }

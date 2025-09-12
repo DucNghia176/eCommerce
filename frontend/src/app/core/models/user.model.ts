@@ -55,6 +55,8 @@ export interface UserOrderDetail {
   phone: string;
   address: string;
   isLock: number;
+  avatar: string;
+  daysJoined: string;
   userOrderDetailResponse: UserOrderDetailResponse[]
 }
 
@@ -64,4 +66,5 @@ export interface UserOrderDetailResponse {
   orderDate: string;
   orderStatus: OrderStatus
   orderPrice: string
+  formattedDate: string
 }

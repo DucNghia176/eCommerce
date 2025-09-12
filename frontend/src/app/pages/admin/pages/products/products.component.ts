@@ -133,8 +133,6 @@ export class ProductsComponent implements OnInit {
 
   deleteProduct() {
     const ids = this.selectionService.getSelectedItems();
-    console.log('Selected IDs to delete:', ids);
-
     const deleteRequest =
       ids.map(id => this.productService.deleteProduct(id));
     this.dialogService.confirmDelete(`Bạn có chắc chắn muốn xóa ${ids.length} sản phẩm không?`)

@@ -15,7 +15,7 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Orders, Long> {
-    @Query("select new ecommerce.orderservice.dto.response.OrdersAD(o.id, o.orderCode, o.orderDate, o.userId, o.status, o.totalAmount) " +
+    @Query("select new ecommerce.orderservice.dto.response.OrdersAD(o.id, o.orderCode, o.orderDate, o.userId, o.status, o.totalAmount, o.paymentMethod) " +
             "from Orders o")
     Page<OrdersAD> getAll(Pageable pageable);
 
