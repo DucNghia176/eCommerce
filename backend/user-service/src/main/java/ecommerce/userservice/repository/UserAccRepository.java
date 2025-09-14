@@ -1,6 +1,7 @@
 package ecommerce.userservice.repository;
 
 import ecommerce.aipcommon.model.response.UserResponse;
+import ecommerce.aipcommon.model.status.GenderStatus;
 import ecommerce.userservice.entity.UserAcc;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,23 +34,25 @@ public interface UserAccRepository extends JpaRepository<UserAcc, Long> {
     Object countUsersStatus();
 
 
-    @Query("""
-            SELECT new ecommerce.aipcommon.model.response.UserResponse(
-                ua.id, ua.username, ua.password, ui.fullName, ua.email,
-                (SELECT r.roleName FROM r), ua.isLock, ui.avatar, ui.gender, ui.dateOfBirth,
-                ui.address, ui.phone, ua.createdAt, ua.updatedAt
-            )
+    @Query(value = """
+            SELECT ua.id, ua.username, ua.password, ui.fullName, ua.email,
+                        LISTAGG(r.roleName, ',') WITHIN GROUP (ORDER BY r.roleName) AS ROLES,
+                   ua.isLock, ui.avatar, ui.gender, ui.dateOfBirth,
+                   ui.address, ui.phone, ua.createdAt, ua.updatedAt
             FROM UserAcc ua
-            JOIN ua.userInfo ui
-            JOIN ua.roles r
+            JOIN UserInfo ui ON ua.id = ui.id
+            left JOIN ua.roles r
             WHERE (:fullName IS NULL OR ui.fullName LIKE %:fullName%)
               AND (:gender IS NULL OR ui.gender = :gender)
               AND (:isLock IS NULL OR ua.isLock = :isLock)
               AND (:email IS NULL OR ua.email LIKE %:email%)
+            GROUP BY ua.id, ua.username, ua.password, ui.fullName, ua.email,
+                     ua.isLock, ui.avatar, ui.gender, ui.dateOfBirth,
+                     ui.address, ui.phone, ua.createdAt, ua.updatedAt
             """)
     List<UserResponse> searchUsers(
             @Param("fullName") String fullName,
-            @Param("gender") String gender,
+            @Param("gender") GenderStatus gender,
             @Param("isLock") Integer isLock,
             @Param("email") String email
     );

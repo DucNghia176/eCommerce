@@ -2,6 +2,7 @@ package ecommerce.userservice.controller;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.UserResponse;
+import ecommerce.aipcommon.model.status.GenderStatus;
 import ecommerce.userservice.dto.request.AddRoleRequest;
 import ecommerce.userservice.dto.request.UserInfoUpdateRequest;
 import ecommerce.userservice.dto.respone.UserOrderDetail;
@@ -136,7 +137,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/search/jpa")
-    public ApiResponse<List<UserResponse>> searchJPA(@RequestParam String name, @RequestParam String gender, @RequestParam Integer isLock, @RequestParam String email) {
+    public ApiResponse<List<UserResponse>> searchJPA(@RequestParam String name, @RequestParam GenderStatus gender, @RequestParam Integer isLock, @RequestParam String email) {
         List<UserResponse> userResponse = userService.searchUsersJPA(name, gender, isLock, email);
 
         return ApiResponse.<List<UserResponse>>builder()
@@ -148,7 +149,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/search/jdbc")
-    public ApiResponse<List<UserResponse>> searchJDBC(@RequestParam String name, @RequestParam String gender, @RequestParam Integer isLock, @RequestParam String email) {
+    public ApiResponse<List<UserResponse>> searchJDBC(@RequestParam String name, @RequestParam GenderStatus gender, @RequestParam Integer isLock, @RequestParam String email) {
         List<UserResponse> userResponse = userService.searchUsersJDBC(name, gender, isLock, email);
 
         return ApiResponse.<List<UserResponse>>builder()
@@ -160,7 +161,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/search/jdbcNamed")
-    public ApiResponse<List<UserResponse>> searchJDBCNamed(@RequestParam String name, @RequestParam String gender, @RequestParam Integer isLock, @RequestParam String email) {
+    public ApiResponse<List<UserResponse>> searchJDBCNamed(@RequestParam String name, @RequestParam GenderStatus gender, @RequestParam Integer isLock, @RequestParam String email) {
         List<UserResponse> userResponse = userService.searchUsersJdbcNamed(name, gender, isLock, email);
 
         return ApiResponse.<List<UserResponse>>builder()

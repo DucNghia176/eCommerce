@@ -2,6 +2,7 @@ package ecommerce.userservice.service.impl;
 
 import ecommerce.aipcommon.config.TokenInfo;
 import ecommerce.aipcommon.model.response.UserResponse;
+import ecommerce.aipcommon.model.status.GenderStatus;
 import ecommerce.aipcommon.model.status.RoleStatus;
 import ecommerce.userservice.client.OrderClient;
 import ecommerce.userservice.client.PaymentClient;
@@ -268,17 +269,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> searchUsersJPA(String name, String gender, Integer isLock, String email) {
+    public List<UserResponse> searchUsersJPA(String name, GenderStatus gender, Integer isLock, String email) {
         return userAccRepository.searchUsers(name, gender, isLock, email);
     }
 
     @Override
-    public List<UserResponse> searchUsersJDBC(String name, String gender, Integer isLock, String email) {
+    public List<UserResponse> searchUsersJDBC(String name, GenderStatus gender, Integer isLock, String email) {
         return jDBC.searchUsers(name, gender, isLock, email);
     }
 
     @Override
-    public List<UserResponse> searchUsersJdbcNamed(String name, String gender, Integer isLock, String email) {
+    public List<UserResponse> searchUsersJdbcNamed(String name, GenderStatus gender, Integer isLock, String email) {
         return jDBCNamed.searchUsers(name, gender, isLock, email);
     }
 }
