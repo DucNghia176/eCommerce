@@ -40,16 +40,7 @@ public class GlobalExceptionHandler {
                 .data(null)
                 .build());
     }
-
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ApiResponse<Object>> handleNoSuchElement(NoSuchElementException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.builder()
-                .code(404)
-                .message(ex.getMessage())
-                .data(null)
-                .build());
-    }
-
+    
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiResponse<Object>> handleUnauthorized(AuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

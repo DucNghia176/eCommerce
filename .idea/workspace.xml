@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b7705d5b-ca0c-4041-8bbe-91bdfde3f433.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b7705d5b-ca0c-4041-8bbe-91bdfde3f433.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/config/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/config/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/JDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/JDBC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/JDBCNamed.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/JDBCNamed.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/UserAccRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/UserAccRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/impl/UserServiceImpl.java" afterDir="false" />
     </list>
@@ -439,15 +444,7 @@
       <workItem from="1757600829463" duration="5000" />
       <workItem from="1757659141716" duration="41294000" />
       <workItem from="1757769399036" duration="24750000" />
-      <workItem from="1757854532535" duration="2644000" />
-    </task>
-    <task id="LOCAL-00016" summary="update">
-      <option name="closed" value="true" />
-      <created>1751964482712</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1751964482712</updated>
+      <workItem from="1757854532535" duration="5657000" />
     </task>
     <task id="LOCAL-00017" summary="update">
       <option name="closed" value="true" />
@@ -833,7 +830,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757856899918</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="update">
+      <option name="closed" value="true" />
+      <created>1757857204669</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1757857204669</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -902,6 +907,21 @@
     <MESSAGE value="exception" />
     <MESSAGE value="update" />
     <option name="LAST_COMMIT_MESSAGE" value="update" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/impl/UserServiceImpl.java</url>
+          <line>235</line>
+          <properties class="ecommerce.userservice.service.impl.UserServiceImpl" method="addRoleToUser">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -1,6 +1,7 @@
 package ecommerce.userservice.service;
 
 import ecommerce.aipcommon.model.response.UserResponse;
+import ecommerce.aipcommon.model.status.GenderStatus;
 import ecommerce.userservice.dto.request.AddRoleRequest;
 import ecommerce.userservice.dto.request.UserInfoUpdateRequest;
 import ecommerce.userservice.dto.respone.UserOrderDetail;
@@ -33,9 +34,9 @@ public interface UserService {
 
     UserResponse addRoleToUser(AddRoleRequest request);
 
-    List<UserResponse> searchUsersJPA(String name, String gender, Integer isLock, String email);
+    List<UserResponse> searchUsersJPA(String name, GenderStatus gender, Integer isLock, String email);
 
-    List<UserResponse> searchUsersJDBC(String name, String gender, Integer isLock, String email);
+    List<UserResponse> searchUsersJDBC(String name, GenderStatus gender, Integer isLock, String email);
 
-    List<UserResponse> searchUsersJdbcNamed(String name, String gender, Integer isLock, String email);
+    List<UserResponse> searchUsersJdbcNamed(String name, GenderStatus gender, Integer isLock, String email);
 }
