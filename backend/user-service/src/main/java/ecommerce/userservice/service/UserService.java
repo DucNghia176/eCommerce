@@ -32,4 +32,10 @@ public interface UserService {
     UserResponse deleteUser(Long id);
 
     UserResponse addRoleToUser(AddRoleRequest request);
+
+    List<UserResponse> searchUsersJPA(String name, String gender, Integer isLock, String email);
+
+    List<UserResponse> searchUsersJDBC(String name, String gender, Integer isLock, String email);
+
+    List<UserResponse> searchUsersJdbcNamed(String name, String gender, Integer isLock, String email);
 }
