@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/auth/register
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.2.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+content-length: 0
+
+<> 2025-09-13T215027.500.json
+
+###
+

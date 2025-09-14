@@ -1,21 +1,21 @@
 package ecommerce.userservice.service.impl;
 
 import ecommerce.aipcommon.config.TokenInfo;
-import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.UserResponse;
 import ecommerce.aipcommon.model.status.RoleStatus;
 import ecommerce.userservice.client.OrderClient;
 import ecommerce.userservice.client.PaymentClient;
+import ecommerce.userservice.dto.request.AddRoleRequest;
 import ecommerce.userservice.dto.request.UserInfoUpdateRequest;
 import ecommerce.userservice.dto.respone.UserIdName;
 import ecommerce.userservice.dto.respone.UserOrderDetail;
 import ecommerce.userservice.dto.respone.UserOrdersResponse;
+import ecommerce.userservice.entity.Role;
 import ecommerce.userservice.entity.UserAcc;
 import ecommerce.userservice.entity.UserInfo;
 import ecommerce.userservice.mapper.UserAccMapper;
 import ecommerce.userservice.mapper.UserInfoMapper;
-import ecommerce.userservice.repository.UserAccRepository;
-import ecommerce.userservice.repository.UserInfoRepository;
+import ecommerce.userservice.repository.*;
 import ecommerce.userservice.service.CloudinaryService;
 import ecommerce.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -49,160 +50,63 @@ public class UserServiceImpl implements UserService {
     private final UserAccRepository userAccRepository;
     private final UserAccMapper userAccMapper;
     private final UserInfoMapper userInfoMapper;
+    private final RoleRepository roleRepository;
+    private final JDBC jDBC;
+    private final JDBCNamed jDBCNamed;
 
     @Override
-    public ApiResponse<UserResponse> getUserInfoById() {
-        try {
-            Long id = tokenInfo.getUserId();
-            UserAcc users = userAccRepository.findById(id)
-                    .orElse(null);
-
-            if (users == null) {
-                return ApiResponse.<UserResponse>builder()
-                        .code(404)
-                        .message("Không tìm thấy người dùng với ID: " + id)
-                        .data(null)
-                        .build();
-            }
-            UserResponse response = userAccMapper.toDto(users);
-            return ApiResponse.<UserResponse>builder()
-                    .code(200)
-                    .message("Lấy thông tin người dùng thành công")
-                    .data(response)
-                    .build();
-        } catch (Exception e) {
-            log.error("Lỗi khi lấy người dùng theo ID: {}", e.getMessage(), e);
-            return ApiResponse.<UserResponse>builder()
-                    .code(500)
-                    .message("Đã xảy ra lỗi khi lấy thông tin người dùng")
-                    .data(null)
-                    .build();
-        }
+    public UserResponse getUserInfoById() {
+        Long id = tokenInfo.getUserId();
+        UserAcc users = userAccRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy user với id = " + id));
+        return userAccMapper.toDto(users);
     }
 
     @Override
-    public ApiResponse<UserResponse> updateUser(UserInfoUpdateRequest request, MultipartFile avatarFile) {
-        try {
-            Long id = tokenInfo.getUserId();
-            UserAcc userAcc = userAccRepository.findById(id)
-                    .orElse(null);
-            if (userAcc == null) {
-                return ApiResponse.<UserResponse>builder()
-                        .code(404)
-                        .message("Không tìm thấy người dùng với ID: " + id)
-                        .data(null)
-                        .build();
-            }
+    public UserResponse updateUser(UserInfoUpdateRequest request, MultipartFile avatarFile) {
+        Long id = tokenInfo.getUserId();
+        UserAcc userAcc = userAccRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy người dùng với ID: " + id));
 
-            UserInfo userInfo = userAcc.getUserInfo();
-            if (userInfo == null) {
-                userInfo = new UserInfo();
-                userInfo.setUserAcc(userAcc);
-                userAcc.setUserInfo(userInfo);
-            }
+        UserInfo userInfo = userAcc.getUserInfo();
+        if (userInfo == null) {
+            userInfo = new UserInfo();
+            userInfo.setUserAcc(userAcc);
+            userAcc.setUserInfo(userInfo);
+        }
 
-            userInfoMapper.updateUserInfoFromDto(request, userInfo);
-            // Xử lý ảnh đại diện
-            if (avatarFile != null && !avatarFile.isEmpty()) {
-                String oldAvatarUrl = userInfo.getAvatar();
-                if (oldAvatarUrl != null && !oldAvatarUrl.isEmpty()) {
-                    String publicId = cloudinaryService.extractPublicId(oldAvatarUrl);
-                    if (publicId != null) {
-                        cloudinaryService.deleteFile(publicId);
-                    }
+        userInfoMapper.updateUserInfoFromDto(request, userInfo);
+        // Xử lý ảnh đại diện
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            String oldAvatarUrl = userInfo.getAvatar();
+            if (oldAvatarUrl != null && !oldAvatarUrl.isEmpty()) {
+                String publicId = cloudinaryService.extractPublicId(oldAvatarUrl);
+                if (publicId != null) {
+                    cloudinaryService.deleteFile(publicId);
                 }
-                // Upload ảnh mới
-                String avatarUrl = cloudinaryService.uploadFile(avatarFile);
-                userInfo.setAvatar(avatarUrl);
             }
-
-            UserAcc savedUserAcc = userAccRepository.save(userAcc);
-
-            UserResponse response = userAccMapper.toDto(savedUserAcc);
-            return ApiResponse.<UserResponse>builder()
-                    .code(200)
-                    .message("Cập nhật thành công ")
-                    .data(response)
-                    .build();
-        } catch (IllegalArgumentException e) {
-            return ApiResponse.<UserResponse>builder()
-                    .code(400)
-                    .message("Giới tính không hợp lệ. Chỉ được phép 'Nam' hoặc 'Nữ'")
-                    .data(null)
-                    .build();
-
-        } catch (Exception e) {
-            return ApiResponse.<UserResponse>builder()
-                    .code(500)
-                    .message("Lỗi hệ thống:")
-                    .data(null)
-                    .build();
+            // Upload ảnh mới
+            String avatarUrl = cloudinaryService.uploadFile(avatarFile);
+            userInfo.setAvatar(avatarUrl);
         }
+
+        UserAcc savedUserAcc = userAccRepository.save(userAcc);
+
+        return userAccMapper.toDto(savedUserAcc);
+
     }
 
     @Override
-    public ApiResponse<UserResponse> toggleUserLock(Long id) {
-        try {
-            UserAcc user = userAccRepository.findById(id).orElse(null);
-            if (user == null) {
-                return ApiResponse.<UserResponse>builder()
-                        .code(404)
-                        .message("Không tìm thấy người dùng với ID: " + id)
-                        .data(null)
-                        .build();
-            }
+    public UserResponse toggleUserLock(Long id) {
+        UserAcc user = userAccRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy người dùng với ID: " + id));
 
-            int newStatus = user.getIsLock() == 1 ? 0 : 1;
-            user.setIsLock(newStatus);
-            user.setUpdatedAt(LocalDateTime.now());
 
-            UserResponse response = userAccMapper.toDto(userAccRepository.save(user));
+        int newStatus = user.getIsLock() == 1 ? 0 : 1;
+        user.setIsLock(newStatus);
+        user.setUpdatedAt(LocalDateTime.now());
 
-            return ApiResponse.<UserResponse>builder()
-                    .code(200)
-                    .message(newStatus == 1 ? "Tài khoản đã bị khóa" : "Tài khoản đã được mở khóa")
-                    .data(response)
-                    .build();
-        } catch (Exception e) {
-            return ApiResponse.<UserResponse>builder()
-                    .code(500)
-                    .message("Lỗi hệ thống" + e.getMessage())
-                    .data(null)
-                    .build();
-        }
-    }
-
-    @Override
-    public ApiResponse<UserResponse> toggleUserRole(Long id) {
-        try {
-            UserAcc userAcc = userAccRepository.findById(id).orElse(null);
-            if (userAcc == null) {
-                return ApiResponse.<UserResponse>builder()
-                        .code(404)
-                        .message("Không tìm thấy người dùng với ID: " + id)
-                        .data(null)
-                        .build();
-            }
-
-            RoleStatus newRole = userAcc.getRole() == RoleStatus.ADMIN
-                    ? RoleStatus.USER
-                    : RoleStatus.ADMIN;
-
-            userAcc.setRole(newRole);
-            UserResponse response = userAccMapper.toDto(userAccRepository.save(userAcc));
-            return ApiResponse.<UserResponse>builder()
-                    .code(200)
-                    .message("Cập nhật quyền thành: " + newRole)
-                    .data(response)
-                    .build();
-        } catch (Exception e) {
-            log.error("Lỗi khi chuyển quyền: {}", e.getMessage(), e);
-            return ApiResponse.<UserResponse>builder()
-                    .code(500)
-                    .message("Lỗi hệ thống")
-                    .data(null)
-                    .build();
-        }
+        return userAccMapper.toDto(userAccRepository.save(user));
     }
 
 //    @Override
@@ -266,105 +170,112 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<Page<UserOrdersResponse>> getUsersTOrders(int page, int size) {
-        try {
-            Pageable pageable = PageRequest.of(page, size);
+    public Page<UserOrdersResponse> getUsersTOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
 
-            Page<UserOrdersResponse> responses = userInfoRepository.findAllUsersIn(pageable);
+        Page<UserOrdersResponse> responses = userInfoRepository.findAllUsersIn(pageable);
 
-            List<Long> userIds = responses.getContent()
-                    .stream()
-                    .map(UserOrdersResponse::getId)
-                    .toList();
-            CompletableFuture<Map<Long, Long>> quantityFuture = CompletableFuture.supplyAsync(() ->
-                    orderClient.extractOrderQuantity(userIds), contextAwareExecutor);
+        List<Long> userIds = responses.getContent()
+                .stream()
+                .map(UserOrdersResponse::getId)
+                .toList();
+        CompletableFuture<Map<Long, Long>> quantityFuture = CompletableFuture.supplyAsync(() ->
+                orderClient.extractOrderQuantity(userIds), contextAwareExecutor);
 
-            CompletableFuture<Map<Long, BigDecimal>> amountFuture = CompletableFuture.supplyAsync(() ->
-                    paymentClient.extractAmount(userIds), contextAwareExecutor);
+        CompletableFuture<Map<Long, BigDecimal>> amountFuture = CompletableFuture.supplyAsync(() ->
+                paymentClient.extractAmount(userIds), contextAwareExecutor);
 
-            CompletableFuture.allOf(quantityFuture, amountFuture).join();
+        CompletableFuture.allOf(quantityFuture, amountFuture).join();
 
-            Map<Long, Long> quantity = quantityFuture.join();
-            Map<Long, BigDecimal> amount = amountFuture.join();
+        Map<Long, Long> quantity = quantityFuture.join();
+        Map<Long, BigDecimal> amount = amountFuture.join();
 
-            responses.getContent().forEach(item -> {
-                item.setTotalOrders(quantity.getOrDefault(item.getId(), 0L));
-                item.setTotalAmount(amount.getOrDefault(item.getId(), BigDecimal.ZERO));
-            });
+        responses.getContent().forEach(item -> {
+            item.setTotalOrders(quantity.getOrDefault(item.getId(), 0L));
+            item.setTotalAmount(amount.getOrDefault(item.getId(), BigDecimal.ZERO));
+        });
 
-            return ApiResponse.<Page<UserOrdersResponse>>builder()
-                    .code(200)
-                    .message("Lấy thành công")
-                    .data(responses)
-                    .build();
-        } catch (Exception e) {
-            return ApiResponse.<Page<UserOrdersResponse>>builder()
-                    .code(500)
-                    .message("Đã xảy ra lỗi khi lấy danh sách người dùng" + e.getMessage())
-                    .data(null)
-                    .build();
-        }
+        return responses;
     }
 
     @Override
-    public ApiResponse<UserOrderDetail> getUserOrderDetail(Long id) {
-        try {
-            UserAcc user = userAccRepository.findById(id).orElseThrow(
-                    () -> new RuntimeException("Không tìm thấy user " + id));
+    public UserOrderDetail getUserOrderDetail(Long id) {
+        UserAcc user = userAccRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy người dùng với ID: " + id));
 
-            long daysJoined = 0;
-            if (user.getCreatedAt() != null) {
-                daysJoined = ChronoUnit.DAYS.between(user.getCreatedAt().toLocalDate(), LocalDate.now());
-            }
-
-            UserOrderDetail response = UserOrderDetail.builder()
-                    .id(id)
-                    .fullName(user.getUserInfo().getFullName())
-                    .email(user.getEmail())
-                    .avatar(user.getUserInfo().getAvatar())
-                    .phone(user.getUserInfo().getPhone())
-                    .address(user.getUserInfo().getAddress())
-                    .isLock(user.getIsLock())
-                    .daysJoined(daysJoined)
-                    .userOrderDetailResponse(orderClient.findOrdersDetailByUserId(id))
-                    .build();
-
-            return ApiResponse.<UserOrderDetail>builder()
-                    .code(200)
-                    .data(response)
-                    .message("Thành công")
-                    .build();
-        } catch (Exception e) {
-            return ApiResponse.<UserOrderDetail>builder()
-                    .code(500)
-                    .data(null)
-                    .message("Lỗi hệ thống " + e.getMessage())
-                    .build();
+        long daysJoined = 0;
+        if (user.getCreatedAt() != null) {
+            daysJoined = ChronoUnit.DAYS.between(user.getCreatedAt().toLocalDate(), LocalDate.now());
         }
+
+        return UserOrderDetail.builder()
+                .id(id)
+                .fullName(user.getUserInfo().getFullName())
+                .email(user.getEmail())
+                .avatar(user.getUserInfo().getAvatar())
+                .phone(user.getUserInfo().getPhone())
+                .address(user.getUserInfo().getAddress())
+                .isLock(user.getIsLock())
+                .daysJoined(daysJoined)
+                .userOrderDetailResponse(orderClient.findOrdersDetailByUserId(id))
+                .build();
     }
 
     @Override
-    public ApiResponse<UserResponse> deleteUser(Long id) {
-        try {
-            UserAcc userAcc = userAccRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục với ID: " + id));
+    public UserResponse deleteUser(Long id) {
+        UserAcc userAcc = userAccRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + id));
 
-            userAcc.setIsActive(0);
-            userAccRepository.save(userAcc);
-            UserResponse response = userAccMapper.toDto(userAcc);
-            return ApiResponse.<UserResponse>builder()
-                    .code(200)
-                    .message("Xóa userId = " + id + " thành công")
-                    .data(response)
-                    .build();
+        userAcc.setIsActive(0);
+        userAccRepository.save(userAcc);
+        return userAccMapper.toDto(userAcc);
+    }
 
-        } catch (Exception e) {
-            log.error("Lỗi: {}", e.getMessage(), e);
-            return ApiResponse.<UserResponse>builder()
-                    .code(500)
-                    .message("Đã xảy ra lỗi trong hệ thống." + e.getMessage())
-                    .data(null)
-                    .build();
+    @Override
+    public UserResponse addRoleToUser(AddRoleRequest request) {
+        UserAcc userAcc = userAccRepository.findById(request.getUserId())
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy người dùng userId = " + request.getUserId()));
+
+
+        List<Role> rolesToAdd = request.getRoleName().stream()
+                .map(name -> {
+                    RoleStatus roleStatus = RoleStatus.valueOf(name.toUpperCase());
+                    return roleRepository.findByRoleName(roleStatus)
+                            .orElseThrow(() -> new NoSuchElementException(
+                                    "Role " + name + " không tồn tại"
+                            ));
+                })
+                .toList();
+
+        // Lọc ra những role user đã có
+        List<Role> existingRoles = rolesToAdd.stream()
+                .filter(userAcc.getRoles()::contains)
+                .toList();
+
+        if (!existingRoles.isEmpty()) {
+            String roleNames = existingRoles.stream()
+                    .map(r -> r.getRoleName().name())
+                    .collect(Collectors.joining(", "));
+            throw new IllegalArgumentException(
+                    "Người dùng đã có các role: " + roleNames
+            );
         }
+
+        userAcc.getRoles().addAll(rolesToAdd);
+        userAccRepository.save(userAcc);
+
+        return userAccMapper.toDto(userAcc);
+    }
+
+    public List<UserResponse> searchUsersJPA(String name, String gender, Integer isLock, String email) {
+        return userAccRepository.searchUsers(name, gender, isLock, email);
+    }
+
+    public List<UserResponse> searchUsersJDBC(String name, String gender, Integer isLock, String email) {
+        return jDBC.searchUsers(name, gender, isLock, email);
+    }
+
+    public List<UserResponse> searchUsersJdbcNamed(String name, String gender, Integer isLock, String email) {
+        return jDBCNamed.searchUsers(name, gender, isLock, email);
     }
 }

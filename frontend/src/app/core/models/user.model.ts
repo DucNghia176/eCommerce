@@ -9,7 +9,7 @@ export interface UserResponse {
   dateOfBirth: Date;
   gender: string;
   isLock: number;
-  role: string;
+  roles: string[];
   avatar: string;
   createdAt: Date;
   updatedAt: Date;

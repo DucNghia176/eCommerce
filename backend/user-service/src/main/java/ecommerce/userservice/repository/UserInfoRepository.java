@@ -17,7 +17,8 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
             select new ecommerce.userservice.dto.respone.UserOrdersResponse(ui.id, ui.fullName, ui.avatar, ui.address, ua.isLock)
             from UserInfo ui
             join ui.userAcc ua
-            where ua.role = 'USER' AND ua.isActive = 1
+            join ua.roles r
+            where r.roleName = 'USER' AND ua.isActive = 1
             """)
     Page<UserOrdersResponse> findAllUsersIn(Pageable pageable);
 

@@ -12,21 +12,33 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
-    private final JwtUtil jwtUtil;
+    private final static List<String> API_PUBLIC = List.of(
+            "/api/auth",
+            "/api/product/search",
+            "/api/brand",
+            "/api/category"
 
-//    private final TokenBlacklistService tokenBlacklistService;
+    );
+
+    //    private final TokenBlacklistService tokenBlacklistService;
+    private final JwtUtil jwtUtil;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
 
-        if (path.startsWith("/auth") || path.contains("/auth/login")) {
+        boolean isPublic = API_PUBLIC.stream().anyMatch(publicPath -> path.equals(publicPath)
+                || path.startsWith(publicPath + "/"));
+
+        if (isPublic) {
             return chain.filter(exchange);
         }
 
@@ -35,14 +47,14 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
-                String role = jwtUtil.extractRole(token);
+                List<String> roles = jwtUtil.extractRoles(token);
                 String username = jwtUtil.extractUsername(token);
                 Long userId = jwtUtil.extractUserId(token);
 
-                log.info("Request from user: {}, role: {}, path: {}", username, role, path);
+                String roleHeader = String.join(",", roles);
 
                 // Nếu path chứa /admin mà role không phải ADMIN thì chặn
-                if (path.contains("/admin") && !"ADMIN".equals(role)) {
+                if (path.contains("/admin") && !roles.contains("ADMIN")) {
                     exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
                     return exchange.getResponse().setComplete();
                 }
@@ -51,7 +63,7 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
                 ServerHttpRequest mutatedRequest = request.mutate()
                         .header("X-User-Id", userId != null ? userId.toString() : "")
                         .header("X-Username", username)
-                        .header("X-Role", role)
+                        .header("X-Role", roleHeader)
                         .build();
                 exchange = exchange.mutate().request(mutatedRequest).build();
 

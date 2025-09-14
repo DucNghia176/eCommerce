@@ -1,0 +1,66 @@
+<div class="inline-block relative text-sm">
+  <!-- All Category -->
+  <div class="inline-block relative">
+    <button
+      (click)="toggleCategory()"
+      [ngClass]="{
+              'bg-orange-500 text-white': isCategoryActive(),
+              'bg-gray-200 text-black': !isCategoryActive()
+            }"
+      class="flex items-center gap-1 font-semibold rounded px-3 py-1 bg-gray-200 transition-colors"
+    >
+      All Category
+      <fa-icon
+        [icon]="faChevronDown"
+        [ngStyle]="{
+          transform: allCategoryOpen ? 'rotate(-180deg)' : 'rotate(0deg)'
+        }"
+        class="ml-1 transition-transform duration-500"
+      >
+      </fa-icon>
+    </button>
+
+    <!-- Dropdown cha -->
+    <div
+      *ngIf="showCategory"
+      class="absolute left-0 mt-1 w-48 bg-white border border-gray-200 rounded shadow-lg z-50 transition-all duration-300 ease-in-out"
+    >
+      <ng-container *ngFor="let cat of categories">
+        <div (mouseenter)="onMouseEnterCategory(cat.id)"
+             (mouseleave)="onMouseLeaveCategory(cat.id)"
+             class="relative group"
+        >
+          <!-- Category cha -->
+          <button
+            [ngClass]="{
+            'bg-gray-300 font-semibold': isCategoryHover(cat.id),
+            'hover:bg-gray-300 hover:font-semibold': !isCategoryHover(cat.id)
+          }"
+            class="w-full text-left px-4 py-2 flex justify-between items-center hover:bg-gray-200 hover:font-semibold transition-colors duration-300 ease-in-out rounded"
+          >
+            {{ cat.name }}
+            <!-- Icon chỉ hiện khi có con -->
+            <fa-icon *ngIf="showChevronRight(cat.id)"
+                     [icon]="faChevronRight"
+                     class="ml-2 transition-transform duration-300"></fa-icon>
+          </button>
+
+          <!-- Dropdown con (chỉ hiện khi hover vào cha này) -->
+          <div
+            *ngIf="cat.children?.length"
+            class="absolute top-0 left-full ml-1 w-48 bg-white border border-gray-200 rounded shadow-lg opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
+          >
+            <ng-container *ngFor="let sub of cat.children">
+              <button
+                (click)="selectSubCategory(cat.id, sub.id)"
+                class="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors duration-300 ease-in-out"
+              >
+                {{ sub.name }}
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

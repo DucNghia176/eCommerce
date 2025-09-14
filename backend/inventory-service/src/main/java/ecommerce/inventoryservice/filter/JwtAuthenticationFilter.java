@@ -1,24 +1,23 @@
 package ecommerce.inventoryservice.filter;
 
-import ecommerce.aipcommon.model.status.RoleStatus;
 import ecommerce.aipcommon.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -28,37 +27,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String signerKey;
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
-
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        String token = null;
+
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-        }
+            String jwt = authHeader.substring(7);
 
-        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (!jwtUtil.validateToken(jwt)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
             try {
-                Map<String, Object> claims = jwtUtil.validateAndExtractClaims(token, signerKey);
+                Claims claims = jwtUtil.extractAllClaims(jwt);
+                String userId = claims.getSubject();
 
-                String subject = (String) claims.get("sub"); // username/email
-                String roleStr = (String) claims.get("role");
+                List<GrantedAuthority> authorities = ((List<?>) claims.get("role")).stream()
+                        .filter(String.class::isInstance)
+                        .map(String.class::cast)
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
 
-                RoleStatus role = RoleStatus.valueOf(roleStr); // ép thành enum (USER hoặc ADMIN)
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        userId, null, authorities);
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        subject,
-                        null,
-                        Collections.singletonList(new SimpleGrantedAuthority(role.name())) // authority = "USER"/"ADMIN"
-                );
-
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-
+                SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception e) {
-                System.out.println("JWT không hợp lệ: " + e.getMessage());
+                System.out.println("Invalid JWT: " + e.getMessage());
             }
         }
 
