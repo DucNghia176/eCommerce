@@ -267,14 +267,17 @@ public class UserServiceImpl implements UserService {
         return userAccMapper.toDto(userAcc);
     }
 
+    @Override
     public List<UserResponse> searchUsersJPA(String name, String gender, Integer isLock, String email) {
         return userAccRepository.searchUsers(name, gender, isLock, email);
     }
 
+    @Override
     public List<UserResponse> searchUsersJDBC(String name, String gender, Integer isLock, String email) {
         return jDBC.searchUsers(name, gender, isLock, email);
     }
 
+    @Override
     public List<UserResponse> searchUsersJdbcNamed(String name, String gender, Integer isLock, String email) {
         return jDBCNamed.searchUsers(name, gender, isLock, email);
     }

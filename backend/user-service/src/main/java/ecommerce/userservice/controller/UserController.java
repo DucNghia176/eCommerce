@@ -133,4 +133,40 @@ public class UserController {
                 .data(userResponse)
                 .build();
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/search/jpa")
+    public ApiResponse<List<UserResponse>> searchJPA(@RequestParam String name, @RequestParam String gender, @RequestParam Integer isLock, @RequestParam String email) {
+        List<UserResponse> userResponse = userService.searchUsersJPA(name, gender, isLock, email);
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .code(200)
+                .message("Tìm kiếm thành công")
+                .data(userResponse)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/search/jdbc")
+    public ApiResponse<List<UserResponse>> searchJDBC(@RequestParam String name, @RequestParam String gender, @RequestParam Integer isLock, @RequestParam String email) {
+        List<UserResponse> userResponse = userService.searchUsersJDBC(name, gender, isLock, email);
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .code(200)
+                .message("Tìm kiếm thành công")
+                .data(userResponse)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/search/jdbcNamed")
+    public ApiResponse<List<UserResponse>> searchJDBCNamed(@RequestParam String name, @RequestParam String gender, @RequestParam Integer isLock, @RequestParam String email) {
+        List<UserResponse> userResponse = userService.searchUsersJdbcNamed(name, gender, isLock, email);
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .code(200)
+                .message("Tìm kiếm thành công")
+                .data(userResponse)
+                .build();
+    }
 }
