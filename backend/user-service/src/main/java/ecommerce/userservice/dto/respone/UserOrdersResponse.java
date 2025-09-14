@@ -26,5 +26,6 @@ public class UserOrdersResponse {
         this.name = name;
         this.avatar = avatar;
         this.address = address;
+        this.isLock = isLock;
     }
 }

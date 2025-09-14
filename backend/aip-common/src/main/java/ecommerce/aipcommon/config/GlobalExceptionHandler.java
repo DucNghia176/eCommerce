@@ -41,6 +41,15 @@ public class GlobalExceptionHandler {
                 .build());
     }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ApiResponse<Object>> handleNoSuchElement(NoSuchElementException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.builder()
+                .code(404)
+                .message(ex.getMessage())
+                .data(null)
+                .build());
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiResponse<Object>> handleUnauthorized(AuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -57,7 +66,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiResponse.builder()
                         .code(403)
-                        .message("Người dùng không có quyền truy cập")
+                        .message(ex.getMessage() != null ? ex.getMessage() : "Người dùng không có quyền truy cập")
                         .data(null)
                         .build());
     }

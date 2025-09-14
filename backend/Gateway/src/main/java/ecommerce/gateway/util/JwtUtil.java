@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -70,8 +71,15 @@ public class JwtUtil {
         }
     }
 
-    public String extractRole(String token) {
-        return (String) extractAllClaims(token).getClaim("role");
+    public List<String> extractRoles(String token) {
+        Object rolesObj = extractAllClaims(token).getClaim("role");
+        if (rolesObj instanceof List<?> list) {
+            return list.stream()
+                    .filter(String.class::isInstance)
+                    .map(String.class::cast)
+                    .toList();
+        }
+        return List.of(); // trả về rỗng nếu không có role
     }
 
     public Long extractUserId(String token) {

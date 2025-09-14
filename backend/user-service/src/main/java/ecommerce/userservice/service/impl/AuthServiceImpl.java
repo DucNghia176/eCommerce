@@ -1,6 +1,5 @@
 package ecommerce.userservice.service.impl;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.AuthResponse;
 import ecommerce.aipcommon.model.status.RoleStatus;
 import ecommerce.aipcommon.util.JwtUtil;
@@ -9,21 +8,25 @@ import ecommerce.userservice.dto.request.PendingRegistration;
 import ecommerce.userservice.dto.request.UserCreateRequest;
 import ecommerce.userservice.dto.respone.UserCreateResponse;
 import ecommerce.userservice.email.PendingRegistrationStorage;
+import ecommerce.userservice.entity.Role;
 import ecommerce.userservice.entity.UserAcc;
 import ecommerce.userservice.entity.UserInfo;
 import ecommerce.userservice.mapper.UserAccMapper;
+import ecommerce.userservice.repository.RoleRepository;
 import ecommerce.userservice.repository.UserAccRepository;
 import ecommerce.userservice.service.AuthService;
 import ecommerce.userservice.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,173 +39,109 @@ public class AuthServiceImpl implements AuthService {
     private final PendingRegistrationStorage pendingRegistrationStorage;
     private final UserAccRepository userAccRepository;
     private final UserAccMapper userAccMapper;
+    private final RoleRepository roleRepository;
     @Value("${jwt.signing-key}")
     private String SIGNER_KEY;
 
     @Override
-    public ApiResponse<AuthResponse> login(AuthRequest request) {
-        try {
-            Optional<UserAcc> usersOpt = userAccRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail());
-            if (usersOpt.isEmpty()) {
-                return ApiResponse.<AuthResponse>builder()
-                        .code(404)
-                        .message("Tài khoản không tồn tại!")
-                        .data(null)
-                        .build();
-            }
-            UserAcc user = usersOpt.get();
-            if (user.getIsLock() == 1) {
-                return ApiResponse.<AuthResponse>builder()
-                        .code(403)
-                        .message("Tài khoản đã bị khóa!")
-                        .data(null)
-                        .build();
-            }
-            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                return ApiResponse.<AuthResponse>builder()
-                        .code(401)
-                        .message("Sai mật khẩu!")
-                        .data(null)
-                        .build();
-            }
-            Map<String, Object> claims = Map.of(
-                    "userId", user.getId(),
-                    "role", user.getRole());
-            String subject = user.getUsername() + "/" + user.getEmail();
-            String token = jwtUtil.generateToken(claims, subject, SIGNER_KEY);
-
-            AuthResponse response = new AuthResponse();
-            response.setUsername(user.getUsername());
-            response.setEmail(user.getEmail());
-            response.setRole(user.getRole().toString());
-            response.setToken(token);
-            response.setLastLogin(String.valueOf(LocalDateTime.now()));
-
-            user.setLastLogin(LocalDateTime.now());
-            userAccRepository.save(user);
-
-            return ApiResponse.<AuthResponse>builder()
-                    .code(200)
-                    .message("Đăng nhập thành công")
-                    .data(response)
-                    .build();
-
-        } catch (Exception e) {
-            log.error("Lỗi: {}", e.getMessage(), e);
-            return ApiResponse.<AuthResponse>builder()
-                    .code(500)
-                    .message("Lỗi hệ thống")
-                    .data(null)
-                    .build();
+    public AuthResponse login(AuthRequest request) {
+        UserAcc user = userAccRepository.
+                findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail())
+                .orElseThrow(() -> new NoSuchElementException("Tài khoản không tồn tại"));
+        if (user.getIsLock() == 1) {
+            throw new AccessDeniedException("Tài khoản đã bị khóa!");
         }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Sai mật khẩu!");
+        }
+
+        List<String> roleNames = user.getRoles()
+                .stream()
+                .map(role -> role.getRoleName().toString())
+                .toList();
+
+        Map<String, Object> claims = Map.of(
+                "userId", user.getId(),
+                "role", roleNames);
+        String subject = user.getUsername() + "/" + user.getEmail();
+        String token = jwtUtil.generateToken(claims, subject, SIGNER_KEY);
+
+        AuthResponse response = new AuthResponse();
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+        response.setRole(roleNames);
+        response.setToken(token);
+        response.setLastLogin(String.valueOf(LocalDateTime.now()));
+
+        user.setLastLogin(LocalDateTime.now());
+        userAccRepository.save(user);
+
+        return response;
     }
 
     @Override
-    public ApiResponse<UserCreateResponse> createUser(UserCreateRequest request) {
-        try {
-            if (userAccRepository.existsByUsername(request.getUsername())) {
-                return ApiResponse.<UserCreateResponse>builder()
-                        .code(400)
-                        .message("Tên đăng nhập đã tồn tại")
-                        .data(null)
-                        .build();
-            }
-
-            if (userAccRepository.existsByEmail(request.getEmail())) {
-                return ApiResponse.<UserCreateResponse>builder()
-                        .code(400)
-                        .message("Email đã tồn tại")
-                        .data(null)
-                        .build();
-            }
-
-            // Gửi OTP
-            ApiResponse<String> otpResponse = emailService.sendOtp(request.getEmail());
-            if (otpResponse.getCode() != 200) {
-                return ApiResponse.<UserCreateResponse>builder()
-                        .code(500)
-                        .message("Không thể gửi OTP")
-                        .build();
-            }
-
-            pendingRegistrationStorage.store(
-                    request.getEmail(),
-                    PendingRegistration.builder()
-                            .userRequest(request)
-                            .build()
-            );
-
-            UserCreateResponse response = UserCreateResponse.builder()
-                    .username(request.getUsername())
-                    .password(request.getPassword())
-                    .email(request.getEmail())
-                    .build();
-
-            return ApiResponse.<UserCreateResponse>builder()
-                    .code(202) // Đang chờ xác thực
-                    .message("Đã gửi OTP xác thực đến email. Vui lòng xác thực để hoàn tất đăng ký.")
-                    .data(response)
-                    .build();
-
-        } catch (Exception e) {
-            log.error("Lỗi gửi OTP: {}", e.getMessage(), e);
-            return ApiResponse.<UserCreateResponse>builder()
-                    .code(500)
-                    .message("Lỗi hệ thống khi gửi OTP")
-                    .data(null)
-                    .build();
+    public UserCreateResponse createUser(UserCreateRequest request) {
+        if (userAccRepository.existsByUsername(request.getUsername())) {
+            throw new IllegalArgumentException("Tên đăng nhập đã tồn tại");
         }
+
+        if (userAccRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email đã tồn tại");
+        }
+
+        String otp = emailService.sendOtp(request.getEmail());
+        if (otp == null) {
+            throw new RuntimeException("Không thể gửi OTP");
+        }
+
+        pendingRegistrationStorage.store(
+                request.getEmail(),
+                PendingRegistration.builder()
+                        .userRequest(request)
+                        .build()
+        );
+
+        return UserCreateResponse.builder()
+                .username(request.getUsername())
+                .password(request.getPassword())
+                .email(request.getEmail())
+                .build();
     }
 
     @Override
-    public ApiResponse<UserCreateResponse> confirmCreateUser(String email, String otp) {
-        try {
-            // Xác thực OTP
-            ApiResponse<String> verify = emailService.verifyOtp(email, otp);
+    public UserCreateResponse confirmCreateUser(String email, String otp) {
+        // Xác thực OTP
+        boolean verify = emailService.verifyOtp(email, otp);
 
-            if (verify.getCode() != 200) {
-                // OTP sai hoặc hết hạn
-                return ApiResponse.<UserCreateResponse>builder()
-                        .code(400)
-                        .message("OTP không hợp lệ hoặc đã hết hạn")
-                        .build();
-            }
-
-            PendingRegistration pending = pendingRegistrationStorage.get(email);
-            if (pending == null) {
-                return ApiResponse.<UserCreateResponse>builder()
-                        .code(404)
-                        .message("Không tìm thấy thông tin đăng ký tạm thời")
-                        .build();
-            }
-
-
-            UserAcc users = userAccMapper.toEntity(pending.getUserRequest());
-            users.setRole(RoleStatus.USER);
-            users.setPassword(passwordEncoder.encode(users.getPassword()));
-            users.setCreatedAt(LocalDateTime.now());
-
-            UserInfo userInfo = new UserInfo();
-            userInfo.setUserAcc(users);
-            users.setUserInfo(userInfo);
-
-            UserCreateResponse response = userAccMapper.toResponse(userAccRepository.save(users));
-
-            pendingRegistrationStorage.remove(email);
-
-            return ApiResponse.<UserCreateResponse>builder()
-                    .code(200)
-                    .message("Tạo user thành công")
-                    .data(response)
-                    .build();
-
-        } catch (Exception e) {
-            log.error("Lỗi tạo user: {}", e.getMessage());
-            return ApiResponse.<UserCreateResponse>builder()
-                    .code(500)
-                    .message("Tạo user không thành công")
-                    .data(null)
-                    .build();
+        if (!verify) {
+            throw new IllegalArgumentException("OTP không hợp lệ hoặc đã hết hạn");
         }
+
+        PendingRegistration pending = pendingRegistrationStorage.get(email);
+        if (pending == null) {
+            throw new NoSuchElementException("Không tìm thấy thông tin đăng ký tạm thời");
+        }
+
+        UserAcc users = userAccMapper.toEntity(pending.getUserRequest());
+        users.setPassword(passwordEncoder.encode(users.getPassword()));
+        users.setCreatedAt(LocalDateTime.now());
+        addRole(users, RoleStatus.USER);
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserAcc(users);
+        users.setUserInfo(userInfo);
+
+        UserCreateResponse response = userAccMapper.toResponse(userAccRepository.save(users));
+
+        pendingRegistrationStorage.remove(email);
+
+        return response;
+    }
+
+    public void addRole(UserAcc user, RoleStatus status) {
+        Role role = roleRepository.findByRoleName(status)
+                .orElseThrow(() -> new RuntimeException("Role " + status + " không tồn tại"));
+        user.getRoles().add(role);
     }
 }

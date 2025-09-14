@@ -1,14 +1,19 @@
 package ecommerce.userservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ecommerce.aipcommon.model.status.GenderStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "USER_PROFILE", schema = "user_db")
-@Data
 public class UserInfo {
 
     @Id
@@ -18,6 +23,7 @@ public class UserInfo {
     @OneToOne
     @MapsId
     @JoinColumn(name = "USER_ID")
+    @JsonIgnore
     private UserAcc userAcc;
 
     @Column(name = "FULL_NAME")

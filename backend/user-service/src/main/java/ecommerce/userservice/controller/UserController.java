@@ -2,6 +2,7 @@ package ecommerce.userservice.controller;
 
 import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.aipcommon.model.response.UserResponse;
+import ecommerce.userservice.dto.request.AddRoleRequest;
 import ecommerce.userservice.dto.request.UserInfoUpdateRequest;
 import ecommerce.userservice.dto.respone.UserOrderDetail;
 import ecommerce.userservice.dto.respone.UserOrdersResponse;
@@ -26,7 +27,12 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ApiResponse<UserResponse> getById() {
-        return userService.getUserInfoById();
+        UserResponse userResponse = userService.getUserInfoById();
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Lấy thông tin người dùng thành công")
+                .data(userResponse)
+                .build();
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -34,19 +40,23 @@ public class UserController {
     public ApiResponse<UserResponse> updateUser(
             @RequestPart("data") @Valid UserInfoUpdateRequest request,
             @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
-        return userService.updateUser(request, avatar);
+        UserResponse userResponse = userService.updateUser(request, avatar);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Cập nhật thành công ")
+                .data(userResponse)
+                .build();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/toggle/lock/{id}")
     public ApiResponse<UserResponse> toggleUserLock(@PathVariable Long id) {
-        return userService.toggleUserLock(id);
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/toggle/role/{id}")
-    public ApiResponse<UserResponse> toggleUserRole(@PathVariable Long id) {
-        return userService.toggleUserRole(id);
+        UserResponse userResponse = userService.toggleUserLock(id);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Thay đổi trạng thái thành công")
+                .data(userResponse)
+                .build();
     }
 
 //    @GetMapping("/all")
@@ -72,18 +82,55 @@ public class UserController {
     @GetMapping("/all/1")
     public ApiResponse<Page<UserOrdersResponse>> getAllUsers(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "10") int size) {
-        return userService.getUsersTOrders(page, size);
+        Page<UserOrdersResponse> userOrdersResponse = userService.getUsersTOrders(page, size);
+        return ApiResponse.<Page<UserOrdersResponse>>builder()
+                .code(200)
+                .message("Lấy thành công")
+                .data(userOrdersResponse)
+                .build();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/order/{userId}")
     public ApiResponse<UserOrderDetail> getUserOrderDetails(@PathVariable Long userId) {
-        return userService.getUserOrderDetail(userId);
+        UserOrderDetail userOrderDetail = userService.getUserOrderDetail(userId);
+        return ApiResponse.<UserOrderDetail>builder()
+                .code(200)
+                .data(userOrderDetail)
+                .message("Thành công")
+                .build();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{userId}")
     public ApiResponse<UserResponse> deleteUser(@PathVariable Long userId) {
-        return userService.deleteUser(userId);
+        UserResponse userResponse = userService.deleteUser(userId);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Xóa người dùng thành công")
+                .data(userResponse)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/addRoles")
+    public ApiResponse<UserResponse> addRoles(@RequestBody AddRoleRequest request) {
+        UserResponse userResponse = userService.addRoleToUser(request);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Thêm role thành công")
+                .data(userResponse)
+                .build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/removeRoles")
+    public ApiResponse<UserResponse> removeRoles(@RequestBody AddRoleRequest request) {
+        UserResponse userResponse = userService.addRoleToUser(request);
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Thêm role thành công")
+                .data(userResponse)
+                .build();
     }
 }

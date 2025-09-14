@@ -1,6 +1,5 @@
 package ecommerce.orderservice.filter;
 
-import ecommerce.aipcommon.model.status.RoleStatus;
 import ecommerce.aipcommon.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -18,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -44,11 +44,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 Claims claims = jwtUtil.extractAllClaims(jwt);
                 String userId = claims.getSubject();
-                String roleStr = (String) claims.get("role");
 
-                RoleStatus role = RoleStatus.valueOf(roleStr);
-
-                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role.name()));
+                List<GrantedAuthority> authorities = ((List<?>) claims.get("role")).stream()
+                        .filter(String.class::isInstance)
+                        .map(String.class::cast)
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         userId, null, authorities);

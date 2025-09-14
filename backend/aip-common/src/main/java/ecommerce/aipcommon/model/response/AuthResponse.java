@@ -3,6 +3,8 @@ package ecommerce.aipcommon.model.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Data
@@ -15,6 +17,6 @@ public class AuthResponse {
     String password;
     String email;
     String token;
-    String role;
+    List<String> role;
     String lastLogin;
 }

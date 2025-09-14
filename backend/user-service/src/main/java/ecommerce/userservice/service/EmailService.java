@@ -1,6 +1,5 @@
 package ecommerce.userservice.service;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
 import ecommerce.userservice.email.OtpStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,7 +14,7 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final OtpStorage otpStorage;
 
-    public ApiResponse<String> sendOtp(String email) {
+    public String sendOtp(String email) {
         String otp = generateOtp();
         otpStorage.storeOtp(email, otp);
 
@@ -24,28 +23,11 @@ public class EmailService {
         message.setSubject("Xác thực OTP");
         message.setText("Mã xác thực của bạn là: " + otp + "\nMã sẽ hết hạn sau 5 phút.");
         mailSender.send(message);
-        return ApiResponse.<String>builder()
-                .code(200)
-                .message("Đã gửi mã xác thực")
-                .data(otp)
-                .build();
+        return otp;
     }
 
-    public ApiResponse<String> verifyOtp(String email, String inputOtp) {
-        boolean result = otpStorage.isValidOtp(email, inputOtp);
-        if (result) {
-            return ApiResponse.<String>builder()
-                    .code(200)
-                    .message("Xác thực thành công.")
-                    .data(null)
-                    .build();
-        } else {
-            return ApiResponse.<String>builder()
-                    .code(401)
-                    .message("Mã OTP không hợp lệ hoặc đã hết hạn.")
-                    .data(null)
-                    .build();
-        }
+    public boolean verifyOtp(String email, String inputOtp) {
+        return otpStorage.isValidOtp(email, inputOtp);
     }
 
     private String generateOtp() {
