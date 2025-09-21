@@ -1,8 +1,8 @@
 package ecommerce.userservice.service.impl;
 
-import ecommerce.aipcommon.model.response.AuthResponse;
-import ecommerce.aipcommon.model.status.RoleStatus;
-import ecommerce.aipcommon.util.JwtUtil;
+import ecommerce.apicommon1.model.response.AuthResponse;
+import ecommerce.apicommon1.model.status.RoleStatus;
+import ecommerce.apicommon1.util.JwtUtil;
 import ecommerce.userservice.dto.request.AuthRequest;
 import ecommerce.userservice.dto.request.PendingRegistration;
 import ecommerce.userservice.dto.request.UserCreateRequest;
@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,12 +69,13 @@ public class AuthServiceImpl implements AuthService {
         String subject = user.getUsername() + "/" + user.getEmail();
         String token = jwtUtil.generateToken(claims, subject, SIGNER_KEY);
 
-        AuthResponse response = new AuthResponse();
-        response.setUsername(user.getUsername());
-        response.setEmail(user.getEmail());
-        response.setRole(roleNames);
-        response.setToken(token);
-        response.setLastLogin(String.valueOf(LocalDateTime.now()));
+        AuthResponse response = AuthResponse.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(roleNames)
+                .token(token)
+                .lastLogin(LocalDateTime.now())
+                .build();
 
         user.setLastLogin(LocalDateTime.now());
         userAccRepository.save(user);
@@ -80,6 +83,69 @@ public class AuthServiceImpl implements AuthService {
         return response;
     }
 
+//    @Override
+//    public AuthResponse loginOauth2(String idToken) {
+//        Map<String, Object> userInfo = verifyIdTokenWithGoogle(idToken);
+//        String oauth2Id = (String) userInfo.get("sub");
+//        String username = (String) userInfo.get("name");
+//        String email = (String) userInfo.get("email");
+//
+//        UserAcc user = userAccRepository.findByOauth2Id(oauth2Id)
+//                .orElseGet(() -> {
+//                    UserAcc userAcc = new UserAcc();
+//                    userAcc.setOauth2Id(oauth2Id);
+//                    userAcc.setUsername(username);
+//                    userAcc.setEmail(email);
+//
+//                    Role userRole = roleRepository.findByRoleName(RoleStatus.USER)
+//                            .orElseThrow(() -> new RuntimeException("Role USER không tồn tại"));
+//
+//                    userAcc.getRoles().add(userRole);
+//                    return userAccRepository.save(userAcc);
+//                });
+//
+//        if (user.getIsLock() == 1) {
+//            throw new AccessDeniedException("Tài khoản đã bị khóa");
+//        }
+//
+//        List<String> roleNames = user.getRoles()
+//                .stream()
+//                .map(role -> role.getRoleName().toString())
+//                .toList();
+//
+//        Map<String, Object> claims = Map.of(
+//                "userId", user.getId(),
+//                "role", roleNames
+//        );
+//        String subject = user.getUsername() + "/" + user.getEmail();
+//        String token = jwtUtil.generateToken(claims, subject, SIGNER_KEY);
+//
+//        AuthResponse response = AuthResponse.builder()
+//                .username(username)
+//                .email(email)
+//                .role(roleNames)
+//                .token(token)
+//                .lastLogin(LocalDateTime.now())
+//                .build();
+//
+//        user.setLastLogin(LocalDateTime.now());
+//        userAccRepository.save(user);
+//
+//        return response;
+//    }
+
+    private Map<String, Object> verifyIdTokenWithGoogle(String idToken) {
+        // Gọi Google tokeninfo endpoint
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
+        Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+        if (response == null || !response.containsKey("sub")) {
+            throw new IllegalArgumentException("Invalid ID token");
+        }
+        return response;
+    }
+
+    @Transactional
     @Override
     public UserCreateResponse createUser(UserCreateRequest request) {
         if (userAccRepository.existsByUsername(request.getUsername())) {
@@ -109,6 +175,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    @Transactional
     @Override
     public UserCreateResponse confirmCreateUser(String email, String otp) {
         // Xác thực OTP
@@ -130,6 +197,8 @@ public class AuthServiceImpl implements AuthService {
 
         UserInfo userInfo = new UserInfo();
         userInfo.setUserAcc(users);
+        userInfo.setUserAcc(users);
+
         users.setUserInfo(userInfo);
 
         UserCreateResponse response = userAccMapper.toResponse(userAccRepository.save(users));

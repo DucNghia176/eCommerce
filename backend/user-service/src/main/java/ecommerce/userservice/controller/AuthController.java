@@ -1,7 +1,8 @@
 package ecommerce.userservice.controller;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.response.AuthResponse;
+
+import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.AuthResponse;
 import ecommerce.userservice.dto.request.AuthRequest;
 import ecommerce.userservice.dto.request.UserCreateRequest;
 import ecommerce.userservice.dto.respone.UserCreateResponse;
@@ -28,6 +29,14 @@ public class AuthController {
                 .data(authResponse)
                 .build();
     }
+
+//    @PostMapping("/login-oauth")
+//    public ResponseEntity<AuthResponse> loginOauth(@RequestBody Map<String, String> body) {
+//        String idToken = body.get("idToken");
+//        AuthResponse response = authService.loginOauth2(idToken);
+//        return ResponseEntity.ok(response);
+//    }
+
 
     @PostMapping("/register")
     public ApiResponse<UserCreateResponse> createUser(@Valid @RequestBody UserCreateRequest request) {

@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {UsersService} from '../../../../core/services/users.service';
 import {UserOrdersResponse, UserResponse} from "../../../../core/models/user.model";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -14,7 +14,7 @@ import {ToastService} from "../../../../core/services/toast.service";
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [CommonModule, FaIconComponent, FormsModule, PageComponent, RouterLink],
+  imports: [CommonModule, FaIconComponent, FormsModule, PageComponent, RouterLink, NgOptimizedImage],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss'
 })
