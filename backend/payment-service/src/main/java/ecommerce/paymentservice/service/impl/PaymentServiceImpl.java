@@ -1,8 +1,15 @@
 package ecommerce.paymentservice.service.impl;
 
-import ecommerce.aipcommon.kafka.event.PaymentKafkaEvent;
-import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
+import ecommerce.apicommon1.kafka.event.PaymentKafkaEvent;
+import ecommerce.apicommon1.model.request.UpdateOrderStatusRequest;
+import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.status.OrderStatus;
+import ecommerce.apicommon1.model.status.PaymentStatus;
+import ecommerce.paymentservice.client.OrderClient;
 import ecommerce.paymentservice.dto.request.PaymentRequest;
 import ecommerce.paymentservice.dto.response.OrderIdPaymentStatus;
 import ecommerce.paymentservice.dto.response.PaymentResponse;
@@ -14,11 +21,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,6 +36,7 @@ import java.util.stream.Collectors;
 public class PaymentServiceImpl implements PaymentService {
     private final KafkaTemplate<String, PaymentKafkaEvent> kafkaTemplate;
     private final PaymentRepository paymentRepository;
+    private final OrderClient orderClient;
 
     @Override
     public ApiResponse<PaymentResponse> confirmPayment(PaymentRequest request) {
@@ -92,5 +102,72 @@ public class PaymentServiceImpl implements PaymentService {
                 .collect(Collectors.toMap(TotalAmountByUserId::getUserId, TotalAmountByUserId::getTotalAmount));
 
         return response;
+    }
+
+    @Override
+    public String createCheckoutSession(Long orderId, BigDecimal amount) throws StripeException {
+        BigDecimal exchangeRate = new BigDecimal("0.000043"); // 1 VND ≈ 0.000043 USD
+        Long amountInCents = amount.multiply(exchangeRate)
+                .multiply(BigDecimal.valueOf(100)) // đổi USD → cents
+                .longValue();
+        SessionCreateParams params =
+                SessionCreateParams.builder()
+                        .setMode(SessionCreateParams.Mode.PAYMENT)
+                        .setSuccessUrl("http://localhost:4200/success?orderId=" + orderId)
+                        .setCancelUrl("http://localhost:4200/cancel")
+                        .addLineItem(
+                                SessionCreateParams.LineItem.builder()
+                                        .setQuantity(1L)
+                                        .setPriceData(
+                                                SessionCreateParams.LineItem.PriceData.builder()
+                                                        .setCurrency("vnd")
+                                                        .setUnitAmount(amountInCents)
+                                                        .setProductData(
+                                                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                                        .setName("Order #" + orderId)
+                                                                        .build()
+                                                        )
+                                                        .build()
+                                        )
+                                        .build()
+                        )
+                        .build();
+
+        Session session = Session.create(params);
+        return session.getUrl();
+    }
+
+    @Transactional
+    @Override
+    public void confirmPayment(Long orderId) throws StripeException {
+        Payment payment = paymentRepository.findByOrderId1(orderId);
+        if (payment == null) {
+            throw new NoSuchElementException("Payment not found");
+        }
+
+        // Kiểm tra Stripe payment status
+        PaymentIntent intent = PaymentIntent.retrieve(payment.getStripePaymentIntentId());
+
+        if ("succeeded".equals(intent.getStatus())) {
+            payment.setStatus(PaymentStatus.SUCCESS);
+            paymentRepository.save(payment);
+
+            // Update trạng thái order
+            UpdateOrderStatusRequest request = UpdateOrderStatusRequest.builder()
+                    .orderId(orderId)
+                    .orderStatus(OrderStatus.CONFIRMED)
+                    .build();
+            orderClient.updateOrderStatus(request);
+
+        } else {
+            payment.setStatus(PaymentStatus.FAILED);
+            paymentRepository.save(payment);
+        }
+    }
+
+    public PaymentStatus getPaymentStatus(Long orderId) {
+        Payment payment = paymentRepository.findByOrderId1(orderId);
+        if (payment == null) return null;
+        return payment.getStatus();
     }
 }

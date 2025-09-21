@@ -1,7 +1,7 @@
 package ecommerce.paymentservice.controller;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.status.PaymentStatus;
 import ecommerce.paymentservice.dto.request.PaymentRequest;
 import ecommerce.paymentservice.dto.response.PaymentResponse;
 import ecommerce.paymentservice.service.PaymentService;
@@ -31,5 +31,38 @@ class PaymentController {
     @GetMapping("/amount")
     Map<Long, BigDecimal> extractAmount(@RequestParam List<Long> userIds) {
         return paymentService.extractAmount(userIds);
+    }
+
+    @PostMapping("/checkout")
+    public String checkout(@RequestParam Long orderId, @RequestParam BigDecimal amount) throws Exception {
+        return paymentService.createCheckoutSession(orderId, amount);
+    }
+
+    @PostMapping("/confirm")
+    public ApiResponse<String> confirmPayment(@RequestParam Long orderId) {
+        try {
+            paymentService.confirmPayment(orderId);
+            PaymentStatus status = paymentService.getPaymentStatus(orderId);
+
+            if (PaymentStatus.SUCCESS.equals(status)) {
+                return ApiResponse.<String>builder()
+                        .code(200)
+                        .message("Thanh toán thành công")
+                        .data("OK")
+                        .build();
+            } else {
+                return ApiResponse.<String>builder()
+                        .code(400)
+                        .message("Thanh toán thất bại")
+                        .data("FAILED")
+                        .build();
+            }
+        } catch (Exception e) {
+            return ApiResponse.<String>builder()
+                    .code(500)
+                    .message("Lỗi hệ thống")
+                    .data(null)
+                    .build();
+        }
     }
 }

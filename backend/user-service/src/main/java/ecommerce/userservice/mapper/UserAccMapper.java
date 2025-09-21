@@ -1,15 +1,13 @@
 package ecommerce.userservice.mapper;
 
-import ecommerce.aipcommon.model.response.UserResponse;
+import ecommerce.apicommon1.model.response.UserResponse;
 import ecommerce.userservice.dto.request.UserCreateRequest;
 import ecommerce.userservice.dto.respone.UserCreateResponse;
-import ecommerce.userservice.entity.Role;
 import ecommerce.userservice.entity.UserAcc;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface UserAccMapper {
@@ -31,12 +29,20 @@ public interface UserAccMapper {
     @Mapping(source = "userInfo.dateOfBirth", target = "dateOfBirth")
     @Mapping(source = "userInfo.address", target = "address")
     @Mapping(source = "userInfo.phone", target = "phone")
+    @Mapping(target = "roles", expression = "java(convertRolesToString(userAcc))")
     UserResponse toDto(UserAcc userAcc);
 
-    default List<String> mapRoles(Set<Role> roles) {
-        if (roles == null) return List.of();
-        return roles.stream()
-                .map(r -> r.getRoleName().name()) // Enum -> String
-                .toList();
+//    default List<String> mapRoles(Set<Role> roles) {
+//        if (roles == null) return List.of();
+//        return roles.stream()
+//                .map(r -> r.getRoleName().name()) // Enum -> String
+//                .toList();
+//    }
+
+    default String convertRolesToString(UserAcc userAcc) {
+        if (userAcc.getRoles() == null) return null;
+        return userAcc.getRoles().stream()
+                .map(r -> r.getRoleName().name())
+                .collect(Collectors.joining(","));
     }
 }

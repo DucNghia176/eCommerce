@@ -30,13 +30,16 @@ public class OrderDetail {
     private Long productId;
 
     @Column(name = "QUANTITY", nullable = false)
-    private Integer quantity;
+    private int quantity;
 
     @Column(name = "UNIT_PRICE")
     private BigDecimal unitPrice;
 
     @Column(name = "DISCOUNT")
     private BigDecimal discount;
+
+    @Column(name = "SUB_TOTAL")
+    private BigDecimal subTotal;
 
     @CreationTimestamp
     @Column(name = "CREATED_AT", updatable = false)

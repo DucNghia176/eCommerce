@@ -1,7 +1,7 @@
 package ecommerce.cartservice.mapper;
 
-import ecommerce.aipcommon.model.response.CartItemResponse;
-import ecommerce.aipcommon.model.response.CartResponse;
+import ecommerce.apicommon1.model.response.CartItemResponse;
+import ecommerce.apicommon1.model.response.CartResponse;
 import ecommerce.cartservice.entity.Cart;
 import ecommerce.cartservice.entity.CartItem;
 import org.mapstruct.Mapper;
@@ -15,8 +15,6 @@ public interface CartMapper {
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "userId", target = "userId")
-    @Mapping(source = "createdAt", target = "createdAt")
-    @Mapping(source = "updatedAt", target = "updatedAt")
     @Mapping(source = "items", target = "items")
     CartResponse toResponse(Cart cart);
 

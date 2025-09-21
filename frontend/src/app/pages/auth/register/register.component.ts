@@ -65,4 +65,16 @@ export class RegisterComponent {
       }
     });
   }
+
+  loginWithGoogle(forceSelect: boolean = false) {
+    const baseUrl = 'http://localhost:8085/oauth2/authorization/google';
+    window.location.href = forceSelect ? `${baseUrl}?forceSelect=true` : baseUrl;
+  }
+
+  loginWithFacebook(forceSelect: boolean = false) {
+    const baseUrl = 'http://localhost:8085/oauth2/authorization/facebook';
+    window.location.href = forceSelect
+      ? `${baseUrl}?auth_type=reauthenticate`
+      : baseUrl;
+  }
 }

@@ -6,6 +6,7 @@ import {routes} from "./app/app.routes";
 import {provideRouter} from "@angular/router";
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {provideToastr} from "ngx-toastr";
+import {provideCloudflareLoader} from "@angular/common";
 
 // bootstrapApplication(AppComponent, appConfig)
 //   .catch((err) => console.error(err));
@@ -13,6 +14,7 @@ import {provideToastr} from "ngx-toastr";
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(withInterceptors([AuthInterceptor])),
+    provideCloudflareLoader('https://res.cloudinary.com/dukqrda6g/image/upload/'),
     provideRouter(routes),
     provideAnimations(),
     provideToastr({

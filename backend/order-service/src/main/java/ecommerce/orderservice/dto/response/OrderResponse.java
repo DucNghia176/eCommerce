@@ -18,7 +18,6 @@ public class OrderResponse {
     private BigDecimal totalAmount;
     private String status;
     private Integer isActive;
-    private LocalDateTime orderDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<OrderDetailResponse> orderDetails;

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "PRODUCT_IMAGE", schema = "PRODUCT")
+@Table(name = "PRODUCT_IMAGE", schema = "product")
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_image_seq")

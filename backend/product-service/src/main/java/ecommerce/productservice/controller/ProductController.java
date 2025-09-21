@@ -1,18 +1,23 @@
 package ecommerce.productservice.controller;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.ProductPriceResponse;
 import ecommerce.productservice.dto.request.ProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.response.ProductResponse;
+import ecommerce.productservice.dto.response.ProductViewResponse;
 import ecommerce.productservice.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -21,10 +26,16 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/create")
-    public ApiResponse<ProductResponse> createProduct(@RequestPart("data") ProductRequest request,
+    public ApiResponse<ProductResponse> createProduct(@Valid @RequestPart("data") ProductRequest request,
                                                       @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        return productService.createProduct(request, images);
+        ProductResponse productResponse = productService.createProduct(request, images);
+        return ApiResponse.<ProductResponse>builder()
+                .code(200)
+                .message("Tạo product thành công")
+                .data(productResponse)
+                .build();
     }
 
 //    @PutMapping("update/{id}")
@@ -33,17 +44,30 @@ public class ProductController {
 //        return productService.updateProduct(id, request);
 //    }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("update/{id}")
     public ApiResponse<ProductResponse> updateInfoProduct(
             @PathVariable Long id,
             @RequestPart("data") ProductUpdateInfoRequest request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        return productService.updateProduct(id, request, images);
+        ProductResponse productResponse = productService.updateProduct(id, request, images);
+
+        return ApiResponse.<ProductResponse>builder()
+                .code(200)
+                .message("Cập nhật product thành công")
+                .data(productResponse)
+                .build();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("delete/{id}")
     public ApiResponse<ProductResponse> deleteProduct(@PathVariable Long id) {
-        return productService.deleteProduct(id);
+        ProductResponse productResponse = productService.deleteProduct(id);
+        return ApiResponse.<ProductResponse>builder()
+                .code(200)
+                .message("Xóa product thành công")
+                .data(productResponse)
+                .build();
     }
 
     @GetMapping
@@ -51,7 +75,12 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return productService.getAllProduct(page, size);
+        Page<ProductResponse> productResponses = productService.getAllProduct(page, size);
+        return ApiResponse.<Page<ProductResponse>>builder()
+                .code(200)
+                .message("Lấy product thành công")
+                .data(productResponses)
+                .build();
     }
 
     @PostMapping("search")
@@ -64,18 +93,40 @@ public class ProductController {
     }
 
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}/skuCode")
     public String getSkuCode(@PathVariable Long id) {
         return productService.getSkuCodeByProductId(id);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}/price")
     public BigDecimal getPrice(@PathVariable Long id) {
-        return productService.getPriceByProductId(id);
+        return productService.getPriceByProductId1(id);
     }
 
     @GetMapping("/{id}")
     public ApiResponse<ProductResponse> getProductById(@PathVariable Long id) {
         return productService.getProductById(id);
+    }
+
+    @GetMapping("/view/{id}")
+    public ApiResponse<ProductViewResponse> getAllProducts(@PathVariable Long id) {
+        ProductViewResponse productViewResponse = productService.viewProduct(id);
+        return ApiResponse.<ProductViewResponse>builder()
+                .code(200)
+                .message("Hiển thị thành công")
+                .data(productViewResponse)
+                .build();
+    }
+
+    @PostMapping("exists")
+    public Map<Long, Boolean> checkProduct(@RequestBody List<Long> ids) {
+        return productService.findProduct(ids);
+    }
+
+    @GetMapping("/price/{id}")
+    public ProductPriceResponse productPrice(@PathVariable Long id) {
+        return productService.getPriceByProductId(id);
     }
 }

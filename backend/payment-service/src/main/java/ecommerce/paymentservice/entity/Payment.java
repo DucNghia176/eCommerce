@@ -1,9 +1,12 @@
 package ecommerce.paymentservice.entity;
 
-import ecommerce.aipcommon.model.status.PaymentMethodStatus;
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import ecommerce.apicommon1.model.status.PaymentMethodStatus;
+import ecommerce.apicommon1.model.status.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,8 +14,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-@Setter
-@Getter
 @Data
 @Builder
 @AllArgsConstructor
@@ -58,4 +59,10 @@ public class Payment {
     @UpdateTimestamp
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    @Transient
+    private String checkoutUrl;
+
+    @Transient
+    private String stripePaymentIntentId;
 }

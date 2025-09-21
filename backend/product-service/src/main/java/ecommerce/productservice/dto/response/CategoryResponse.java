@@ -1,11 +1,13 @@
 package ecommerce.productservice.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CategoryResponse {
     private Long id;

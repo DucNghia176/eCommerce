@@ -18,6 +18,14 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private static final String[] API_PUBLIC = {
+            "/api/product/search/",
+            "/api/brand/**",
+            "/api/tag/**",
+            "/api/category/**",
+            "/api/product/view/**"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
@@ -26,15 +34,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/product/search").permitAll()
-                        .requestMatchers("/api/product/*/**").permitAll()
-                        .requestMatchers("/api/brand/**").permitAll()
-                        .requestMatchers("/api/tag/**").permitAll()
-                        .requestMatchers("/api/product/create").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/api/product/update/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/api/product/delete/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/api/category").permitAll()
-                        .requestMatchers("/api/category/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers(API_PUBLIC).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

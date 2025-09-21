@@ -1,7 +1,7 @@
 package ecommerce.orderservice.entity;
 
-import ecommerce.aipcommon.model.status.OrderStatus;
-import ecommerce.aipcommon.model.status.PaymentMethodStatus;
+import ecommerce.apicommon1.model.status.OrderStatus;
+import ecommerce.apicommon1.model.status.PaymentMethodStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,9 +31,6 @@ public class Orders {
 
     @Column(name = "ORDER_CODE")
     private String orderCode;
-
-    @Column(name = "ORDER_DATE")
-    private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")

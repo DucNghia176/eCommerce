@@ -10,8 +10,13 @@ public class GateWayRouter {
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("USER-SERVICE", r -> r.path("/api/users/**", "/api/auth/**")
-                        .uri("lb://USER-SERVICE/"))
+                .route("USER-SERVICE", r -> r.path(
+                        "/api/users/**",
+                        "/api/auth/**",
+                        "/oauth2/**",
+                        "/login/oauth2/**"
+                ).uri("lb://USER-SERVICE"))
+
                 .route("PRODUCT-SERVICE", r -> r.path("/api/product/**", "/api/category/**", "/api/brand/**", "/api/tag/**")
                         .uri("lb://PRODUCT-SERVICE/"))
                 .route("ORDER-SERVICE", r -> r.path("/api/orders/**")

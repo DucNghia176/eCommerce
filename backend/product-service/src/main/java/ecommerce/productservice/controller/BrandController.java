@@ -1,6 +1,6 @@
 package ecommerce.productservice.controller;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.productservice.dto.response.BrandResponse;
 import ecommerce.productservice.service.TagBrandService;
 import lombok.RequiredArgsConstructor;

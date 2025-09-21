@@ -1,8 +1,8 @@
 package ecommerce.orderservice.dto.response;
 
-import ecommerce.aipcommon.model.status.OrderStatus;
-import ecommerce.aipcommon.model.status.PaymentMethodStatus;
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import ecommerce.apicommon1.model.status.OrderStatus;
+import ecommerce.apicommon1.model.status.PaymentMethodStatus;
+import ecommerce.apicommon1.model.status.PaymentStatus;
 import lombok.*;
 
 import java.math.BigDecimal;

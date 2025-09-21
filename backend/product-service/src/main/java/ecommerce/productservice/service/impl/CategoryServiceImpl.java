@@ -1,10 +1,9 @@
 package ecommerce.productservice.service.impl;
 
 
-import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.productservice.dto.request.CategoryRequest;
-import ecommerce.productservice.dto.response.CategoryResponse;
-import ecommerce.productservice.dto.response.ProductSummaryResponse;
+import ecommerce.productservice.dto.response.*;
 import ecommerce.productservice.entity.Category;
 import ecommerce.productservice.mapper.CategoryMapper;
 import ecommerce.productservice.repository.CategoryRepository;
@@ -245,4 +244,21 @@ public class CategoryServiceImpl implements CategoryService {
         return ids;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ParentCategoryResponse> getAllParentCategories() {
+        List<Category> parents = categoryRepository.findAllParentWithChildren();
+
+        return parents.stream()
+                .map(parent -> {
+                    List<ChildCategoryResponse> childCategory = parent.getChildren().stream()
+                            .map(child -> {
+                                List<FeaturedProductResponse> featuredProduct = productRepository.findTopByCategoryIdAndTagName(child.getId(), "FEATURE", PageRequest.of(0, 3));
+                                return new ChildCategoryResponse(child.getId(), child.getName(), featuredProduct);
+                            })
+                            .toList();
+                    return new ParentCategoryResponse(parent.getId(), parent.getName(), childCategory);
+                })
+                .toList();
+    }
 }

@@ -1,6 +1,6 @@
 package ecommerce.productservice.service;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.productservice.dto.response.BrandResponse;
 import ecommerce.productservice.dto.response.TagResponse;
 import org.springframework.stereotype.Service;

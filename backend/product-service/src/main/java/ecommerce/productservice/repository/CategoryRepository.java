@@ -29,4 +29,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Long countByCategoryIds(@Param("categoryIds") Set<Long> categoryIds);
 
     List<Category> findByParentId(Long parentId);
+
+    List<Category> findByParentIsNull();
+
+    @Query("""
+                SELECT DISTINCT c FROM Category c LEFT JOIN fetch c.children ch WHERE c.parent IS NULL AND c.isActive =1
+            """)
+    List<Category> findAllParentWithChildren();
 }

@@ -1,6 +1,6 @@
 package ecommerce.cartservice.filter;
 
-import ecommerce.aipcommon.util.JwtUtil;
+import ecommerce.apicommon1.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -62,5 +62,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 }

@@ -113,7 +113,9 @@
                 *ngFor="let img of images; let i = index"
                 class="relative group w-24 h-24 rounded border overflow-hidden"
               >
-                <img [src]="img.src" alt="Xem trước" class="w-full h-full object-cover"/>
+                <img [src]="img.src" alt="Xem trước"
+                     class=" object-cover w-full h-full"
+                />
                 <!-- xóa ảnh -->
                 <button
                   (click)="removeImage(i)"

@@ -16,5 +16,6 @@ public interface CategoryMapper {
     Category toEntity(CategoryRequest request);
 
     @Mapping(source = "parent.id", target = "parentId")
+    @Mapping(target = "productCount", ignore = true)
     CategoryResponse toResponse(Category category);
 }

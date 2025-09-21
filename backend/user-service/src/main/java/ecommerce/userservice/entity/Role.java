@@ -1,7 +1,7 @@
 package ecommerce.userservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import ecommerce.aipcommon.model.status.RoleStatus;
+import ecommerce.apicommon1.model.status.RoleStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package ecommerce.userservice.filter;
 
-import ecommerce.aipcommon.util.JwtUtil;
+import ecommerce.apicommon1.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

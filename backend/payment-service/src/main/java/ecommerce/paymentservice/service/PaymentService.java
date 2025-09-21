@@ -1,7 +1,8 @@
 package ecommerce.paymentservice.service;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import com.stripe.exception.StripeException;
+import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.status.PaymentStatus;
 import ecommerce.paymentservice.dto.request.PaymentRequest;
 import ecommerce.paymentservice.dto.response.PaymentResponse;
 
@@ -15,4 +16,10 @@ public interface PaymentService {
     Map<Long, PaymentStatus> extractStatus(List<Long> orderIds);
 
     Map<Long, BigDecimal> extractAmount(List<Long> userIds);
+
+    String createCheckoutSession(Long orderId, BigDecimal amount) throws StripeException;
+
+    void confirmPayment(Long orderId) throws StripeException;
+
+    PaymentStatus getPaymentStatus(Long orderId);
 }

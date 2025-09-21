@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faFacebook, faInstagram, faPinterest, faReddit, faTwitter, faYoutube} from "@fortawesome/free-brands-svg-icons";
 import {
@@ -12,8 +12,9 @@ import {
   faSearch,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {AllCategoryComponent} from "../all-category/all-category.component";
+import {AuthService} from "../../../../core/services/auth.service";
 
 interface Category {
   id: number;
@@ -77,4 +78,11 @@ export class HeaderComponent {
   protected readonly faHeadset = faHeadset;
   protected readonly faCircleInfo = faCircleInfo;
   protected readonly faPhoneVolume = faPhoneVolume;
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/auth']);
+  }
 }

@@ -1,6 +1,6 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {CommonModule, NgForOf, NgIf} from "@angular/common";
+import {CommonModule, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {PageComponent} from "../../../../shared/components/page/page.component";
 import {faAdd, faEdit, faFileExport, faSearch, faTrash, faWarehouse} from "@fortawesome/free-solid-svg-icons";
 import {PageSize} from "../../../../shared/status/page-size";
@@ -29,7 +29,8 @@ import {InventoryRequest} from "../../../../core/models/inventory.model";
     LoadingSpinnerComponent,
     ToastComponent,
     FormsModule,
-    CommonModule
+    CommonModule,
+    NgOptimizedImage
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'

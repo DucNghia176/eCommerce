@@ -19,7 +19,9 @@ public class CloudinaryService {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
                     "folder", "user/"
             ));
-            return uploadResult.get("secure_url").toString();
+            String publicId = uploadResult.get("public_id").toString();
+            String format = uploadResult.get("format").toString();
+            return publicId + "." + format;
         } catch (IOException e) {
             throw new RuntimeException("Không thể upload ảnh lên Cloudinary", e);
         }
@@ -54,6 +56,4 @@ public class CloudinaryService {
             throw new RuntimeException("Không thể xoá ảnh trên Cloudinary", e);
         }
     }
-
-
 }
