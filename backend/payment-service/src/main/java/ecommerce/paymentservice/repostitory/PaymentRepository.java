@@ -30,4 +30,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                         GROUP BY p.userId
             """)
     List<TotalAmountByUserId> totalAmountByUserIds(@Param("userIds") List<Long> userIds);
+
+    Payment findByOrderId1(Long orderId);
 }

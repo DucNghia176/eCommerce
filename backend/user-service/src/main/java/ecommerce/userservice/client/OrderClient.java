@@ -1,6 +1,6 @@
 package ecommerce.userservice.client;
 
-import ecommerce.aipcommon.model.response.UserOrderDetailResponse;
+import ecommerce.apicommon1.model.response.UserOrderDetailResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,5 +15,5 @@ public interface OrderClient {
     Map<Long, Long> extractOrderQuantity(@RequestParam List<Long> usersId);
 
     @GetMapping("/{userId}")
-    List<UserOrderDetailResponse> findOrdersDetailByUserId(@PathVariable Long userId);
+    List<UserOrderDetailResponse> findOrdersDetailByUserId(@PathVariable("userId") Long userId);
 }

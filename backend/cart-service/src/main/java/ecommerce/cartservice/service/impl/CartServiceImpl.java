@@ -1,9 +1,9 @@
 package ecommerce.cartservice.service.impl;
 
-import ecommerce.aipcommon.config.TokenInfo;
-import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.response.CartItemResponse;
-import ecommerce.aipcommon.model.response.CartResponse;
+import ecommerce.apicommon1.config.TokenInfo;
+import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.CartItemResponse;
+import ecommerce.apicommon1.model.response.CartResponse;
 import ecommerce.cartservice.client.InventoryClient;
 import ecommerce.cartservice.client.ProductClient;
 import ecommerce.cartservice.dto.request.CartRequest;
@@ -38,6 +38,7 @@ public class CartServiceImpl implements CartService {
     private final ProductClient productClient;
     private final InventoryClient inventoryClient;
 
+    //    thêm sản phẩm vào giỏ hàng
     @Override
     public ApiResponse<CartResponse> addProductToCart(CartRequest request) {
         try {
@@ -116,8 +117,9 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    //cập nhật giỏ hàng
     @Override
-    public ApiResponse<CartResponse> updateProduct(CartRequest request) {
+    public ApiResponse<CartResponse> updateCartProduct(CartRequest request) {
         try {
             Long userId = tokenInfo.getUserId();
             Cart cart = cartRepository.findByUserId(userId)
@@ -172,6 +174,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    //lấy giỏ hàng theo id
     @Override
     public ApiResponse<CartResponse> getCarByUser() {
         try {
@@ -214,6 +217,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    //xóa sản phẩm
     @Override
     public ApiResponse<Void> removeProductFromCart(Long productId) {
         try {
@@ -268,6 +272,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    //xóa những sản phẩm đã đặt hàng
     @Override
     public ApiResponse<Void> clearSelectedItemsFromCart(List<Long> ids) {
         try {
@@ -333,7 +338,6 @@ public class CartServiceImpl implements CartService {
                     .build();
         }
     }
-
 }
 
 

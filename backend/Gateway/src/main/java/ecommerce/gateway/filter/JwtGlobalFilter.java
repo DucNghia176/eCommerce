@@ -21,10 +21,11 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
     private final static List<String> API_PUBLIC = List.of(
             "/api/auth",
+            "/oauth2",
+            "/login/oauth2",
             "/api/product/search",
             "/api/brand",
             "/api/category"
-
     );
 
     //    private final TokenBlacklistService tokenBlacklistService;
@@ -66,6 +67,9 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
                         .header("X-Role", roleHeader)
                         .build();
                 exchange = exchange.mutate().request(mutatedRequest).build();
+
+                log.info("Header X-User-Id: {}", userId);
+                log.info("Header X-Role: {}", roleHeader);
 
             } catch (Exception e) {
                 log.warn("Token không hợp lệ: {}", e.getMessage());

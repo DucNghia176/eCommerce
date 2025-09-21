@@ -2,26 +2,31 @@ package ecommerce.productservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "PRODUCT", schema = "product")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
     @SequenceGenerator(name = "product_seq", sequenceName = "SEQ_PRODUCT_ID", allocationSize = 1)
     @Column(name = "PRODUCT_ID")
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "NAME", nullable = false)
@@ -36,8 +41,8 @@ public class Product {
     @Column(name = "PRICE", nullable = false)
     private BigDecimal price;
 
-    @Column(name = "DISCOUNT_PRICE")
-    private BigDecimal discountPrice;
+    @Column(name = "DISCOUNT")
+    private BigDecimal discount;
 
     @ManyToOne
     @JoinColumn(name = "CATEGORY_ID", nullable = false)
@@ -60,5 +65,20 @@ public class Product {
     @UpdateTimestamp
     @Column(name = "UPDATED_AT", updatable = false)
     private LocalDateTime updateAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "PRODUCT_TAG",
+            joinColumns = @JoinColumn(name = "PRODUCT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "TAG_ID")
+    )
+    @JsonIgnore
+    private Set<Tag> tags = new HashSet<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private Set<ProductAttribute> productAttributes = new HashSet<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Rating> ratings = new HashSet<>();
 }
 

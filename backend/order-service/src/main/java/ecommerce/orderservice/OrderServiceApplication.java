@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan(basePackages = {
         "ecommerce.orderservice",
-        "ecommerce.aipcommon"
+        "ecommerce.apicommon1"
 })
 public class OrderServiceApplication {
 

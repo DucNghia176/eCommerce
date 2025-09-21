@@ -1,20 +1,21 @@
 package ecommerce.orderservice.service.impl;
 
-import ecommerce.aipcommon.config.TokenInfo;
-import ecommerce.aipcommon.kafka.event.InventoryKafkaEvent;
-import ecommerce.aipcommon.kafka.event.PaymentKafkaEvent;
-import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.response.CartItemResponse;
-import ecommerce.aipcommon.model.response.UserOrderDetailResponse;
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import ecommerce.apicommon1.config.TokenInfo;
+import ecommerce.apicommon1.kafka.event.InventoryKafkaEvent;
+import ecommerce.apicommon1.kafka.event.PaymentKafkaEvent;
+import ecommerce.apicommon1.model.response.*;
+import ecommerce.apicommon1.model.status.OrderStatus;
+import ecommerce.apicommon1.model.status.PaymentMethodStatus;
+import ecommerce.apicommon1.model.status.PaymentStatus;
 import ecommerce.orderservice.client.CartClient;
 import ecommerce.orderservice.client.PaymentClient;
 import ecommerce.orderservice.client.ProductClient;
 import ecommerce.orderservice.client.UserClient;
+import ecommerce.orderservice.dto.request.OrderCreateRequest;
+import ecommerce.orderservice.dto.request.OrderItemRequest;
 import ecommerce.orderservice.dto.request.OrderRequest;
-import ecommerce.orderservice.dto.response.OrderQuantityResponse;
-import ecommerce.orderservice.dto.response.OrderResponse;
-import ecommerce.orderservice.dto.response.OrdersAD;
+import ecommerce.orderservice.dto.request.UpdateOrderStatusRequest;
+import ecommerce.orderservice.dto.response.*;
 import ecommerce.orderservice.entity.OrderDetail;
 import ecommerce.orderservice.entity.Orders;
 import ecommerce.orderservice.kafka.KafkaOrder;
@@ -35,8 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -46,13 +49,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
+
+    private static final Map<PaymentMethodStatus, OrderStatus> PAYMENT_FLOW = Map.of(
+            PaymentMethodStatus.COD, OrderStatus.CONFIRMED,      // COD: xác nhận ngay
+            PaymentMethodStatus.PAYPAL, OrderStatus.PENDING      //PayPal: chờ xác nhận
+    );
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-
     private final KafkaOrder kafkaOrder;
-
     private final CartClient cartClient;
-
     private final TokenInfo tokenInfo;
     private final OrderDetailRepository orderDetailRepository;
     private final KafkaTemplate<String, InventoryKafkaEvent> inventoryKafka;
@@ -61,7 +66,6 @@ public class OrderServiceImpl implements OrderService {
     private final UserClient userClient;
     private final PaymentClient paymentClient;
     private final Executor contextAwareExecutor;
-
 
     private String generateOrderCode() {
         String prefix = "ORD";
@@ -99,7 +103,6 @@ public class OrderServiceImpl implements OrderService {
             order.setUserId(userId);// gán userId từ cart
             order.setTotalAmount(totalAmount);
             order.setPaymentMethod(request.getPaymentMethod());
-            order.setOrderDate(request.getOrderDate() != null ? request.getOrderDate() : LocalDateTime.now());
             order.setOrderCode(generateOrderCode());
             order.setCreatedAt(LocalDateTime.now());
 
@@ -171,6 +174,113 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
+    public OrderCreateResponse order(OrderCreateRequest request) {
+        Long userId = tokenInfo.getUserId();
+
+        if (request.getPaymentMethod() == null) {
+            request.setPaymentMethod(PaymentMethodStatus.COD);
+        }
+
+        //nếu đặt hàng từ cart
+        if (request.isFromCart()) {
+            ApiResponse<CartResponse> cartRes = cartClient.getCartByUserId();
+            List<CartItemResponse> cartItem = cartRes.getData().getItems();
+
+            if (cartItem == null || cartItem.isEmpty()) {
+                throw new IllegalArgumentException("Giỏ hàng trống");
+            }
+
+            Map<Long, Integer> cartMap = cartItem.stream()
+                    .collect(Collectors.toMap(CartItemResponse::getProductId, CartItemResponse::getQuantity));
+
+
+            for (OrderItemRequest item : request.getItems()) {
+                if (!cartMap.containsKey(item.getProductId())) {
+                    throw new IllegalArgumentException("Sản phẩm " + item.getProductId() + " không có trong giỏ hàng");
+                }
+                if (item.getQuantity() > cartMap.get(item.getProductId())) {
+                    throw new IllegalArgumentException("Số lượng sản phẩm " + item.getProductId() + " vượt quá trong giỏ hàng");
+                }
+            }
+        }
+
+        //lấy list productId truyền vào để check
+        List<Long> productIds = request.getItems().stream()
+                .map(OrderItemRequest::getProductId)
+                .toList();
+
+        Map<Long, Boolean> existsMap = productClient.checkProduct(productIds);
+
+        for (OrderItemRequest item : request.getItems()) {
+            if (!existsMap.getOrDefault(item.getProductId(), false)) {
+                throw new IllegalArgumentException("Sản phẩm " + item.getProductId() + " không tồn tại");
+            }
+        }
+
+        //lưu tạm order
+        Orders order = Orders.builder()
+                .userId(userId)
+                .shippingAddress(request.getShippingAddress())
+                .status(PAYMENT_FLOW.getOrDefault(request.getPaymentMethod(), OrderStatus.PENDING))
+                .paymentMethod(request.getPaymentMethod())
+                .isActive(1)
+                .createdAt(LocalDateTime.now())
+                .note(request.getNote())
+                .build();
+        orderRepository.save(order);
+
+        List<OrderDetail> details = new ArrayList<>();
+        BigDecimal totalAmount = BigDecimal.ZERO;
+
+        for (OrderItemRequest item : request.getItems()) {
+            ProductPriceResponse productPrice = productClient.productPrice(item.getProductId());
+
+            OrderDetail detail = OrderDetail.builder()
+                    .order(order)
+                    .productId(item.getProductId())
+                    .quantity(item.getQuantity())
+                    .unitPrice(productPrice.getOriginalPrice())
+                    .discount(productPrice.getDiscountPercent())
+                    .subTotal(productPrice.getFinalPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            orderDetailRepository.save(detail);
+            details.add(detail);
+            totalAmount = totalAmount.add(detail.getSubTotal());
+        }
+
+        order.setTotalAmount(totalAmount);
+        order.setOrderDetails(details);
+        OrderCreateResponse response = orderMapper.toDto(order);
+
+        PaymentKafkaEvent payment = PaymentKafkaEvent.builder()
+                .orderId(order.getId())
+                .userId(userId)
+                .orderCode(order.getOrderCode())
+                .totalAmount(totalAmount)
+                .paymentMethod(request.getPaymentMethod())
+                .timestamp(LocalDateTime.now())
+                .build();
+        paymentKafka.send("payment-topic", payment);
+
+        for (OrderDetail d : details) {
+            String skuCode = productClient.getSkuCode(d.getProductId());
+            InventoryKafkaEvent event = InventoryKafkaEvent.builder()
+                    .quantity(d.getQuantity())
+                    .skuCode(skuCode)
+                    .build();
+            inventoryKafka.send("place-order", event);
+        }
+
+        if (request.isFromCart()) {
+            cartClient.clearSelectedCartItems(productIds);
+        }
+
+        return response;
+    }
+
+    @Override
     public ApiResponse<Page<OrdersAD>> getOrders(int page, int size) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -222,9 +332,8 @@ public class OrderServiceImpl implements OrderService {
     public Map<Long, Long> extractOrderQuantity(List<Long> usersId) {
         List<OrderQuantityResponse> orders = orderRepository.countOrdersByUserIds(usersId);
 
-        Map<Long, Long> response = orders.stream()
+        return orders.stream()
                 .collect(Collectors.toMap(OrderQuantityResponse::getUserId, OrderQuantityResponse::getQuantity));
-        return response;
     }
 
     @Override
@@ -234,4 +343,57 @@ public class OrderServiceImpl implements OrderService {
         response.forEach(UserOrderDetailResponse::setFormattedDate);
         return response;
     }
+
+    @Override
+    @Transactional
+    public UpdateOrderStatusResponse updateOrderStatus(UpdateOrderStatusRequest request) {
+        Orders orders = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new NoSuchElementException("Không có đơn hàng với id = " + request.getOrderId()));
+
+        if (!isValidTransition(orders.getStatus(), request.getOrderStatus())) {
+            throw new IllegalArgumentException("Không thể chuyển từ "
+                    + orders.getStatus() + " sang " + request.getOrderStatus());
+        }
+
+        orders.setStatus(request.getOrderStatus());
+        orderRepository.save(orders);
+
+        return UpdateOrderStatusResponse.builder()
+                .orderId(orders.getId())
+                .orderStatus(orders.getStatus().toString())
+                .build();
+    }
+
+    private boolean isValidTransition(OrderStatus current, OrderStatus next) {
+        return switch (current) {
+            case PENDING ->
+                // Chờ thanh toán/xác nhận => xác nhận hoặc hủy
+                    next == OrderStatus.CONFIRMED || next == OrderStatus.CANCELLED || next == OrderStatus.FAILED;
+            case CONFIRMED ->
+                // Đã xác nhận => chuyển sang chuẩn bị hàng, hủy hoặc tạm ngưng
+                    next == OrderStatus.PROCESSING || next == OrderStatus.CANCELLED || next == OrderStatus.ON_HOLD;
+            case PROCESSING ->
+                // Đang chuẩn bị hàng => chuyển sang giao, hủy hoặc tạm ngưng
+                    next == OrderStatus.SHIPPING || next == OrderStatus.CANCELLED || next == OrderStatus.ON_HOLD;
+            case SHIPPING ->
+                // Đang vận chuyển => giao thành công, giao thất bại, trả lại
+                    next == OrderStatus.DELIVERED || next == OrderStatus.FAILED || next == OrderStatus.RETURNED;
+            case DELIVERED ->
+                // Đã giao thành công => có thể phát sinh trả hàng
+                    next == OrderStatus.RETURNED;
+            case RETURNED ->
+                // Đã trả hàng => hoàn tiền
+                    next == OrderStatus.REFUNDED;
+            case FAILED, CANCELLED ->
+                // Thất bại hoặc đã hủy => có thể hoàn tiền
+                    next == OrderStatus.REFUNDED;
+            case ON_HOLD ->
+                // Tạm ngưng => có thể quay lại xử lý hoặc hủy
+                    next == OrderStatus.PROCESSING || next == OrderStatus.CANCELLED;
+            case REFUNDED ->
+                // Đã hoàn tiền => trạng thái cuối cùng
+                    false;
+        };
+    }
+
 }

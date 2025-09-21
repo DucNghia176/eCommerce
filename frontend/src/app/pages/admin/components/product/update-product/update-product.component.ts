@@ -4,7 +4,7 @@ import {BrandResponse, TagResponse} from "../../../../../core/models/TagBrand.mo
 import {ProductService} from "../../../../../core/services/product.service";
 import {ToastService} from "../../../../../core/services/toast.service";
 import {CategoryService} from "../../../../../core/services/category.service";
-import {CommonModule, Location, NgForOf, NgIf} from "@angular/common";
+import {CommonModule, Location, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {TagBrandService} from "../../../../../core/services/brand.service";
 import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {validateAndFocusFirstError} from "../../../../../shared/utils/validation";
@@ -28,7 +28,7 @@ import {handleImagesSelected} from "../../../../../shared/utils/file-upload.util
     NgForOf,
     NgIf,
     ReactiveFormsModule,
-    ToastComponent, CommonModule
+    ToastComponent, CommonModule, NgOptimizedImage
   ],
   templateUrl: './update-product.component.html',
   styleUrl: './update-product.component.scss'

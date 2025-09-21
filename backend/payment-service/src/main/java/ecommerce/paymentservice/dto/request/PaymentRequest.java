@@ -1,6 +1,6 @@
 package ecommerce.paymentservice.dto.request;
 
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import ecommerce.apicommon1.model.status.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package ecommerce.inventoryservice.kafka.listener;
 
-import ecommerce.aipcommon.kafka.event.ProductCreateEvent;
+import ecommerce.apicommon1.kafka.event.ProductCreateEvent;
 import ecommerce.inventoryservice.entity.Inventory;
 import ecommerce.inventoryservice.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;

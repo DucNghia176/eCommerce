@@ -1,7 +1,9 @@
 package ecommerce.productservice.repository;
 
+import ecommerce.productservice.dto.response.FeaturedProductResponse;
 import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.dto.response.ProductSummaryResponse;
+import ecommerce.productservice.dto.response.ProductViewResponse;
 import ecommerce.productservice.entity.Product;
 import feign.Param;
 import org.springframework.data.domain.Page;
@@ -46,4 +48,25 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     @Query("SELECT COUNT(p) FROM Product p WHERE p.category.id = :categoryId")
     Long countByCategoryId(@Param("categoryId") Long categoryId);
+
+    @Query("""
+            SELECT new ecommerce.productservice.dto.response.FeaturedProductResponse(p.id, p.name, p.price, pi.imageUrl) FROM Product p
+                        JOIN p.tags t
+                        LEFT JOIN ProductImage pi ON pi.product.id = p.id AND pi.isThumbnail = 1
+                        WHERE p.category.id = :categoryId
+                        AND t.name = :tagName
+                        AND p.isActive = 1
+                        ORDER BY p.id DESC
+            """)
+    List<FeaturedProductResponse> findTopByCategoryIdAndTagName(@Param("categoryId") Long categoryId, @Param("tagName") String tagName, Pageable pageable);
+
+    @Query("""
+            SELECT new ecommerce.productservice.dto.response.ProductViewResponse(p.id,p.name,p.skuCode,p.price, b.name, p.category.name, AVG(r.score), count(r.userId))
+                         FROM Product p
+                         LEFT JOIN Brand b ON b.id = p.brandId
+                         LEFT JOIN Rating r ON r.product.id = p.id
+                         WHERE p.id = :productId
+                                     GROUP BY p.id, p.name, p.skuCode, p.price, b.name, p.category.name
+            """)
+    ProductViewResponse findProduct(@Param("productId") Long productId);
 }

@@ -1,14 +1,16 @@
 package ecommerce.productservice.controller;
 
 
-import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.productservice.dto.request.CategoryRequest;
 import ecommerce.productservice.dto.response.CategoryResponse;
+import ecommerce.productservice.dto.response.ParentCategoryResponse;
 import ecommerce.productservice.dto.response.ProductSummaryResponse;
 import ecommerce.productservice.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +23,7 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<CategoryResponse> createCategory(
             @RequestPart("data") CategoryRequest request,
@@ -57,5 +60,15 @@ public class CategoryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return categoryService.getProductsByCategory(id, page, size);
+    }
+
+    @GetMapping("/all-with-featured")
+    public ApiResponse<List<ParentCategoryResponse>> getAllWithFeatured() {
+        List<ParentCategoryResponse> parentCategoryResponses = categoryService.getAllParentCategories();
+        return ApiResponse.<List<ParentCategoryResponse>>builder()
+                .code(200)
+                .message("Success")
+                .data(parentCategoryResponses)
+                .build();
     }
 }

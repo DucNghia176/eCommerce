@@ -1,6 +1,6 @@
 package ecommerce.userservice.dto.respone;
 
-import ecommerce.aipcommon.model.response.UserOrderDetailResponse;
+import ecommerce.apicommon1.model.response.UserOrderDetailResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

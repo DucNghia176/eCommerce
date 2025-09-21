@@ -1,9 +1,9 @@
 package ecommerce.userservice.service.impl;
 
-import ecommerce.aipcommon.config.TokenInfo;
-import ecommerce.aipcommon.model.response.UserResponse;
-import ecommerce.aipcommon.model.status.GenderStatus;
-import ecommerce.aipcommon.model.status.RoleStatus;
+import ecommerce.apicommon1.config.TokenInfo;
+import ecommerce.apicommon1.model.response.UserResponse;
+import ecommerce.apicommon1.model.status.GenderStatus;
+import ecommerce.apicommon1.model.status.RoleStatus;
 import ecommerce.userservice.client.OrderClient;
 import ecommerce.userservice.client.PaymentClient;
 import ecommerce.userservice.dto.request.AddRoleRequest;
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -54,6 +55,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final JDBC jDBC;
     private final JDBCNamed jDBCNamed;
+    private final StoreRepo storeRepo;
 
     @Override
     public UserResponse getUserInfoById() {
@@ -270,7 +272,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> searchUsersJPA(String name, GenderStatus gender, Integer isLock, String email) {
-        return userAccRepository.searchUsers(name, gender, isLock, email);
+        List<UserAcc> users = userAccRepository.findAll();
+
+        List<UserResponse> responses = users.stream().map(user -> {
+            String roles = user.getRoles().stream()
+                    .map(role -> role.getRoleName().toString()) // enum -> String
+                    .collect(Collectors.joining(","));
+            return new UserResponse(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getPassword(),
+                    user.getUserInfo().getFullName(),
+                    user.getEmail(),
+                    roles,
+                    user.getIsLock(),
+                    user.getUserInfo().getAvatar(),
+                    user.getUserInfo().getGender().toString(),
+                    user.getUserInfo().getDateOfBirth(),
+                    user.getUserInfo().getAddress(),
+                    user.getUserInfo().getPhone(),
+                    user.getCreatedAt(),
+                    user.getUpdatedAt()
+            );
+        }).collect(Collectors.toList());
+        return responses;
+
     }
 
     @Override
@@ -281,5 +307,44 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponse> searchUsersJdbcNamed(String name, GenderStatus gender, Integer isLock, String email) {
         return jDBCNamed.searchUsers(name, gender, isLock, email);
+    }
+
+    @Override
+    public List<UserResponse> searchUsersStore(String fullName, GenderStatus gender, Integer isLock, String email) {
+        try {
+            return storeRepo.searchUsers(fullName, gender, isLock, email);
+        } catch (SQLException e) {
+            throw new RuntimeException("Lỗi khi gọi stored procedure SP_SEARCH_USERS", e);
+        }
+    }
+
+    @Override
+    public List<UserResponse> searchUsersSpec(String fullName, GenderStatus gender, Integer isLock, String email) {
+        List<UserAcc> users = userAccRepository.findAll(
+                UserSpecification.searchUsers(fullName, gender, isLock, email)
+        );
+
+        return users.stream().map(u -> {
+            String roles = u.getRoles().stream()
+                    .map(r -> r.getRoleName().name()) // enum -> String
+                    .collect(Collectors.joining(","));
+
+            return new UserResponse(
+                    u.getId(),
+                    u.getUsername(),
+                    u.getPassword(),
+                    u.getUserInfo().getFullName(),
+                    u.getEmail(),
+                    roles,
+                    u.getIsLock(),
+                    u.getUserInfo().getAvatar(),
+                    u.getUserInfo().getGender().name(),
+                    u.getUserInfo().getDateOfBirth(),
+                    u.getUserInfo().getAddress(),
+                    u.getUserInfo().getPhone(),
+                    u.getCreatedAt(),
+                    u.getUpdatedAt()
+            );
+        }).collect(Collectors.toList());
     }
 }

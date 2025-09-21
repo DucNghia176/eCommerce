@@ -1,6 +1,6 @@
 package ecommerce.userservice.dto.request;
 
-import ecommerce.aipcommon.model.status.GenderStatus;
+import ecommerce.apicommon1.model.status.GenderStatus;
 import lombok.*;
 
 import java.time.LocalDate;

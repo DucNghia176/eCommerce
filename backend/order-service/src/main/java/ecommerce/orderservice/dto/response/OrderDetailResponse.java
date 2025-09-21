@@ -16,5 +16,4 @@ public class OrderDetailResponse {
     private BigDecimal unitPrice;
     private BigDecimal discount;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

@@ -17,6 +17,15 @@ spring:
               predicates:
                 - Path=/api/users/**
                 - Path=/api/auth/**
+              filters:
+                - StripPrefix=1
+
+            - id: oauth2-route
+              uri: http://localhost:8080
+              predicates:
+                - Path=/oauth2/**
+                - Path=/login/oauth2/**
+
             - id: PRODUCT-SERVICE
               uri: lb://PRODUCT-SERVICE
               predicates:
@@ -61,3 +70,4 @@ eureka:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+    ecommerce.gateway.filter.JwtGlobalFilter: INFO

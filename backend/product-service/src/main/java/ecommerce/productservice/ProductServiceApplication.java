@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {
         "ecommerce.productservice",
-        "ecommerce.aipcommon"})
+        "ecommerce.apicommon1"})
 @EnableFeignClients(basePackages = "ecommerce.productservice.client")
 public class ProductServiceApplication {
 

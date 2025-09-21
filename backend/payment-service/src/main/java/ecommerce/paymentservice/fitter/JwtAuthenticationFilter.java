@@ -1,6 +1,6 @@
 package ecommerce.paymentservice.fitter;
 
-import ecommerce.aipcommon.util.JwtUtil;
+import ecommerce.apicommon1.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

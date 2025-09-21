@@ -1,17 +1,22 @@
 package ecommerce.productservice.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
+@Builder
 @Table(name = "CATEGORY", schema = "PRODUCT")
 public class Category {
     @Id
@@ -23,7 +28,7 @@ public class Category {
     @Column(name = "NAME", nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_ID")
     private Category parent;
 
@@ -39,4 +44,23 @@ public class Category {
     @CreationTimestamp
     @Column(name = "CREATE_AT")
     private LocalDateTime createAt;
+
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    private Set<Category> children = new HashSet<>();
+
+    @OneToMany(mappedBy = "category")
+    private Set<Product> products = new LinkedHashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Category)) return false;
+        Category other = (Category) o;
+        return id != null && id.equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

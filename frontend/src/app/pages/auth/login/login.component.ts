@@ -5,9 +5,9 @@ import {Router, RouterModule} from "@angular/router";
 import {AuthService} from "../../../core/services/auth.service";
 import {AuthRequest} from "../../../core/models/auth.model";
 import {validateAndFocusFirstError} from "../../../shared/utils/validation";
-import {Role} from "../../../shared/status/role";
 import {finalize} from "rxjs";
 import {LoadingSpinnerComponent} from "../../../shared/components/loading-spinner/loading-spinner.component";
+import {Role} from "../../../shared/status/role";
 
 @Component({
   selector: 'app-login',
@@ -45,12 +45,14 @@ export class LoginComponent {
             this.authService.setToken(token);
 
             const payload = JSON.parse(atob(token.split('.')[1]));
-            const role = payload.role;
+            const roles: string[] = payload.role;
 
-            if (role === Role.admin) {
+            if (roles.includes(Role.admin)) {
               this.router.navigate(['/admin']);
+            } else if (roles.includes(Role.user)) {
+              this.router.navigate(['/user']);
             } else {
-              this.router.navigate(['/users']);
+              this.router.navigate(['/']); // fallback
             }
           }
         }, error: (error) => {
@@ -59,7 +61,15 @@ export class LoginComponent {
       });
   }
 
-  loginWithGoogle() {
-    window.location.href = 'http://localhost:8085/oauth2/authorization/google';
+  loginWithGoogle(forceSelect: boolean = false) {
+    const baseUrl = 'http://localhost:8085/oauth2/authorization/google';
+    window.location.href = forceSelect ? `${baseUrl}?forceSelect=true` : baseUrl;
+  }
+
+  loginWithFacebook(forceSelect: boolean = false) {
+    const baseUrl = 'http://localhost:8085/oauth2/authorization/facebook';
+    window.location.href = forceSelect
+      ? `${baseUrl}?auth_type=reauthenticate`
+      : baseUrl;
   }
 }

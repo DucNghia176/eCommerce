@@ -2,8 +2,8 @@ package ecommerce.paymentservice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.status.PaymentStatus;
 import ecommerce.paymentservice.config.MomoConfig;
 import ecommerce.paymentservice.dto.request.MomoRequest;
 import ecommerce.paymentservice.dto.response.MomoResponse;

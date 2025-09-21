@@ -20,4 +20,5 @@ public interface OrderDetailMapper {
     OrderDetailResponse toResponse(OrderDetail orderDetails);
 
     List<OrderDetailResponse> toResponseList(List<OrderDetail> detailList);
+    
 }

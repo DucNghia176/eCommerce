@@ -1,9 +1,11 @@
 package ecommerce.paymentservice.kafka.listener;
 
-import ecommerce.aipcommon.kafka.event.PaymentKafkaEvent;
-import ecommerce.aipcommon.model.status.PaymentStatus;
+import ecommerce.apicommon1.kafka.event.PaymentKafkaEvent;
+import ecommerce.apicommon1.model.status.PaymentMethodStatus;
+import ecommerce.apicommon1.model.status.PaymentStatus;
 import ecommerce.paymentservice.entity.Payment;
 import ecommerce.paymentservice.repostitory.PaymentRepository;
+import ecommerce.paymentservice.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PaymentKafkaListener {
     private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
     @KafkaListener(topics = "payment-topic", groupId = "payment-group")
     public void handleOrderPlace(PaymentKafkaEvent event) {
@@ -28,6 +31,14 @@ public class PaymentKafkaListener {
                 .build();
         paymentRepository.save(payment);
 
-        log.info("Đã lưu kho cho orderCode: {}", event.getOrderCode());
+        if (!event.getPaymentMethod().equals(PaymentMethodStatus.COD)) {
+            try {
+                String checkoutUrl = paymentService.createCheckoutSession(event.getOrderId(), event.getTotalAmount());
+                log.info("🟢 Checkout URL: {}", checkoutUrl);
+            } catch (Exception e) {
+                payment.setStatus(PaymentStatus.FAILED);
+                paymentRepository.save(payment);
+            }
+        }
     }
 }

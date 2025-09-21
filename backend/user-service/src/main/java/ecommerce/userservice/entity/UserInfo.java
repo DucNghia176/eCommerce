@@ -1,7 +1,7 @@
 package ecommerce.userservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import ecommerce.aipcommon.model.status.GenderStatus;
+import ecommerce.apicommon1.model.status.GenderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {
         "ecommerce.inventoryservice",
-        "ecommerce.aipcommon"
+        "ecommerce.apicommon1"
 })
 public class InventoryServiceApplication {
 

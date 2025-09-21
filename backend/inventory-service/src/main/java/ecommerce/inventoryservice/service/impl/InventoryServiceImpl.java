@@ -1,6 +1,6 @@
 package ecommerce.inventoryservice.service.impl;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.inventoryservice.dto.request.InventoryRequest;
 import ecommerce.inventoryservice.dto.response.GetSkuCodeQuantity;
 import ecommerce.inventoryservice.dto.response.InventoryResponse;

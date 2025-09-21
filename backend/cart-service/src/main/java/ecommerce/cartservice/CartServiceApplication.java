@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableFeignClients(basePackages = "ecommerce.cartservice.client")
 @ComponentScan(basePackages = {
         "ecommerce.cartservice",
-        "ecommerce.aipcommon"
+        "ecommerce.apicommon1"
 })
 public class CartServiceApplication {
 

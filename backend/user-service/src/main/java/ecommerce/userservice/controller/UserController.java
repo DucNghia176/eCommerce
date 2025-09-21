@@ -1,8 +1,8 @@
 package ecommerce.userservice.controller;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
-import ecommerce.aipcommon.model.response.UserResponse;
-import ecommerce.aipcommon.model.status.GenderStatus;
+import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.UserResponse;
+import ecommerce.apicommon1.model.status.GenderStatus;
 import ecommerce.userservice.dto.request.AddRoleRequest;
 import ecommerce.userservice.dto.request.UserInfoUpdateRequest;
 import ecommerce.userservice.dto.respone.UserOrderDetail;
@@ -135,7 +135,7 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/search/jpa")
     public ApiResponse<List<UserResponse>> searchJPA(@RequestParam String name, @RequestParam GenderStatus gender, @RequestParam Integer isLock, @RequestParam String email) {
         List<UserResponse> userResponse = userService.searchUsersJPA(name, gender, isLock, email);
@@ -147,7 +147,7 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/search/jdbc")
     public ApiResponse<List<UserResponse>> searchJDBC(@RequestParam String name, @RequestParam GenderStatus gender, @RequestParam Integer isLock, @RequestParam String email) {
         List<UserResponse> userResponse = userService.searchUsersJDBC(name, gender, isLock, email);
@@ -159,7 +159,7 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/search/jdbcNamed")
     public ApiResponse<List<UserResponse>> searchJDBCNamed(@RequestParam String name, @RequestParam GenderStatus gender, @RequestParam Integer isLock, @RequestParam String email) {
         List<UserResponse> userResponse = userService.searchUsersJdbcNamed(name, gender, isLock, email);
@@ -168,6 +168,28 @@ public class UserController {
                 .code(200)
                 .message("Tìm kiếm thành công")
                 .data(userResponse)
+                .build();
+    }
+
+    @GetMapping("/search/store")
+    public ApiResponse<List<UserResponse>> searchStore(@RequestParam String name, @RequestParam GenderStatus gender, @RequestParam Integer isLock, @RequestParam String email) {
+        List<UserResponse> userResponses = userService.searchUsersStore(name, gender, isLock, email);
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .code(200)
+                .message("Tìm kiếm thành công")
+                .data(userResponses)
+                .build();
+    }
+
+    @GetMapping("/search/spec")
+    public ApiResponse<List<UserResponse>> searchSpec(@RequestParam String name, @RequestParam GenderStatus gender, @RequestParam Integer isLock, @RequestParam String email) {
+        List<UserResponse> userResponses = userService.searchUsersSpec(name, gender, isLock, email);
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .code(200)
+                .message("Tìm kiếm thành công")
+                .data(userResponses)
                 .build();
     }
 }

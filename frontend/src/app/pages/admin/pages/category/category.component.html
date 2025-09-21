@@ -19,11 +19,12 @@
     [routerLink]="['/admin/category/detail',category.id]"
     class="bg-white rounded-lg shadow cursor-pointer transition hover:shadow-lg"
   >
-    <div class="w-full h-48 overflow-hidden">
+    <div class="w-full h-48 overflow-hidden relative">
       <img
-        [src]="category.image"
+        [ngSrc]="category.image"
         alt="{{ category.name }}"
         class="w-full h-full object-cover transform hover:scale-105 transition"
+        fill
       >
     </div>
     <div class="gap-2 m-3">

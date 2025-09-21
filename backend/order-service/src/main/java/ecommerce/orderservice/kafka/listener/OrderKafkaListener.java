@@ -1,8 +1,8 @@
 package ecommerce.orderservice.kafka.listener;
 
-import ecommerce.aipcommon.kafka.event.InventoryKafkaEvent;
-import ecommerce.aipcommon.kafka.event.PaymentKafkaEvent;
-import ecommerce.aipcommon.model.status.OrderStatus;
+import ecommerce.apicommon1.kafka.event.InventoryKafkaEvent;
+import ecommerce.apicommon1.kafka.event.PaymentKafkaEvent;
+import ecommerce.apicommon1.model.status.OrderStatus;
 import ecommerce.orderservice.client.ProductClient;
 import ecommerce.orderservice.entity.OrderDetail;
 import ecommerce.orderservice.entity.Orders;

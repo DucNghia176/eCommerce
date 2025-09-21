@@ -27,6 +27,12 @@ public class UserAcc {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(name = "GOOGLE_ID")
+    private String googleId;
+
+    @Column(name = "FACEBOOK_ID")
+    private String facebookId;
+
     @Column(name = "USERNAME", nullable = false, length = 50, unique = true)
     private String username;
 

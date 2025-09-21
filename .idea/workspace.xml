@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b7705d5b-ca0c-4041-8bbe-91bdfde3f433.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b7705d5b-ca0c-4041-8bbe-91bdfde3f433.xml" afterDir="false" />
+    <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="đặt hàng + thanh toán">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/config/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/aip-common/src/main/java/ecommerce/aipcommon/config/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/JDBC.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/JDBC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/JDBCNamed.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/JDBCNamed.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/UserAccRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/repository/UserAccRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/impl/UserServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,10 +64,14 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="MavenRunner">
+    <option name="skipTests" value="true" />
+  </component>
   <component name="OptimizeOnSaveOptions">
     <option name="myRunOnSave" value="true" />
   </component>
   <component name="ProblemsViewState">
+    <option name="proportion" value="0.5646372" />
     <option name="selectedTabId" value="CurrentFile" />
     <option name="showPreview" value="true" />
   </component>
@@ -105,16 +101,28 @@
     &quot;HTTP Request.generated-requests | #9.executor&quot;: &quot;Run&quot;,
     &quot;JavaScript Debug.Angular Application (frontend).executor&quot;: &quot;Run&quot;,
     &quot;Maven.Gateway [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.aip-common [clean,compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.aip-common [clean,install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.aip-common [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.aip-common [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.api-common1 [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.api-common1 [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.api-common1 [org.apache.maven.plugins:maven-clean-plugin:3.4.1:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.backend [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.cart-service [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.cart-service [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.common [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.common [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.common [org.apache.maven.plugins:maven-clean-plugin:3.4.1:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.ecommerce1 [clean,install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.ecommerce1 [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.ecommerce1 [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.ecommerce1 [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.order-service [clean,install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.order-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.order-service [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.payment-service [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.product-service [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.user-service [clean].executor&quot;: &quot;Run&quot;,
@@ -155,7 +163,7 @@
     &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.19.13&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/eCommerce1/backend/config-service/src/main/resources/configs&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/eCommerce1/backend/api-common1/src/main/java/com/example/apicommon1&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;SCSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -167,13 +175,13 @@
     &quot;npm.ng.executor&quot;: &quot;Run&quot;,
     &quot;npm.test.executor&quot;: &quot;Run&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;D:/eCommerce1/backend/config-service/src/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;profiler.jvm&quot;,
     &quot;settings.editor.splitter.proportion&quot;: &quot;0.27522936&quot;,
     &quot;ts.external.directory.path&quot;: &quot;D:\\eCommerce1\\frontend\\node_modules\\typescript\\lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -189,11 +197,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\eCommerce1\backend\api-common1\src\main\java\com\example\apicommon1" />
       <recent name="D:\eCommerce1\backend\config-service\src\main\resources\configs" />
       <recent name="D:\eCommerce1\frontend\src\app\admin\components" />
       <recent name="D:\eCommerce1\frontend\src\assets" />
       <recent name="D:\eCommerce1\frontend\src\app\admin" />
-      <recent name="D:\eCommerce1\frontend\src\app\models" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\eCommerce1\frontend\src\app\pages\user\components" />
@@ -203,12 +211,17 @@
       <recent name="D:\eCommerce1\frontend\src\app\admin\components\dashboard" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="ecommerce.apicommon1.model.response" />
+      <recent name="ecommerce.apicommon1.model.request" />
+      <recent name="ecommerce.orderservice.dto.response" />
+      <recent name="ecommerce.cartservice.filter" />
       <recent name="ecommerce.gateway.dto" />
-      <recent name="ecommerce.paymentservice.service.impl" />
-      <recent name="ecommerce.userservice.entity" />
-      <recent name="ecommerce.orderservice.service.impl" />
-      <recent name="ecommerce.productservice.client" />
     </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn clean install" />
+    </option>
   </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
@@ -230,6 +243,7 @@
         <entry key="SpringBootApplicationConfigurationType">
           <value>
             <map>
+              <entry key="CartServiceApplication" value="STOPPED" />
               <entry key="ConfigServiceApplication" value="STOPPED" />
               <entry key="EurekaApplication" value="STOPPED" />
               <entry key="GatewayApplication" value="STOPPED" />
@@ -241,18 +255,26 @@
             </map>
           </value>
         </entry>
+        <entry key="js.build_tools.npm">
+          <value>
+            <map>
+              <entry key="Angular CLI Server (frontend)" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
   <component name="RunManager" selected="Spring Boot.UserServiceApplication">
-    <configuration name="UserServiceApplication | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/UserServiceApplication.http" executionIdentifier="#1" runType="Run single request">
-      <method v="2" />
-    </configuration>
-    <configuration name="generated-requests | #2" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#2" index="2" runType="Run single request">
-      <method v="2" />
-    </configuration>
     <configuration name="Angular Application (frontend)" type="JavascriptDebugType" uri="http://localhost:4200">
       <method v="2" />
+    </configuration>
+    <configuration name="ApiCommon1Application (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="api-common1" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="ecommerce.apicommon1.ApiCommon1Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="NotificationServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="notification-service" />
@@ -282,12 +304,10 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="HTTP Request.UserServiceApplication | #1" />
-      <item itemvalue="HTTP Request.generated-requests | #2" />
       <item itemvalue="JavaScript Debug.Angular Application (frontend)" />
       <item itemvalue="npm.Angular CLI Server (frontend)" />
       <item itemvalue="npm.test" />
-      <item itemvalue="Spring Boot.AipCommonApplication" />
+      <item itemvalue="Spring Boot.ApiCommon1Application (1)" />
       <item itemvalue="Spring Boot.EurekaApplication" />
       <item itemvalue="Spring Boot.ConfigServiceApplication" />
       <item itemvalue="Spring Boot.GatewayApplication" />
@@ -299,11 +319,6 @@
       <item itemvalue="Spring Boot.PaymentServiceApplication" />
       <item itemvalue="Spring Boot.NotificationServiceApplication" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="HTTP Request.UserServiceApplication | #1" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -444,39 +459,18 @@
       <workItem from="1757600829463" duration="5000" />
       <workItem from="1757659141716" duration="41294000" />
       <workItem from="1757769399036" duration="24750000" />
-      <workItem from="1757854532535" duration="5657000" />
-    </task>
-    <task id="LOCAL-00017" summary="update">
-      <option name="closed" value="true" />
-      <created>1751964487737</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1751964487737</updated>
-    </task>
-    <task id="LOCAL-00018" summary="update">
-      <option name="closed" value="true" />
-      <created>1752032258780</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1752032258780</updated>
-    </task>
-    <task id="LOCAL-00019" summary="cart">
-      <option name="closed" value="true" />
-      <created>1752032276420</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1752032276420</updated>
-    </task>
-    <task id="LOCAL-00020" summary="application">
-      <option name="closed" value="true" />
-      <created>1752032376511</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1752032376511</updated>
+      <workItem from="1757854532535" duration="10099000" />
+      <workItem from="1757918324593" duration="15595000" />
+      <workItem from="1758031006224" duration="12449000" />
+      <workItem from="1758091203088" duration="1341000" />
+      <workItem from="1758105247092" duration="8531000" />
+      <workItem from="1758163508316" duration="23111000" />
+      <workItem from="1758264767280" duration="12569000" />
+      <workItem from="1758278865599" duration="1031000" />
+      <workItem from="1758279918211" duration="359000" />
+      <workItem from="1758288610841" duration="36129000" />
+      <workItem from="1758429248389" duration="16708000" />
+      <workItem from="1758476029780" duration="675000" />
     </task>
     <task id="LOCAL-00021" summary="update">
       <option name="closed" value="true" />
@@ -838,7 +832,39 @@
       <option name="project" value="LOCAL" />
       <updated>1757857204669</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="update">
+      <option name="closed" value="true" />
+      <created>1757860365133</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1757860365133</updated>
+    </task>
+    <task id="LOCAL-00067" summary="build lại m2">
+      <option name="closed" value="true" />
+      <created>1758298766251</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1758298766252</updated>
+    </task>
+    <task id="LOCAL-00068" summary="oauth2">
+      <option name="closed" value="true" />
+      <created>1758476097412</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1758476097412</updated>
+    </task>
+    <task id="LOCAL-00069" summary="đặt hàng + thanh toán">
+      <option name="closed" value="true" />
+      <created>1758476111067</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1758476111067</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -881,9 +907,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="application" />
-    <MESSAGE value="inventory" />
-    <MESSAGE value="frontend" />
     <MESSAGE value="cập nhật đặt hàng" />
     <MESSAGE value="frontend user" />
     <MESSAGE value="OrderStatus" />
@@ -906,20 +929,18 @@
     <MESSAGE value="config" />
     <MESSAGE value="exception" />
     <MESSAGE value="update" />
-    <option name="LAST_COMMIT_MESSAGE" value="update" />
+    <MESSAGE value="build lại m2" />
+    <MESSAGE value="oauth2" />
+    <MESSAGE value="đặt hàng + thanh toán" />
+    <option name="LAST_COMMIT_MESSAGE" value="đặt hàng + thanh toán" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/impl/UserServiceImpl.java</url>
-          <line>235</line>
-          <properties class="ecommerce.userservice.service.impl.UserServiceImpl" method="addRoleToUser">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.util.ConcurrentModificationException" package="java.util" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

@@ -1,6 +1,6 @@
 package ecommerce.paymentservice.controller;
 
-import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.paymentservice.dto.request.MomoRequest;
 import ecommerce.paymentservice.dto.response.MomoResponse;
 import ecommerce.paymentservice.service.MomoPaymentService;

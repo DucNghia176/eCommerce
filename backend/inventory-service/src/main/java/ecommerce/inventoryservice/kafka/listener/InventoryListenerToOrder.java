@@ -1,7 +1,7 @@
 package ecommerce.inventoryservice.kafka.listener;
 
-import ecommerce.aipcommon.kafka.event.InventoryKafkaEvent;
-import ecommerce.aipcommon.model.response.ApiResponse;
+import ecommerce.apicommon1.kafka.event.InventoryKafkaEvent;
+import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.inventoryservice.dto.request.InventoryRequest;
 import ecommerce.inventoryservice.dto.response.InventoryResponse;
 import ecommerce.inventoryservice.entity.Inventory;

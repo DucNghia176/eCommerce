@@ -1,9 +1,8 @@
 package ecommerce.orderservice.dto.request;
 
-import ecommerce.aipcommon.model.status.PaymentMethodStatus;
+import ecommerce.apicommon1.model.status.PaymentMethodStatus;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter
@@ -14,7 +13,6 @@ import java.util.Map;
 public class OrderRequest {
     private String shippingAddress;
     private Map<Long, Boolean> selectedCartItemIds;
-    private LocalDateTime orderDate;
     private PaymentMethodStatus paymentMethod;
     private String note;
 }

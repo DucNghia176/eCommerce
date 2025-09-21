@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {CommonModule} from "@angular/common";
+import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {CategoryResponse} from "../../../../core/models/category.model";
 import {CategoryService} from "../../../../core/services/category.service";
 import {finalize} from "rxjs";
@@ -10,7 +10,7 @@ import {faAdd, faFileExport} from "@fortawesome/free-solid-svg-icons";
 @Component({
   selector: 'app-category',
   standalone: true,
-  imports: [CommonModule, FaIconComponent, RouterLink, RouterModule],
+  imports: [CommonModule, FaIconComponent, RouterLink, RouterModule, NgOptimizedImage],
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss'
 })

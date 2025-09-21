@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @FeignClient(name = "user-service", path = "/api/users",
-        configuration = ecommerce.aipcommon.config.FeignConfig.class)
+        configuration = ecommerce.apicommon1.config.FeignConfig.class)
 public interface UserClient {
     @GetMapping("/ids")
     Map<Long, String> extractFullName(@RequestParam("ids") List<Long> ids);

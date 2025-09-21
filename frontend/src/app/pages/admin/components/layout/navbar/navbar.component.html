@@ -31,13 +31,20 @@
           [ngClass]="user.avatar ? '' : 'bg-blue-500 text-white'"
           class=" text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
         >
-          <img
-            [ngSrc]="user.avatar"
-            alt="avatar" class="w-8 h-8 rounded-full object-cover"
-            height="50"
-            width="50"
-          >
-          <span *ngIf="!user.avatar">{{ user.fullName.charAt(0) }}</span>
+          <div class="w-8 h-8 relative rounded-full overflow-hidden">
+            <img
+              *ngIf="user.avatar"
+              [ngSrc]="user.avatar"
+              alt="avatar"
+              class="object-cover"
+              fill
+            />
+            <span *ngIf="!user.avatar"
+                  class="absolute inset-0 flex items-center justify-center bg-blue-500 text-white font-bold text-sm"
+            >
+                  {{ user.fullName.charAt(0) }}
+            </span>
+          </div>
         </div>
         <span class="text-sm">{{ user.fullName }}</span>
 
