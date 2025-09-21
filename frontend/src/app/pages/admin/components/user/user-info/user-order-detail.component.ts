@@ -4,7 +4,7 @@ import {UsersService} from "../../../../../core/services/users.service";
 import {UserOrderDetail} from "../../../../../core/models/user.model";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faArrowLeft, faClose, faSave} from "@fortawesome/free-solid-svg-icons";
-import {CurrencyPipe, Location, NgForOf, NgIf} from "@angular/common";
+import {CurrencyPipe, Location, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {StatusDirective} from "../../../../../shared/directive/status.directive";
 import {OrderStatusMeta} from "../../../../../shared/status/order-status";
@@ -19,7 +19,8 @@ import {ToastService} from "../../../../../core/services/toast.service";
     NgIf,
     NgForOf,
     StatusDirective,
-    CurrencyPipe
+    CurrencyPipe,
+    NgOptimizedImage
   ],
   templateUrl: './user-order-detail.component.html',
   styleUrl: './user-order-detail.component.scss'

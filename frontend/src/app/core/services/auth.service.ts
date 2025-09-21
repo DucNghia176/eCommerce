@@ -35,11 +35,8 @@ export class AuthService {
     this.clearToken();
   }
 
-  register(request: RegisterRequest, avatar ?: File): Observable<ApiResponse<UserResponse>> {
-    const formData = new FormData();
-
-    formData.append('data', new Blob([JSON.stringify(request)], {type: 'application/json'}));
-    return this.http.post<ApiResponse<UserResponse>>(`${this.apiUrl}/register`, formData).pipe(
+  register(request: RegisterRequest): Observable<ApiResponse<UserResponse>> {
+    return this.http.post<ApiResponse<UserResponse>>(`${this.apiUrl}/register`, request).pipe(
       map(response => {
         if (response.code === 202 && response.data) {
           return response;

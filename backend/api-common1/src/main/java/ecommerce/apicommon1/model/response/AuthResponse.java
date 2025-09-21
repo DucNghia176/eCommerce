@@ -1,8 +1,9 @@
-package ecommerce.aipcommon.model.response;
+package ecommerce.apicommon1.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -18,5 +19,5 @@ public class AuthResponse {
     String email;
     String token;
     List<String> role;
-    String lastLogin;
+    LocalDateTime lastLogin;
 }
