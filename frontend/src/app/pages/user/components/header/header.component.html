@@ -1,76 +1,93 @@
 <header class="bg-sky-700 text-gray-50">
-  <!--  top bar-->
-  <div class="container mx-auto px-4 p-1">
-    <div class="flex flex-row justify-between items-center text-sm">
-      <span>Welcome to Ezone online eCommerce store</span>
-      <div class="flex items-center gap-3">
-        <span class="text-sm">Follow us:</span>
-        <fa-icon [icon]="faTwitter"></fa-icon>
-        <fa-icon [icon]="faFacebook"></fa-icon>
-        <fa-icon [icon]="faPinterest"></fa-icon>
-        <fa-icon [icon]="faReddit"></fa-icon>
-        <fa-icon [icon]="faYoutube"></fa-icon>
-        <fa-icon [icon]="faInstagram"></fa-icon>
+  <!-- Top bar -->
+  <div class="container mx-auto px-4 py-1 flex justify-between items-center text-sm">
+    <span>Welcome to Ezone online eCommerce store</span>
+
+    <div class="flex items-center divide-x">
+      <div class="flex flex-row px-3 gap-3 items-center">
+        <span class="hidden sm:inline">Follow us:</span>
+        <div class="flex gap-2 text-lg">
+          <fa-icon [icon]="faTwitter" class="cursor-pointer hover:text-gray-300"></fa-icon>
+          <fa-icon [icon]="faFacebook" class="cursor-pointer hover:text-gray-300"></fa-icon>
+          <fa-icon [icon]="faPinterest" class="cursor-pointer hover:text-gray-300"></fa-icon>
+          <fa-icon [icon]="faReddit" class="cursor-pointer hover:text-gray-300"></fa-icon>
+          <fa-icon [icon]="faYoutube" class="cursor-pointer hover:text-gray-300"></fa-icon>
+          <fa-icon [icon]="faInstagram" class="cursor-pointer hover:text-gray-300"></fa-icon>
+        </div>
+      </div>
+
+      <div class="px-3 flex flex-row  gap-3">
+        <div class="flex flex-row gap-2 items-center justify-center">
+          <p>Vi</p>
+          <fa-icon [icon]="faChevronDown" class="text-xs"></fa-icon>
+        </div>
+        <div class="flex flex-row gap-2 items-center justify-center">
+          <p>VND</p>
+          <fa-icon [icon]="faChevronDown" class="text-xs"></fa-icon>
+        </div>
       </div>
     </div>
   </div>
-  <hr class="border-gray-400 border-t-[0.5px]">
-  <!--  search-->
-  <div class="container mx-auto px-4 py-2 flex items-center justify-between">
 
+  <hr class="border-gray-500/40">
+
+  <!-- Search + Logo + Icons -->
+  <div class="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <!-- Logo -->
     <button
       [routerLink]="['/user/']"
-      class="text-gray-50 font-bold text-xl"
-      type="button">EZONE
+      class="font-bold text-2xl tracking-wide hover:text-gray-200"
+      type="button">
+      EZONE
     </button>
 
-    <div class="relative flex-1 max-w-md mx-4">
+    <!-- Search -->
+    <div class="relative flex-1 max-w-md">
       <input
-        class="rounded-md w-full py-2 px-3 pl-10 focus:outline-none focus:ring focus:ring-blue-500 text-sm"
-        placeholder="Search..."
+        class="w-full rounded-md py-2 pl-10 pr-3 text-sm text-gray-900 focus:outline-none focus:ring focus:ring-sky-500"
+        placeholder="Search products..."
         type="text"
       />
       <fa-icon [icon]="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></fa-icon>
     </div>
-    <div class="flex items-center gap-4 text-gray-50">
+
+    <!-- Icons -->
+    <div class="flex items-center gap-5 text-xl">
       <fa-icon [icon]="faCartShopping" class="cursor-pointer hover:text-gray-300"></fa-icon>
       <fa-icon [icon]="faHeart" class="cursor-pointer hover:text-gray-300"></fa-icon>
-      <fa-icon [icon]="faUser " class="cursor-pointer hover:text-gray-300"></fa-icon>
+      <fa-icon [icon]="faUser" class="cursor-pointer hover:text-gray-300"></fa-icon>
     </div>
   </div>
 </header>
-<!--  navbar-->
-<nav class="bg-white shadow-sm">
-  <div class="container px-4 mx-auto py-2 flex items-center justify-between text-gray-600">
-    <div class="flex items-center gap-6 text-sm">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-sm border-t border-gray-200">
+  <div class="container mx-auto px-4 py-3 flex items-center justify-between text-gray-600 text-sm">
+    <!-- Left -->
+    <div class="flex items-center gap-6">
       <app-all-category [categories]="categories"></app-all-category>
-      <button class="flex gap-1">
+      <button class="flex gap-1 hover:text-sky-600">
         <fa-icon [icon]="faLocationDot"></fa-icon>
         Track Order
       </button>
-      <button class="flex gap-1">
+      <button class="flex gap-1 hover:text-sky-600">
         <fa-icon [icon]="faRotate"></fa-icon>
         Compare
       </button>
-      <button class="flex gap-1">
-        <fa-icon [icon]="faHeadset"></fa-icon>
+      <button class="flex gap-1 hover:text-sky-600">
+        <fa-icon [icon]="faHeadphones"></fa-icon>
         Customer Support
       </button>
-      <button class="flex gap-1">
+      <button class="flex gap-1 hover:text-sky-600">
         <fa-icon [icon]="faCircleInfo"></fa-icon>
         Need Help
       </button>
     </div>
 
-    <div class="flex items-center gap-1 text-sm font-medium">
+    <!-- Right -->
+    <div class="flex items-center gap-2 font-medium hover:text-sky-600 cursor-pointer">
       <fa-icon [icon]="faPhoneVolume"></fa-icon>
       <span>+84-987-654-321</span>
     </div>
   </div>
-  <button
-    (click)="logout()"
-    class="block w-full text-left px-4 py-2 hover:bg-gray-100"
-  >
-    Logout
-  </button>
 </nav>

@@ -1,9 +1,6 @@
 package ecommerce.productservice.repository;
 
-import ecommerce.productservice.dto.response.FeaturedProductResponse;
-import ecommerce.productservice.dto.response.ProductResponse;
-import ecommerce.productservice.dto.response.ProductSummaryResponse;
-import ecommerce.productservice.dto.response.ProductViewResponse;
+import ecommerce.productservice.dto.response.*;
 import ecommerce.productservice.entity.Product;
 import feign.Param;
 import org.springframework.data.domain.Page;
@@ -14,12 +11,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
-    List<Product> findAllByIsActive(Integer isActive);
 
     @Modifying
     @Query("UPDATE Product p SET p.isActive = 0 WHERE p.category.id = :categoryId")
@@ -28,7 +25,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query("SELECT p.skuCode FROM Product p WHERE p.id = :id")
     String findSkuCodeById(@Param("id") Long id);
 
-    Page<Product> findAllByIsActive(int isActive, Pageable pageable);
 
     @Query("SELECT new ecommerce.productservice.dto.response.ProductResponse(" +
             "p.id ,p.name, p.price, c.name, p.description, new ecommerce.productservice.dto.response.BrandResponse(b.id, b.name), pi.imageUrl, p.skuCode)" +
@@ -46,9 +42,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "AND p.category.isActive = 1 AND p.isActive = 1")
     Page<ProductSummaryResponse> findProductsByCategory(@Param("categoryIds") Set<Long> categoryIds, Pageable pageable);
 
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.category.id = :categoryId")
-    Long countByCategoryId(@Param("categoryId") Long categoryId);
-
     @Query("""
             SELECT new ecommerce.productservice.dto.response.FeaturedProductResponse(p.id, p.name, p.price, pi.imageUrl) FROM Product p
                         JOIN p.tags t
@@ -61,12 +54,33 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<FeaturedProductResponse> findTopByCategoryIdAndTagName(@Param("categoryId") Long categoryId, @Param("tagName") String tagName, Pageable pageable);
 
     @Query("""
-            SELECT new ecommerce.productservice.dto.response.ProductViewResponse(p.id,p.name,p.skuCode,p.price, b.name, p.category.name, AVG(r.score), count(r.userId))
+            SELECT new ecommerce.productservice.dto.response.ProductViewResponse(p.id,p.name,p.skuCode,p.price, b.name, p.category.name, p.averageRating, p.totalReviews)
                          FROM Product p
                          LEFT JOIN Brand b ON b.id = p.brandId
-                         LEFT JOIN Rating r ON r.product.id = p.id
                          WHERE p.id = :productId
-                                     GROUP BY p.id, p.name, p.skuCode, p.price, b.name, p.category.name
             """)
     ProductViewResponse findProduct(@Param("productId") Long productId);
+
+    @Query("""
+                SELECT new ecommerce.productservice.dto.response.SearchProductResponse(
+                    p.id, p.name, pi.imageUrl, p.price, p.discount, p.averageRating, p.totalReviews
+                )
+                FROM Product p
+                LEFT JOIN ProductImage pi ON pi.product.id = p.id AND pi.isThumbnail = 1
+                WHERE (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                  AND (:categoryId IS NULL OR p.category.id = :categoryId)
+                  AND (:brandId IS NULL OR p.brandId = :brandId)
+                  AND (:priceFrom IS NULL OR p.price >= :priceFrom)
+                  AND (:priceTo IS NULL OR p.price <= :priceTo)
+                  AND (:ratingFrom IS NULL OR p.averageRating >= :ratingFrom)
+            """)
+    Page<SearchProductResponse> searchProducts(
+            @Param("keyword") String keyword,
+            @Param("categoryId") Long categoryId,
+            @Param("brandId") Long brandId,
+            @Param("priceFrom") BigDecimal priceFrom,
+            @Param("priceTo") BigDecimal priceTo,
+            @Param("ratingFrom") Double ratingFrom,
+            Pageable pageable
+    );
 }

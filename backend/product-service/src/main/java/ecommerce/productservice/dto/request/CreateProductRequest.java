@@ -3,16 +3,12 @@ package ecommerce.productservice.dto.request;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Getter
-@Setter
 @Data
-public class ProductRequest {
+public class CreateProductRequest {
     private String name;
     private String description;
     private BigDecimal price;
@@ -23,6 +19,6 @@ public class ProductRequest {
     private Long categoryId;
     private String brandId;
     private String unit;
-    private String skuCode;
     private List<Long> tags;
+    private List<AttributeRequest> attributes;
 }

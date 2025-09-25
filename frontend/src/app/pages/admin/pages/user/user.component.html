@@ -63,7 +63,7 @@
           </td>
           <td class="p-3 flex items-center gap-2">
             <ng-container *ngIf="user.avatar; else noAvatar">
-              <img [ngSrc]="user.avatar" alt="avatar" class="w-8 h-8 rounded-full object-cover" height="32" width="32"/>
+              <img [src]="user.avatar" alt="avatar" class="w-8 h-8 rounded-full object-cover" height="32" width="32"/>
             </ng-container>
             <ng-template #noAvatar>
               <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold">

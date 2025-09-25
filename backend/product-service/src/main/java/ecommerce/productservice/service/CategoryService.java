@@ -4,7 +4,7 @@ package ecommerce.productservice.service;
 import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.productservice.dto.request.CategoryRequest;
 import ecommerce.productservice.dto.response.CategoryResponse;
-import ecommerce.productservice.dto.response.ParentCategoryResponse;
+import ecommerce.productservice.dto.response.ChildCategoryResponse;
 import ecommerce.productservice.dto.response.ProductSummaryResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -27,5 +27,5 @@ public interface CategoryService {
 
     ApiResponse<Page<ProductSummaryResponse>> getProductsByCategory(Long id, int page, int size);
 
-    List<ParentCategoryResponse> getAllParentCategories();
+    List<ChildCategoryResponse> getAllChildCategoriesWithBrandAndProduct();
 }

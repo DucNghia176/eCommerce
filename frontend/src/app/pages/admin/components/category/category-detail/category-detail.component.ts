@@ -1,5 +1,5 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
-import {CommonModule, Location, NgOptimizedImage} from "@angular/common";
+import {CommonModule, Location} from "@angular/common";
 import {CategoryService} from "../../../../../core/services/category.service";
 import {PageSize} from "../../../../../shared/status/page-size";
 import {finalize} from "rxjs";
@@ -18,7 +18,7 @@ import {validateAndFocusFirstError} from "../../../../../shared/utils/validation
 @Component({
   selector: 'app-category-detail',
   standalone: true,
-  imports: [CommonModule, FaIconComponent, ToastComponent, PageComponent, ReactiveFormsModule, FormsModule, RouterLink, NgOptimizedImage],
+  imports: [CommonModule, FaIconComponent, ToastComponent, PageComponent, ReactiveFormsModule, FormsModule, RouterLink,],
   templateUrl: './category-detail.component.html',
   styleUrl: './category-detail.component.scss'
 })

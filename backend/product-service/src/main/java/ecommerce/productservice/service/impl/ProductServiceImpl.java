@@ -4,14 +4,9 @@ import ecommerce.apicommon1.kafka.event.ProductCreateEvent;
 import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.apicommon1.model.response.ProductPriceResponse;
 import ecommerce.productservice.client.InventoryClient;
-import ecommerce.productservice.dto.request.ProductRequest;
-import ecommerce.productservice.dto.request.ProductSearchRequest;
-import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
+import ecommerce.productservice.dto.request.*;
 import ecommerce.productservice.dto.response.*;
-import ecommerce.productservice.entity.Category;
-import ecommerce.productservice.entity.Product;
-import ecommerce.productservice.entity.ProductImage;
-import ecommerce.productservice.entity.Tag;
+import ecommerce.productservice.entity.*;
 import ecommerce.productservice.kafka.event.NotificationEvent;
 import ecommerce.productservice.mapper.ProductMapper;
 import ecommerce.productservice.repository.*;
@@ -52,42 +47,73 @@ public class ProductServiceImpl implements ProductService {
     private final InventoryClient inventoryClient;
     private final BrandRepository brandRepository;
     private final ProductAttributeRepository productAttributeRepository;
+    private final AttributeRepository attributeRepository;
+    private final AttributeValueRepository attributeValueRepository;
 
     @Transactional
     @Override
-    public ProductResponse createProduct(ProductRequest request, List<MultipartFile> imageUrls) {
+    public CreateProductResponse createProduct(CreateProductRequest request, List<MultipartFile> imageUrls) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + request.getCategoryId()));
 
 
+//        tạo skuCode
         Product product = productMapper.toEntity(request);
-        if (request.getSkuCode() == null || request.getSkuCode().isBlank()) {
-            String generatedSku = "SKU-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-            product.setSkuCode(generatedSku);
-        } else {
-            product.setSkuCode(request.getSkuCode());
+
+        String generatedSku = "SKU-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        product.setSkuCode(generatedSku);
+
+        Set<ProductAttribute> productAttributes = new HashSet<>();
+        for (AttributeRequest attrReq : request.getAttributes()) {
+            // 1. Attribute
+            Attribute attribute = attributeRepository.findByNameIgnoreCase(attrReq.getAttributeName().trim())
+                    .orElseGet(() -> {
+                        Attribute newAttr = new Attribute();
+                        newAttr.setName(attrReq.getAttributeName().toLowerCase().trim());
+                        return attributeRepository.save(newAttr);
+                    });
+
+            // 2. AttributeValue
+            AttributeValue value = attributeValueRepository.findByValueIgnoreCase(attrReq.getAttributeValueName().trim())
+                    .orElseGet(() -> {
+                        AttributeValue newValue = new AttributeValue();
+                        newValue.setValue(attrReq.getAttributeValueName().toLowerCase().trim());
+                        return attributeValueRepository.save(newValue);
+                    });
+
+            // 3. Tạo ProductAttribute
+            ProductAttribute pa = ProductAttribute.builder()
+                    .attribute(attribute)
+                    .value(value)
+                    .product(product)
+                    .build();
+            productAttributes.add(pa);
         }
 
+// 4. Gán vào product
+        product.setProductAttributes(productAttributes);
         product.setCategory(category);
 
         Product saved = productRepository.save(product);
 
-        if (imageUrls != null && !imageUrls.isEmpty()) {
-            for (int i = 0; i < imageUrls.size(); i++) {
-                MultipartFile file = imageUrls.get(i);
-                if (!file.isEmpty()) {
-                    String url = cloudinaryService.uploadFileProduct(file, product.getId());
+        List<ProductImage> imagesToSave = new ArrayList<>();
 
-                    ProductImage newImage = new ProductImage();
-                    newImage.setProduct(product);
-                    newImage.setImageUrl(url);
-                    newImage.setIsThumbnail(i == 0 ? 1 : 0); // ảnh đầu tiên là thumbnail
-                    productImageRepository.save(newImage);
-                }
+        for (int i = 0; i < imageUrls.size(); i++) {
+            MultipartFile file = imageUrls.get(i);
+            if (!file.isEmpty()) {
+                String url = cloudinaryService.uploadFileProduct(file, product.getId());
+
+                ProductImage newImage = new ProductImage();
+                newImage.setProduct(product);
+                newImage.setImageUrl(url);
+                newImage.setIsThumbnail(i == 0 ? 1 : 0);
+                imagesToSave.add(newImage);
             }
         }
 
-        ProductResponse response = productMapper.toResponse(saved);
+        productImageRepository.saveAll(imagesToSave);
+
+        CreateProductResponse response = productMapper.toCreate(saved);
         response.setTags(saved.getTags().stream()
                 .map(tag -> new TagResponse(tag.getId(), tag.getName()))
                 .toList());
@@ -309,6 +335,19 @@ public class ProductServiceImpl implements ProductService {
                     .data(null)
                     .build();
         }
+    }
+
+    @Override
+    public Page<SearchProductResponse> search(SearchRequest request, Pageable pageable) {
+        return productRepository.searchProducts(
+                request.getKeyword(),
+                request.getCategoryId(),
+                request.getBrandId(),
+                request.getPriceFrom(),
+                request.getPriceTo(),
+                request.getRatingFrom(),
+                pageable
+        );
     }
 
     @Override

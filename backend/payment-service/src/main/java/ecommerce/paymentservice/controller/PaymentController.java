@@ -1,9 +1,8 @@
 package ecommerce.paymentservice.controller;
 
+import com.stripe.exception.StripeException;
 import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.apicommon1.model.status.PaymentStatus;
-import ecommerce.paymentservice.dto.request.PaymentRequest;
-import ecommerce.paymentservice.dto.response.PaymentResponse;
 import ecommerce.paymentservice.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +16,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 class PaymentController {
     private final PaymentService paymentService;
-
-    @PostMapping("/confirm")
-    ApiResponse<PaymentResponse> confirm(@RequestBody PaymentRequest request) {
-        return paymentService.confirmPayment(request);
-    }
+//
+//    @PostMapping("/confirm")
+//    ApiResponse<PaymentResponse> confirm(@RequestBody PaymentRequest request) {
+//        return paymentService.confirmPayment(request);
+//    }
 
     @GetMapping("/orders")
     Map<Long, PaymentStatus> extractPaymentStatus(@RequestParam List<Long> orderIds) {
@@ -34,7 +33,7 @@ class PaymentController {
     }
 
     @PostMapping("/checkout")
-    public String checkout(@RequestParam Long orderId, @RequestParam BigDecimal amount) throws Exception {
+    public String checkout(@RequestParam Long orderId, @RequestParam BigDecimal amount) throws StripeException {
         return paymentService.createCheckoutSession(orderId, amount);
     }
 

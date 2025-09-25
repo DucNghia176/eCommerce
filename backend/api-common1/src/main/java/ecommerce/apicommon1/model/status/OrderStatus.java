@@ -10,5 +10,6 @@ public enum OrderStatus {
     CANCELLED,    // Đã hủy
     FAILED,       // Thanh toán thất bại / giao thất bại
     REFUNDED,     // Đã hoàn tiền
-    ON_HOLD       // Tạm ngưng xử lý
+    ON_HOLD,       // Tạm ngưng xử lý
+    COMPLETED     //Hoàn thành đơn hàng
 }

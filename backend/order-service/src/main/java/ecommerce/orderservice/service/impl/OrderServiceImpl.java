@@ -3,6 +3,7 @@ package ecommerce.orderservice.service.impl;
 import ecommerce.apicommon1.config.TokenInfo;
 import ecommerce.apicommon1.kafka.event.InventoryKafkaEvent;
 import ecommerce.apicommon1.kafka.event.PaymentKafkaEvent;
+import ecommerce.apicommon1.model.request.UpdateOrderStatusRequest;
 import ecommerce.apicommon1.model.response.*;
 import ecommerce.apicommon1.model.status.OrderStatus;
 import ecommerce.apicommon1.model.status.PaymentMethodStatus;
@@ -14,8 +15,10 @@ import ecommerce.orderservice.client.UserClient;
 import ecommerce.orderservice.dto.request.OrderCreateRequest;
 import ecommerce.orderservice.dto.request.OrderItemRequest;
 import ecommerce.orderservice.dto.request.OrderRequest;
-import ecommerce.orderservice.dto.request.UpdateOrderStatusRequest;
-import ecommerce.orderservice.dto.response.*;
+import ecommerce.orderservice.dto.response.OrderCreateResponse;
+import ecommerce.orderservice.dto.response.OrderQuantityResponse;
+import ecommerce.orderservice.dto.response.OrderResponse;
+import ecommerce.orderservice.dto.response.OrdersAD;
 import ecommerce.orderservice.entity.OrderDetail;
 import ecommerce.orderservice.entity.Orders;
 import ecommerce.orderservice.kafka.KafkaOrder;
@@ -23,6 +26,8 @@ import ecommerce.orderservice.mapper.OrderMapper;
 import ecommerce.orderservice.repository.OrderDetailRepository;
 import ecommerce.orderservice.repository.OrderRepository;
 import ecommerce.orderservice.service.OrderService;
+import ecommerce.orderservice.util.GenerateKey;
+import ecommerce.orderservice.util.OrderStatusUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,10 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -66,6 +68,8 @@ public class OrderServiceImpl implements OrderService {
     private final UserClient userClient;
     private final PaymentClient paymentClient;
     private final Executor contextAwareExecutor;
+    private final OrderStatusUtil orderStatusUtil;
+    private final GenerateKey generateKey;
 
     private String generateOrderCode() {
         String prefix = "ORD";
@@ -153,7 +157,6 @@ public class OrderServiceImpl implements OrderService {
             // 8. Xóa giỏ hàng đã chọn
             cartClient.clearSelectedCartItems(itemId);
 
-
             OrderResponse response = orderMapper.toResponse(order);
             // Gửi thông báo sang Kafka
             kafkaOrder.sendMessage("order-events", "Tạo đơn hàng thành công: ID " + order.getId());
@@ -181,6 +184,26 @@ public class OrderServiceImpl implements OrderService {
         if (request.getPaymentMethod() == null) {
             request.setPaymentMethod(PaymentMethodStatus.COD);
         }
+
+        String cartSignature = generateKey.generateCartSignature(request.getItems());
+
+        Optional<Orders> existingOrder = orderRepository.findByUserIdAndCartSignature(userId, cartSignature);
+        if (existingOrder.isPresent()) {
+            return orderMapper.toDto(existingOrder.get()); // trả về order cũ
+        }
+
+        //lưu tạm order
+        Orders order = Orders.builder()
+                .userId(userId)
+                .shippingAddress(request.getShippingAddress())
+                .status(PAYMENT_FLOW.getOrDefault(request.getPaymentMethod(), OrderStatus.PENDING))
+                .paymentMethod(request.getPaymentMethod())
+                .isActive(1)
+                .createdAt(LocalDateTime.now())
+                .note(request.getNote())
+                .cartSignature(cartSignature)
+                .build();
+        orderRepository.save(order);
 
         //nếu đặt hàng từ cart
         if (request.isFromCart()) {
@@ -217,18 +240,6 @@ public class OrderServiceImpl implements OrderService {
                 throw new IllegalArgumentException("Sản phẩm " + item.getProductId() + " không tồn tại");
             }
         }
-
-        //lưu tạm order
-        Orders order = Orders.builder()
-                .userId(userId)
-                .shippingAddress(request.getShippingAddress())
-                .status(PAYMENT_FLOW.getOrDefault(request.getPaymentMethod(), OrderStatus.PENDING))
-                .paymentMethod(request.getPaymentMethod())
-                .isActive(1)
-                .createdAt(LocalDateTime.now())
-                .note(request.getNote())
-                .build();
-        orderRepository.save(order);
 
         List<OrderDetail> details = new ArrayList<>();
         BigDecimal totalAmount = BigDecimal.ZERO;
@@ -350,7 +361,7 @@ public class OrderServiceImpl implements OrderService {
         Orders orders = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new NoSuchElementException("Không có đơn hàng với id = " + request.getOrderId()));
 
-        if (!isValidTransition(orders.getStatus(), request.getOrderStatus())) {
+        if (!orderStatusUtil.isValidTransition(orders.getStatus(), request.getOrderStatus())) {
             throw new IllegalArgumentException("Không thể chuyển từ "
                     + orders.getStatus() + " sang " + request.getOrderStatus());
         }
@@ -364,36 +375,8 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    private boolean isValidTransition(OrderStatus current, OrderStatus next) {
-        return switch (current) {
-            case PENDING ->
-                // Chờ thanh toán/xác nhận => xác nhận hoặc hủy
-                    next == OrderStatus.CONFIRMED || next == OrderStatus.CANCELLED || next == OrderStatus.FAILED;
-            case CONFIRMED ->
-                // Đã xác nhận => chuyển sang chuẩn bị hàng, hủy hoặc tạm ngưng
-                    next == OrderStatus.PROCESSING || next == OrderStatus.CANCELLED || next == OrderStatus.ON_HOLD;
-            case PROCESSING ->
-                // Đang chuẩn bị hàng => chuyển sang giao, hủy hoặc tạm ngưng
-                    next == OrderStatus.SHIPPING || next == OrderStatus.CANCELLED || next == OrderStatus.ON_HOLD;
-            case SHIPPING ->
-                // Đang vận chuyển => giao thành công, giao thất bại, trả lại
-                    next == OrderStatus.DELIVERED || next == OrderStatus.FAILED || next == OrderStatus.RETURNED;
-            case DELIVERED ->
-                // Đã giao thành công => có thể phát sinh trả hàng
-                    next == OrderStatus.RETURNED;
-            case RETURNED ->
-                // Đã trả hàng => hoàn tiền
-                    next == OrderStatus.REFUNDED;
-            case FAILED, CANCELLED ->
-                // Thất bại hoặc đã hủy => có thể hoàn tiền
-                    next == OrderStatus.REFUNDED;
-            case ON_HOLD ->
-                // Tạm ngưng => có thể quay lại xử lý hoặc hủy
-                    next == OrderStatus.PROCESSING || next == OrderStatus.CANCELLED;
-            case REFUNDED ->
-                // Đã hoàn tiền => trạng thái cuối cùng
-                    false;
-        };
+    @Override
+    public boolean existsByUserIdAndProductIdAndStatus(Long userId, Long productId) {
+        return orderRepository.existsByUserIdAndProductIdAndStatus(userId, productId, OrderStatus.DELIVERED);
     }
-
 }

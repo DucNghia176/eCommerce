@@ -2,7 +2,7 @@ import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {CategoryService} from "../../../../../core/services/category.service";
 import {ToastService} from "../../../../../core/services/toast.service";
 import {ImagePreview} from "../../../../../core/models/image.model";
-import {CommonModule, Location, NgOptimizedImage} from "@angular/common";
+import {CommonModule, Location} from "@angular/common";
 import {FormsModule, NgForm} from "@angular/forms";
 import {finalize} from "rxjs";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
@@ -16,7 +16,7 @@ import {handleImagesSelected} from "../../../../../shared/utils/file-upload.util
 @Component({
   selector: 'app-category-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, FaIconComponent, LoadingSpinnerComponent, ToastComponent, NgOptimizedImage],
+  imports: [CommonModule, FormsModule, FaIconComponent, LoadingSpinnerComponent, ToastComponent,],
 
   templateUrl: './category-create.component.html',
   styleUrl: './category-create.component.scss'

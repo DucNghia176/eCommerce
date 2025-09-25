@@ -41,10 +41,12 @@
     <div class="lg:col-span-2 space-y-4">
       <section class="bg-white p-4 rounded-xl shadow space-y-4">
         <div class="flex items-start gap-4 border-b border-gray-200 pb-7 mb-2">
-          <ng-container *ngIf="userDetail.avatar; else noAvatar" class="relative w-16 h-16">
-            <img [ngSrc]="userDetail.avatar" alt="avatar"
-                 class=" rounded-full object-cover"
-                 fill/>
+          <ng-container *ngIf="userDetail.avatar; else noAvatar">
+            <div class="relative w-16 h-16">
+              <img [ngSrc]="userDetail.avatar" alt="avatar"
+                   class=" rounded-full object-cover"
+                   fill/>
+            </div>
           </ng-container>
           <ng-template #noAvatar>
             <div

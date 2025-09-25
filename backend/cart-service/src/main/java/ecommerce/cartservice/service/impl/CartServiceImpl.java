@@ -272,13 +272,20 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    //xóa những sản phẩm đã đặt hàng
+    //xóa những sản phẩm đã đặt hàng\
+    @Transactional
     @Override
     public ApiResponse<Void> clearSelectedItemsFromCart(List<Long> ids) {
         try {
-            ids.forEach(item -> {
-                cartItemRepository.deleteById(item);
-            });
+            if (ids == null || ids.isEmpty()) {
+                return ApiResponse.<Void>builder()
+                        .code(400)
+                        .message("Danh sách sản phẩm trống")
+                        .data(null)
+                        .build();
+            }
+
+            cartItemRepository.deleteItemsByIds(ids);
 
             kafkaCart.sendMessage("cart-events", "Xóa các sản phẩm đã chọn trong giỏ hàng thành công");
 
@@ -288,7 +295,6 @@ public class CartServiceImpl implements CartService {
                     .data(null)
                     .build();
         } catch (Exception e) {
-            log.error("Lỗi: {}", e.getMessage(), e);
             kafkaCart.sendMessage("cart-events", "Xóa các sản phẩm đã chọn trong giỏ hàng thất bại");
             return ApiResponse.<Void>builder()
                     .code(500)

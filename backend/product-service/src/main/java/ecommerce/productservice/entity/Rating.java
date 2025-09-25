@@ -7,11 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -27,23 +25,21 @@ public class Rating {
     private Long id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "PRODUCT_ID", nullable = false)
-    private Product product;
+    @Column(name = "PRODUCT_ID", nullable = false)
+    private Long productId;
 
     @Column(name = "USER_ID")
     private Long userId;
 
     @NotNull
     @Column(name = "SCORE")
-    private Long score;
+    private Integer score;
 
     @Size(max = 500)
     @Column(name = "COMMENTS", length = 500)
     private String comments;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @CreationTimestamp
     @Column(name = "CREATED_AT")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 }

@@ -2,15 +2,19 @@ package ecommerce.productservice.controller;
 
 import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.apicommon1.model.response.ProductPriceResponse;
-import ecommerce.productservice.dto.request.ProductRequest;
+import ecommerce.productservice.dto.request.CreateProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
+import ecommerce.productservice.dto.request.SearchRequest;
+import ecommerce.productservice.dto.response.CreateProductResponse;
 import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.dto.response.ProductViewResponse;
+import ecommerce.productservice.dto.response.SearchProductResponse;
 import ecommerce.productservice.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,10 +32,10 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/create")
-    public ApiResponse<ProductResponse> createProduct(@Valid @RequestPart("data") ProductRequest request,
-                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        ProductResponse productResponse = productService.createProduct(request, images);
-        return ApiResponse.<ProductResponse>builder()
+    public ApiResponse<CreateProductResponse> createProduct(@Valid @RequestPart("data") CreateProductRequest request,
+                                                            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+        CreateProductResponse productResponse = productService.createProduct(request, images);
+        return ApiResponse.<CreateProductResponse>builder()
                 .code(200)
                 .message("Tạo product thành công")
                 .data(productResponse)
@@ -90,6 +94,29 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return productService.searchProduct(request, page, size);
+    }
+
+    @GetMapping("search")
+    public ApiResponse<Page<SearchProductResponse>> search(@RequestParam(required = false) String keyword,
+                                                           @RequestParam(required = false) Long category,
+                                                           @RequestParam(required = false) Long brand,
+                                                           @RequestParam(required = false) BigDecimal priceFrom,
+                                                           @RequestParam(required = false) BigDecimal priceTo,
+                                                           @RequestParam(required = false) Double ratingFrom,
+                                                           Pageable pageable) {
+        SearchRequest request = new SearchRequest();
+        request.setKeyword(keyword);
+        request.setCategoryId(category);
+        request.setBrandId(brand);
+        request.setPriceFrom(priceFrom);
+        request.setPriceTo(priceTo);
+        request.setRatingFrom(ratingFrom);
+        Page<SearchProductResponse> responses = productService.search(request, pageable);
+        return ApiResponse.<Page<SearchProductResponse>>builder()
+                .code(200)
+                .message("Tìm kiếm thành công")
+                .data(responses)
+                .build();
     }
 
 

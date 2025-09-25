@@ -1,0 +1,40 @@
+<div class="flex justify-between items-center">
+  <h2 class="font-bold text-xl">Featured Products</h2>
+
+  <div class="flex text-sm items-center gap-3">
+    <button (click)="selectCategory('All Product')"
+            [ngClass]="{
+        'border-b-2 border-orange-500': selectedCategory === 'All Product'
+      }"
+            class="font-semibold pb-1">All Product
+    </button>
+    <div class="flex gap-3">
+      <div (click)="selectCategory(cate.name)"
+           *ngFor="let cate of categories | slice:0:6"
+           [ngClass]="{
+          'border-b-2 border-orange-500': selectedCategory === cate.name
+        }"
+           class="pb-1">
+        <button>{{ cate.name }}</button>
+      </div>
+    </div>
+
+    <div class="flex gap-2 pb-1 text-orange-500">
+      <button>Browse All Product</button>
+      <fa-icon [icon]="faArrowRight"></fa-icon>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-4 gap-4 mt-6">
+  <div *ngFor="let product of displayedProducts|slice:0:8"
+       class="border border-gray-100 p-3">
+    <img [alt]="product.name" [src]="product.imageUrl" class="w-full h-40 object-cover rounded"/>
+    <div class="flex gap-1">
+      <p class="text-yellow-500">⭐ {{ product.rating }}</p>
+      ({{ product.userView }})
+    </div>
+    <h3 class="mt-2 font-semibold">{{ product.name }}</h3>
+    <p class="text-gray-600">{{ product.price | currency:"VND" }}</p>
+  </div>
+</div>

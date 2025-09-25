@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {CategoryRequest, CategoryResponse} from "../models/category.model";
+import {CategoryRequest, CategoryResponse, ChildCategoryResponse} from "../models/category.model";
 import {catchError, map, Observable, throwError} from "rxjs";
 import {ApiResponse} from "../models/common.model";
 import {Page} from "../models/page.model";
@@ -32,6 +32,16 @@ export class CategoryService {
         }),
         catchError(this.handleError)
       );
+  }
+
+  getAllWithFeature(): Observable<ChildCategoryResponse[]> {
+    return this.http.get<ApiResponse<ChildCategoryResponse[]>>(`${this.apiUrl}/all-with-featured`)
+      .pipe(map(response => {
+        if (response.code === 200 && response.data) {
+          return response.data;
+        }
+        throw new Error(response.message);
+      }));
   }
 
   getAllCategory(): Observable<CategoryResponse[]> {

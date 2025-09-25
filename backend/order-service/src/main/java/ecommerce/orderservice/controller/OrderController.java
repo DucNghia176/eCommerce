@@ -1,14 +1,14 @@
 package ecommerce.orderservice.controller;
 
+import ecommerce.apicommon1.model.request.UpdateOrderStatusRequest;
 import ecommerce.apicommon1.model.response.ApiResponse;
+import ecommerce.apicommon1.model.response.UpdateOrderStatusResponse;
 import ecommerce.apicommon1.model.response.UserOrderDetailResponse;
 import ecommerce.orderservice.dto.request.OrderCreateRequest;
 import ecommerce.orderservice.dto.request.OrderRequest;
-import ecommerce.orderservice.dto.request.UpdateOrderStatusRequest;
 import ecommerce.orderservice.dto.response.OrderCreateResponse;
 import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.dto.response.OrdersAD;
-import ecommerce.orderservice.dto.response.UpdateOrderStatusResponse;
 import ecommerce.orderservice.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -73,5 +73,10 @@ public class OrderController {
                 .message("Cập nhật trạng thái đơn hàng thành công")
                 .data(response)
                 .build();
+    }
+
+    @GetMapping("/exists")
+    boolean hasPurchased(@RequestParam Long userId, @RequestParam Long productId) {
+        return orderService.existsByUserIdAndProductIdAndStatus(userId, productId);
     }
 }

@@ -1,13 +1,12 @@
 import {Component, ElementRef, inject, Input, OnInit, ViewChild} from '@angular/core';
 import {ProductService} from "../../../../../core/services/product.service";
-import {ProductRequest} from "../../../../../core/models/product.model";
+import {AttributeRequest, CreateProductRequest} from "../../../../../core/models/product.model";
 import {FormsModule, NgForm} from "@angular/forms";
 import {validateAndFocusFirstError} from "../../../../../shared/utils/validation";
-import {faAdd, faArrowLeft, faCancel, faClose, faEdit, faSave} from "@fortawesome/free-solid-svg-icons";
+import {faAdd, faArrowLeft, faClose, faSave} from "@fortawesome/free-solid-svg-icons";
 import {CommonModule, Location} from "@angular/common";
 import {ActivatedRoute, RouterModule} from "@angular/router";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {ToastComponent} from "../../../../../shared/components/toast/toast.component";
 import {ToastService} from "../../../../../core/services/toast.service";
 import {CategoryRequest, CategoryResponse} from "../../../../../core/models/category.model";
 import {CategoryService} from "../../../../../core/services/category.service";
@@ -21,7 +20,7 @@ import {handleImagesSelected} from "../../../../../shared/utils/file-upload.util
 @Component({
   selector: 'app-create-product',
   standalone: true,
-  imports: [CommonModule, RouterModule, FaIconComponent, FormsModule, ToastComponent, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterModule, FaIconComponent, FormsModule, LoadingSpinnerComponent],
   templateUrl: './create-product.component.html',
   styleUrl: './create-product.component.scss'
 })
@@ -37,6 +36,7 @@ export class CreateProductComponent implements OnInit {
   images: ImagePreview[] = [];
   categoryName: string = '';
   isLoading = false;
+  attributes: AttributeRequest[] = [];
   categories: CategoryResponse[] = [];
   brands: BrandResponse[] = [];
   tags: TagResponse[] = [];
@@ -45,10 +45,8 @@ export class CreateProductComponent implements OnInit {
   @ViewChild('formRef') formRef!: ElementRef;
   showMiniForm = false;
   protected readonly faArrowLeft = faArrowLeft;
-  protected readonly faCancel = faCancel;
   protected readonly faSave = faSave;
   protected readonly faClose = faClose;
-  protected readonly faEdit = faEdit;
   protected readonly faAdd = faAdd;
   private productService = inject(ProductService);
   private toastService = inject(ToastService);
@@ -84,7 +82,7 @@ export class CreateProductComponent implements OnInit {
   addProduct(form: NgForm) {
     if (!validateAndFocusFirstError(form, this.formRef)) return;
 
-    const request: ProductRequest = {
+    const request: CreateProductRequest = {
       name: this.name,
       description: this.description,
       price: this.price,
@@ -92,7 +90,9 @@ export class CreateProductComponent implements OnInit {
       categoryId: this.categoryId,
       tags: this.selectTag,
       unit: this.units,
-      brandId: this.brandId
+      brandId: this.brandId,
+      attributes: this.attributes
+
     }
     const files: File[] = this.images.map(image => image.file!);
 

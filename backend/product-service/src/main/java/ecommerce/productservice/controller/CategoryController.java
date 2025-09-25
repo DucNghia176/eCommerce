@@ -4,7 +4,7 @@ package ecommerce.productservice.controller;
 import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.productservice.dto.request.CategoryRequest;
 import ecommerce.productservice.dto.response.CategoryResponse;
-import ecommerce.productservice.dto.response.ParentCategoryResponse;
+import ecommerce.productservice.dto.response.ChildCategoryResponse;
 import ecommerce.productservice.dto.response.ProductSummaryResponse;
 import ecommerce.productservice.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -63,9 +63,9 @@ public class CategoryController {
     }
 
     @GetMapping("/all-with-featured")
-    public ApiResponse<List<ParentCategoryResponse>> getAllWithFeatured() {
-        List<ParentCategoryResponse> parentCategoryResponses = categoryService.getAllParentCategories();
-        return ApiResponse.<List<ParentCategoryResponse>>builder()
+    public ApiResponse<List<ChildCategoryResponse>> getAllWithFeatured() {
+        List<ChildCategoryResponse> parentCategoryResponses = categoryService.getAllChildCategoriesWithBrandAndProduct();
+        return ApiResponse.<List<ChildCategoryResponse>>builder()
                 .code(200)
                 .message("Success")
                 .data(parentCategoryResponses)

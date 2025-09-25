@@ -60,7 +60,9 @@ public class Orders {
     @Column(name = "NOTE")
     private String note;
 
+    @Column(name = "CART_SIGNATURE")
+    private String cartSignature;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
-
 }

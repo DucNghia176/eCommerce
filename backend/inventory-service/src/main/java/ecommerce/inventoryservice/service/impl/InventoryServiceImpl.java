@@ -10,6 +10,7 @@ import ecommerce.inventoryservice.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -91,21 +92,25 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<InventoryResponse> confirmOrder(InventoryRequest request) {//đătj hàng
         try {
-            Inventory inventory = inventoryRepository.findById(request.getSkuCode())
+            inventoryRepository.findById(request.getSkuCode())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
-            int availableQuantity = inventory.getQuantity() - inventory.getReservedQuantity();
-            inventory.setQuantity(inventory.getQuantity() - request.getQuantity());
-            inventory.setReservedQuantity(inventory.getReservedQuantity() + request.getQuantity());
 
-            inventoryRepository.save(inventory);
+            int updatedRows = inventoryRepository.reserveStock(request.getSkuCode(), request.getQuantity());
+            if (updatedRows == 0) {
+                throw new RuntimeException("Không đủ kho để đặt hàng");
+            }
+
+            Inventory inventory = inventoryRepository.findById(request.getSkuCode()).orElseThrow();
 
             InventoryResponse response = InventoryResponse.builder()
                     .skuCode(inventory.getSkuCode())
                     .quantity(inventory.getQuantity())
                     .reservedQuantity(inventory.getReservedQuantity())
                     .build();
+            
             return ApiResponse.<InventoryResponse>builder()
                     .code(200)
                     .message("Đặt hàng thành công. Kho đã được cập nhật.")

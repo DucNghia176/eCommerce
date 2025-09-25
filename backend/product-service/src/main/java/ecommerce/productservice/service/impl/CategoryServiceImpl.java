@@ -6,6 +6,7 @@ import ecommerce.productservice.dto.request.CategoryRequest;
 import ecommerce.productservice.dto.response.*;
 import ecommerce.productservice.entity.Category;
 import ecommerce.productservice.mapper.CategoryMapper;
+import ecommerce.productservice.repository.BrandRepository;
 import ecommerce.productservice.repository.CategoryRepository;
 import ecommerce.productservice.repository.ProductRepository;
 import ecommerce.productservice.service.CategoryService;
@@ -31,6 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
     private final CloudinaryService cloudinaryService;
     private final ProductRepository productRepository;
+    private final BrandRepository brandRepository;
 
     @Transactional
     @Override
@@ -246,19 +248,23 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ParentCategoryResponse> getAllParentCategories() {
-        List<Category> parents = categoryRepository.findAllParentWithChildren();
+    public List<ChildCategoryResponse> getAllChildCategoriesWithBrandAndProduct() {
+        List<Category> children = categoryRepository.findAllChildren();
 
-        return parents.stream()
-                .map(parent -> {
-                    List<ChildCategoryResponse> childCategory = parent.getChildren().stream()
-                            .map(child -> {
-                                List<FeaturedProductResponse> featuredProduct = productRepository.findTopByCategoryIdAndTagName(child.getId(), "FEATURE", PageRequest.of(0, 3));
-                                return new ChildCategoryResponse(child.getId(), child.getName(), featuredProduct);
-                            })
-                            .toList();
-                    return new ParentCategoryResponse(parent.getId(), parent.getName(), childCategory);
-                })
-                .toList();
+        return children.stream().map(child -> {
+            List<BrandResponse> brands = brandRepository.findAllByCategoryId(child.getId())
+                    .stream()
+                    .map(b -> new BrandResponse(b.getId(), b.getName()))
+                    .toList();
+
+            List<FeaturedProductResponse> featuredProduct = productRepository.findTopByCategoryIdAndTagName(child.getId(), "FEATURE", PageRequest.of(0, 3));
+
+            return ChildCategoryResponse.builder()
+                    .id(child.getId())
+                    .name(child.getName())
+                    .brands(brands)
+                    .products(featuredProduct)
+                    .build();
+        }).toList();
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
@@ -19,7 +18,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT p.orderId FROM Payment p WHERE p.orderCode = :orderCode")
     String findOrderIdByOrderCode(@Param("orderId") Long orderCode);
 
-    Optional<Payment> findByOrderId(Long orderId);
+//    Optional<Payment> findByOrderId(Long orderId);
 
     List<OrderIdPaymentStatus> findByOrderIdIn(List<Long> orderId);
 
@@ -31,5 +30,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             """)
     List<TotalAmountByUserId> totalAmountByUserIds(@Param("userIds") List<Long> userIds);
 
-    Payment findByOrderId1(Long orderId);
+    Payment findByOrderId(Long orderId);
 }

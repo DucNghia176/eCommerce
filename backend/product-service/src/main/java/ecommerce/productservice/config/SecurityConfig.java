@@ -19,7 +19,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     private static final String[] API_PUBLIC = {
-            "/api/product/search/",
+            "/api/product/search/**",
             "/api/brand/**",
             "/api/tag/**",
             "/api/category/**",

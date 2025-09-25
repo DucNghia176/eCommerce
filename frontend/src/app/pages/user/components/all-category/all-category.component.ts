@@ -1,14 +1,8 @@
 import {Component, ElementRef, HostListener, Input} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
+import {CurrencyPipe, NgClass, NgForOf, NgIf, NgStyle, SlicePipe} from "@angular/common";
 import {faChevronDown, faChevronRight} from "@fortawesome/free-solid-svg-icons";
-
-export interface Category {
-  id: number;
-  name: string;
-  children?: Category[];
-}
-
+import {ChildCategoryResponse} from "../../../../core/models/category.model";
 
 @Component({
   selector: 'app-all-category',
@@ -18,14 +12,16 @@ export interface Category {
     NgForOf,
     NgIf,
     NgClass,
-    NgStyle
+    NgStyle,
+    SlicePipe,
+    CurrencyPipe,
   ],
   templateUrl: './all-category.component.html',
   styleUrl: './all-category.component.scss'
 })
 export class AllCategoryComponent {
 
-  @Input() categories: Category[] = [];
+  @Input() categories?: ChildCategoryResponse[];
   showCategory = false;
   allCategoryOpen = false;
   allCategorySelected = false;
@@ -57,12 +53,12 @@ export class AllCategoryComponent {
     this.allCategorySelected = false;
   }
 
-
   isCategoryActive(): boolean {
     return this.allCategoryOpen;
   }
 
   onMouseEnterCategory(catId: number) {
+    this.activeCategoryId = catId;
     this.hoveredCategoryId = catId;
   }
 
@@ -70,6 +66,7 @@ export class AllCategoryComponent {
     if (this.hoveredCategoryId === catId) {
       this.hoveredCategoryId = null;
     }
+    this.activeCategoryId = null;
   }
 
   showChevronRight(catId: number): boolean {

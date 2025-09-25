@@ -1,6 +1,7 @@
 package ecommerce.orderservice.repository;
 
 import ecommerce.apicommon1.model.response.UserOrderDetailResponse;
+import ecommerce.apicommon1.model.status.OrderStatus;
 import ecommerce.orderservice.dto.response.OrderQuantityResponse;
 import ecommerce.orderservice.dto.response.OrdersAD;
 import ecommerce.orderservice.entity.Orders;
@@ -12,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Orders, Long> {
@@ -34,4 +36,16 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
                         WHERE o.userId = :userId
             """)
     List<UserOrderDetailResponse> findOrdersDetailByUserId(@Param("userId") Long userId);
+
+
+    @Query("SELECT CASE WHEN COUNT(od) > 0 THEN true ELSE false END " +
+            "FROM Orders o JOIN o.orderDetails od " +
+            "WHERE o.userId = :userId " +
+            "AND od.productId = :productId " +
+            "AND o.status = :status")
+    boolean existsByUserIdAndProductIdAndStatus(@Param("userId") Long userId,
+                                                @Param("productId") Long productId,
+                                                @Param("status") OrderStatus status);
+
+    Optional<Orders> findByUserIdAndCartSignature(Long userId, String cartSignature);
 }

@@ -52,11 +52,20 @@ public class Product {
     @Column(name = "BRAND_ID")
     private Long brandId;
 
+    @Column(name = "CATEGORY_BRAND_ID")
+    private Long categoryBrandId;
+
     @Column(name = "UNIT")
     private String unit;
 
     @Column(name = "IS_ACTIVE")
     private Integer isActive;
+
+    @Column(name = "AVERAGE_RATING")
+    private Double averageRating;
+
+    @Column(name = "TOTAL_REVIEWS")
+    private Long totalReviews;
 
     @CreationTimestamp
     @Column(name = "CREATED_AT", updatable = false)
@@ -77,8 +86,5 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<ProductAttribute> productAttributes = new HashSet<>();
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Rating> ratings = new HashSet<>();
 }
 

@@ -21,7 +21,7 @@ public class CloudinaryService {
             ));
             String publicId = uploadResult.get("public_id").toString();
             String format = uploadResult.get("format").toString();
-            return publicId + "." + format;
+            return uploadResult.get("secure_url").toString();
         } catch (IOException e) {
             throw new RuntimeException("Không thể upload ảnh lên Cloudinary", e);
         }

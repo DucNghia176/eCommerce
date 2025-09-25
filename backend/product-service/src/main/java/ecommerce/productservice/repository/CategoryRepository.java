@@ -12,12 +12,6 @@ import java.util.Set;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Category findByName(String name);
-
-    Category getAllBy();
-
-    List<Category> findAllByIsActive(Integer isActive);
-
     @Query("SELECT new ecommerce.productservice.dto.response.CategoryResponse(" +
             "c.id, c.name, c.parent.id, c.isActive,c.image, COUNT(p.id),c.isVisible) " +
             "FROM Category c" +
@@ -30,10 +24,15 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findByParentId(Long parentId);
 
-    List<Category> findByParentIsNull();
-
     @Query("""
                 SELECT DISTINCT c FROM Category c LEFT JOIN fetch c.children ch WHERE c.parent IS NULL AND c.isActive =1
             """)
     List<Category> findAllParentWithChildren();
+
+    @Query("""
+                SELECT c
+                FROM Category c
+                WHERE c.parent IS NOT NULL AND c.isActive = 1
+            """)
+    List<Category> findAllChildren();
 }

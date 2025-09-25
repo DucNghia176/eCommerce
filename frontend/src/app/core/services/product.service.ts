@@ -1,7 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {catchError, map, Observable, throwError} from "rxjs";
-import {ProductRequest, ProductResponse, ProductSearchRequest} from "../models/product.model";
+import {
+  CreateProductRequest,
+  CreateProductResponse,
+  ProductRequest,
+  ProductResponse,
+  ProductSearchRequest
+} from "../models/product.model";
 import {ApiResponse} from "../models/common.model";
 import {Page} from "../models/page.model";
 
@@ -15,13 +21,13 @@ export class ProductService {
   constructor(private http: HttpClient) {
   }
 
-  createProduct(request: ProductRequest, images ?: File[]): Observable<ProductResponse> {
+  createProduct(request: CreateProductRequest, images ?: File[]): Observable<CreateProductResponse> {
     const formData = new FormData();
     formData.append('data', new Blob([JSON.stringify(request)], {type: 'application/json'}));
     if (images) {
       images.forEach(image => formData.append('images', image));
     }
-    return this.http.post<ApiResponse<ProductResponse>>(`${this.apiUrl}/create`, formData)
+    return this.http.post<ApiResponse<CreateProductResponse>>(`${this.apiUrl}/create`, formData)
       .pipe(
         map(response => {
           if (response.code === 200 && response.data) {
