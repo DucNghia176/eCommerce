@@ -5,87 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/util/GenerateKey.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/util/OrderStatusUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/client/OrderClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/AttributeRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/CreateRatingRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/SearchRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/CreateProductResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/RatingResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/SearchProductResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/entity/Category_Brand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/AttributeRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/AttributeValueRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/RatingRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/RatingService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/RatingServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/spec/ProductSpecification.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b7705d5b-ca0c-4041-8bbe-91bdfde3f433.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b7705d5b-ca0c-4041-8bbe-91bdfde3f433.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/filter/JwtGlobalFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/filter/JwtGlobalFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api-common1/src/main/java/ecommerce/apicommon1/model/status/OrderStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api-common1/src/main/java/ecommerce/apicommon1/model/status/OrderStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/repository/CartItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/repository/CartItemRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/service/impl/CartServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service/src/main/java/ecommerce/cartservice/service/impl/CartServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/repository/InventoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/repository/InventoryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/inventory-service/src/main/java/ecommerce/inventoryservice/service/impl/InventoryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/controller/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/dto/request/UpdateOrderStatusRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/dto/response/UpdateOrderStatusResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/entity/Orders.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/entity/Orders.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/mapper/OrderDetailMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/mapper/OrderDetailMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/repository/OrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/repository/OrderRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/service/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/order-service/src/main/java/ecommerce/orderservice/service/impl/OrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/payment-service/src/main/java/ecommerce/paymentservice/controller/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/payment-service/src/main/java/ecommerce/paymentservice/controller/PaymentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/payment-service/src/main/java/ecommerce/paymentservice/repostitory/PaymentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/payment-service/src/main/java/ecommerce/paymentservice/repostitory/PaymentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/payment-service/src/main/java/ecommerce/paymentservice/service/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/payment-service/src/main/java/ecommerce/paymentservice/service/PaymentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/payment-service/src/main/java/ecommerce/paymentservice/service/impl/PaymentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/payment-service/src/main/java/ecommerce/paymentservice/service/impl/PaymentServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/payment-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/payment-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/ProductRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/CreateProductRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ChildCategoryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ChildCategoryResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ParentCategoryResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/entity/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/entity/Rating.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/entity/Rating.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/mapper/ProductMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/BrandRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/BrandRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/CategoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/CategoryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/CategoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/CloudinaryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/CloudinaryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/CategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/CategoryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/ProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/CloudinaryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/service/CloudinaryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/models/category.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/models/category.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/models/product.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/models/product.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/category.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/category.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/product.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/product.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/category/category-create/category-create.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/category/category-create/category-create.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/category/category-detail/category-detail.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/category/category-detail/category-detail.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/category/category-detail/category-detail.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/category/category-detail/category-detail.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/dashboard/top-product/top-product.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/dashboard/top-product/top-product.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/layout/navbar/navbar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/layout/navbar/navbar.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/product/create-product/create-product.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/product/create-product/create-product.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/user/user-info/user-order-detail.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/components/user/user-info/user-order-detail.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/pages/category/category.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/pages/category/category.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/pages/products/products.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/pages/products/products.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/admin/pages/user/user.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/admin/pages/user/user.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/all-category/all-category.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/all-category/all-category.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/all-category/all-category.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/all-category/all-category.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/footer/footer.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/footer/footer.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/footer/footer.component.spec.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/footer/footer.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/footer/footer.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/header/header.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/header/header.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/header/header.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/header/header.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/pages/home/home.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/pages/home/home.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/pages/home/home.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/pages/home/home.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -560,15 +480,7 @@
       <workItem from="1758609564106" duration="13447000" />
       <workItem from="1758637893849" duration="606000" />
       <workItem from="1758696215327" duration="15388000" />
-      <workItem from="1758719410320" duration="9616000" />
-    </task>
-    <task id="LOCAL-00027" summary="update">
-      <option name="closed" value="true" />
-      <created>1753521628341</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1753521628341</updated>
+      <workItem from="1758719410320" duration="9936000" />
     </task>
     <task id="LOCAL-00028" summary="update">
       <option name="closed" value="true" />
@@ -954,7 +866,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758477237447</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="update">
+      <option name="closed" value="true" />
+      <created>1758790026246</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1758790026246</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
