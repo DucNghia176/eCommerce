@@ -6,7 +6,6 @@ import ecommerce.productservice.dto.request.CreateProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.request.SearchRequest;
-import ecommerce.productservice.dto.response.CreateProductResponse;
 import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.dto.response.ProductViewResponse;
 import ecommerce.productservice.dto.response.SearchProductResponse;
@@ -21,7 +20,7 @@ import java.util.Map;
 
 @Service
 public interface ProductService {
-    CreateProductResponse createProduct(CreateProductRequest request, List<MultipartFile> imageUrls);
+    ProductResponse createProduct(CreateProductRequest request, List<MultipartFile> imageUrls);
 
 //    public ApiResponse<ProductResponse> updateProduct(Long id, ProductRequest request);
 

@@ -6,9 +6,14 @@ import {routes} from "./app/app.routes";
 import {provideRouter} from "@angular/router";
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {provideToastr} from "ngx-toastr";
+import {en_US, provideNzI18n} from 'ng-zorro-antd/i18n';
+import {registerLocaleData} from '@angular/common';
+import en from '@angular/common/locales/en';
+import {FormsModule} from '@angular/forms';
+import {importProvidersFrom} from '@angular/core';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 
-// bootstrapApplication(AppComponent, appConfig)
-//   .catch((err) => console.error(err));
+registerLocaleData(en);
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -20,6 +25,6 @@ bootstrapApplication(AppComponent, {
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
       progressBar: true,
-    })
+    }), provideNzI18n(en_US), importProvidersFrom(FormsModule), provideAnimationsAsync(), provideHttpClient()
   ]
 }).catch(err => console.error(err));

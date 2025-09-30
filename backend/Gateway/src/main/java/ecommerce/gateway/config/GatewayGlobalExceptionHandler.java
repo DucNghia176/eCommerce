@@ -68,5 +68,4 @@ public class GatewayGlobalExceptionHandler implements WebExceptionHandler {
         }
         return "Lỗi tại Gateway: " + msg;
     }
-
 }

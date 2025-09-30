@@ -7,56 +7,56 @@ spring:
   main:
     web-application-type: reactive
 
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-            - id: USER-SERVICE
-              uri: lb://USER-SERVICE
-              predicates:
-                - Path=/api/users/**
-                - Path=/api/auth/**
-              filters:
-                - StripPrefix=1
-
-            - id: oauth2-route
-              uri: http://localhost:8080
-              predicates:
-                - Path=/oauth2/**
-                - Path=/login/oauth2/**
-
-            - id: PRODUCT-SERVICE
-              uri: lb://PRODUCT-SERVICE
-              predicates:
-                - Path=/api/product/**
-                - Path=/api/category/**
-            - id: INVENTORY-SERVICE
-              uri: lb://INVENTORY-SERVICE
-              predicates:
-                - Path=/api/inventory/**
-            - id: CART-SERVICE
-              uri: lb://CART-SERVICE
-              predicates:
-                - Path=/api/cart/**
-            - id: ORDERS-SERVICE
-              uri: lb://ORDERS-SERVICE
-              predicates:
-                - Path=/api/orders/**
-            - id: PAYMENT-SERVICE
-              uri: lb://PAYMENT-SERVICE
-              predicates:
-                - Path=/api/payment/**
-                - Path=/momo/**
-            - id: NOTIFICATION-SERVICE
-              uri: lb://NOTIFICATION-SERVICE
-              predicates:
-                - Path=/api/notification/**
-
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
+#  cloud:
+#    gateway:
+#      server:
+#        webflux:
+#          routes:
+#            - id: USER-SERVICE
+#              uri: lb://USER-SERVICE
+#              predicates:
+#                - Path=/api/users/**
+#                - Path=/api/auth/**
+#              filters:
+#                - StripPrefix=1
+#
+#            - id: oauth2-route
+#              uri: http://localhost:8080
+#              predicates:
+#                - Path=/oauth2/**
+#                - Path=/login/oauth2/**
+#
+#            - id: PRODUCT-SERVICE
+#              uri: lb://PRODUCT-SERVICE
+#              predicates:
+#                - Path=/api/product/**
+#                - Path=/api/category/**
+#            - id: INVENTORY-SERVICE
+#              uri: lb://INVENTORY-SERVICE
+#              predicates:
+#                - Path=/api/inventory/**
+#            - id: CART-SERVICE
+#              uri: lb://CART-SERVICE
+#              predicates:
+#                - Path=/api/cart/**
+#            - id: ORDERS-SERVICE
+#              uri: lb://ORDERS-SERVICE
+#              predicates:
+#                - Path=/api/orders/**
+#            - id: PAYMENT-SERVICE
+#              uri: lb://PAYMENT-SERVICE
+#              predicates:
+#                - Path=/api/payment/**
+#                - Path=/momo/**
+#            - id: NOTIFICATION-SERVICE
+#              uri: lb://NOTIFICATION-SERVICE
+#              predicates:
+#                - Path=/api/notification/**
+#
+#          discovery:
+#            locator:
+#              enabled: true
+#              lower-case-service-id: true
 
 eureka:
   client:

@@ -32,6 +32,7 @@ public class ProductResponse {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     String skuCode;
+    List<ProductAttributeResponse> attributes;
 
     public ProductResponse(Long id, String name, BigDecimal price, String categoryName, String description, BrandResponse brand, String thumbnailUrl, String skuCode) {
         this.id = id;

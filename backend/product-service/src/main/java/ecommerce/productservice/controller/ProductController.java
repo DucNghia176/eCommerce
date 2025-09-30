@@ -6,7 +6,6 @@ import ecommerce.productservice.dto.request.CreateProductRequest;
 import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.request.SearchRequest;
-import ecommerce.productservice.dto.response.CreateProductResponse;
 import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.dto.response.ProductViewResponse;
 import ecommerce.productservice.dto.response.SearchProductResponse;
@@ -32,10 +31,10 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/create")
-    public ApiResponse<CreateProductResponse> createProduct(@Valid @RequestPart("data") CreateProductRequest request,
-                                                            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        CreateProductResponse productResponse = productService.createProduct(request, images);
-        return ApiResponse.<CreateProductResponse>builder()
+    public ApiResponse<ProductResponse> createProduct(@Valid @RequestPart("data") CreateProductRequest request,
+                                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+        ProductResponse productResponse = productService.createProduct(request, images);
+        return ApiResponse.<ProductResponse>builder()
                 .code(200)
                 .message("Tạo product thành công")
                 .data(productResponse)
@@ -120,7 +119,6 @@ public class ProductController {
     }
 
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}/skuCode")
     public String getSkuCode(@PathVariable Long id) {
         return productService.getSkuCodeByProductId(id);
