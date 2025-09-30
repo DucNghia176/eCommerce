@@ -18,6 +18,7 @@ dataSources.local.xml
 *.sublime-workspace
 
 # VSCode
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
