@@ -1,5 +1,0 @@
-{
-  "code": 500,
-  "message": "Lỗi hệ thống: Required request body is missing: public ecommerce.aipcommon.model.response.ApiResponse<ecommerce.userservice.dto.respone.UserCreateResponse> ecommerce.userservice.controller.AuthController.createUser(ecommerce.userservice.dto.request.UserCreateRequest)",
-  "data": null
-}
