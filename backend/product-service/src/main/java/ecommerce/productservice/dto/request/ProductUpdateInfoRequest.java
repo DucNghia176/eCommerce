@@ -21,4 +21,5 @@ public class ProductUpdateInfoRequest {
     private Long brandId;
     private List<Long> tags;
     private String unit;
+    private List<AttributeRequest> attributes;
 }

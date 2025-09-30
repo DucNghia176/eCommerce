@@ -19,8 +19,13 @@ public interface UserAccMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "lastLogin", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "googleId", ignore = true)
+    @Mapping(target = "facebookId", ignore = true)
     UserAcc toEntity(UserCreateRequest userCreateRequest);
 
+
+    @Mapping(target = "role", expression = "java(convertRolesToString(userAcc))")
     UserCreateResponse toResponse(UserAcc userAcc);
 
     @Mapping(source = "userInfo.fullName", target = "fullName")

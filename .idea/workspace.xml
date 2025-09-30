@@ -5,7 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update">
+      <change afterPath="$PROJECT_DIR$/backend/cart-service-nodeJS/cart-service-nodeJS.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/cart-service-nodeJS/config/db.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/cart-service-nodeJS/config/eureka-client.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/config/GatewayGlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/config/GatewayGlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/filter/JwtGlobalFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/filter/JwtGlobalFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/router/GateWayRouter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/router/GateWayRouter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/payment-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/payment-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/CreateProductRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/CreateProductRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/ProductUpdateInfoRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/ProductUpdateInfoRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/CreateProductResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ProductAttributeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ProductAttributeResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ProductResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ProductResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/mapper/ProductMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductAttributeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductAttributeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/mapper/UserAccMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/mapper/UserAccMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/featured-products/featured-products.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/featured-products/featured-products.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/featured-products/featured-products.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/featured-products/featured-products.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,12 +54,12 @@
         <option value="Spring Service" />
         <option value="SCSS File" />
         <option value="HTML File" />
-        <option value="JavaScript File" />
         <option value="Spring Repository" />
         <option value="HTTP Public Environment File" />
         <option value="TypeScript File" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -108,6 +138,7 @@
     &quot;Maven.api-common1 [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.api-common1 [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.api-common1 [org.apache.maven.plugins:maven-clean-plugin:3.4.1:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend [clean,install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.backend [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.backend [compile].executor&quot;: &quot;Run&quot;,
     &quot;Maven.backend [install].executor&quot;: &quot;Run&quot;,
@@ -137,6 +168,7 @@
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;Node.js.app.js.executor&quot;: &quot;Run&quot;,
     &quot;Node.js.bin\\www.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js.www.executor&quot;: &quot;Run&quot;,
     &quot;Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;Database connection parameters found&quot;,
     &quot;Notification.DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
@@ -162,7 +194,7 @@
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.19.4&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.19.13&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.19.17&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/eCommerce1/backend/api-common1/src/main/java/com/example/apicommon1&quot;,
@@ -183,7 +215,7 @@
     &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;profiler.jvm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.qodana&quot;,
     &quot;settings.editor.splitter.proportion&quot;: &quot;0.27522936&quot;,
     &quot;ts.external.directory.path&quot;: &quot;D:\\eCommerce1\\frontend\\node_modules\\typescript\\lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -206,18 +238,18 @@
       <recent name="D:\eCommerce1\frontend\src\app\admin" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\eCommerce1\backend\cart-service-nodeJS\config" />
       <recent name="D:\eCommerce1\frontend\src\app\pages\user\components" />
       <recent name="D:\eCommerce1\frontend\src\app\pages" />
       <recent name="D:\eCommerce1\backend-nodeJS\user_nodeJS\dto" />
       <recent name="D:\eCommerce1\backend-nodeJS\user_nodeJS" />
-      <recent name="D:\eCommerce1\frontend\src\app\admin\components\dashboard" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="ecommerce.productservice.dto.response" />
       <recent name="ecommerce.apicommon1.model.response" />
       <recent name="ecommerce.apicommon1.model.request" />
       <recent name="ecommerce.orderservice.dto.response" />
       <recent name="ecommerce.cartservice.filter" />
-      <recent name="ecommerce.gateway.dto" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -251,7 +283,7 @@
               <entry key="GatewayApplication" value="STOPPED" />
               <entry key="InventoryServiceApplication" value="STOPPED" />
               <entry key="NotificationServiceApplication" value="STOPPED" />
-              <entry key="OrderServiceApplication" value="STOPPED" />
+              <entry key="OrderServiceApplication" value="FAILED" />
               <entry key="PaymentServiceApplication" value="STOPPED" />
               <entry key="ProductServiceApplication" value="STOPPED" />
               <entry key="UserServiceApplication" value="STOPPED" />
@@ -268,8 +300,42 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="npm.Angular CLI Server (frontend)">
+  <component name="RunManager" selected="Maven.backend [clean,install]">
     <configuration name="Angular Application (frontend)" type="JavascriptDebugType" uri="http://localhost:4200">
+      <method v="2" />
+    </configuration>
+    <configuration name="backend [clean,install]" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="install" />
+              </list>
+            </option>
+            <option name="multimoduleDir" />
+            <option name="pomFileName" value="pom.xml" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/backend" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="www" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/backend/cart-service-nodeJS/bin/www" working-dir="$PROJECT_DIR$/backend/cart-service-nodeJS/bin">
       <method v="2" />
     </configuration>
     <configuration name="ApiCommon1Application (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
@@ -308,20 +374,28 @@
     </configuration>
     <list>
       <item itemvalue="JavaScript Debug.Angular Application (frontend)" />
+      <item itemvalue="Maven.backend [clean,install]" />
+      <item itemvalue="Node.js.www" />
       <item itemvalue="npm.Angular CLI Server (frontend)" />
       <item itemvalue="npm.test" />
+      <item itemvalue="Spring Boot.ProductServiceApplication" />
       <item itemvalue="Spring Boot.ApiCommon1Application (1)" />
       <item itemvalue="Spring Boot.EurekaApplication" />
       <item itemvalue="Spring Boot.ConfigServiceApplication" />
       <item itemvalue="Spring Boot.GatewayApplication" />
       <item itemvalue="Spring Boot.UserServiceApplication" />
-      <item itemvalue="Spring Boot.ProductServiceApplication" />
       <item itemvalue="Spring Boot.InventoryServiceApplication" />
       <item itemvalue="Spring Boot.CartServiceApplication" />
       <item itemvalue="Spring Boot.OrderServiceApplication" />
       <item itemvalue="Spring Boot.PaymentServiceApplication" />
       <item itemvalue="Spring Boot.NotificationServiceApplication" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Maven.backend [clean,install]" />
+        <item itemvalue="Node.js.www" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -480,15 +554,14 @@
       <workItem from="1758609564106" duration="13447000" />
       <workItem from="1758637893849" duration="606000" />
       <workItem from="1758696215327" duration="15388000" />
-      <workItem from="1758719410320" duration="9936000" />
-    </task>
-    <task id="LOCAL-00028" summary="update">
-      <option name="closed" value="true" />
-      <created>1753521725403</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1753521725403</updated>
+      <workItem from="1758719410320" duration="27293000" />
+      <workItem from="1758868844970" duration="630000" />
+      <workItem from="1758875814962" duration="854000" />
+      <workItem from="1758879386859" duration="67000" />
+      <workItem from="1758901375060" duration="2802000" />
+      <workItem from="1759028391094" duration="3122000" />
+      <workItem from="1759109489859" duration="16331000" />
+      <workItem from="1759208884338" duration="706000" />
     </task>
     <task id="LOCAL-00029" summary="update">
       <option name="closed" value="true" />
@@ -874,7 +947,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758790026246</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="update">
+      <option name="closed" value="true" />
+      <created>1758790349948</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1758790349948</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

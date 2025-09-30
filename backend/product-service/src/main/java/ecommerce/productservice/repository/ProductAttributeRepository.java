@@ -22,4 +22,5 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
             """)
     List<ProductAttributeProjection> findAttributesByProductId(@Param("productId") Long productId);
 
+    void deleteByProductId(Long productId);
 }

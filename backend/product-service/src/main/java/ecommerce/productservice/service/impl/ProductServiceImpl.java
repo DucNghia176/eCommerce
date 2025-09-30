@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public CreateProductResponse createProduct(CreateProductRequest request, List<MultipartFile> imageUrls) {
+    public ProductResponse createProduct(CreateProductRequest request, List<MultipartFile> imageUrls) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + request.getCategoryId()));
 
@@ -113,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
 
         productImageRepository.saveAll(imagesToSave);
 
-        CreateProductResponse response = productMapper.toCreate(saved);
+        ProductResponse response = productMapper.toResponse(saved);
         response.setTags(saved.getTags().stream()
                 .map(tag -> new TagResponse(tag.getId(), tag.getName()))
                 .toList());
@@ -167,6 +167,36 @@ public class ProductServiceImpl implements ProductService {
         List<Tag> tags = tagRepository.findAllById(request.getTags());
         product.getTags().clear(); // Xóa tag cũ
         product.getTags().addAll(tags);
+
+        productAttributeRepository.deleteByProductId(product.getId());
+        Set<ProductAttribute> productAttributes = new HashSet<>();
+        for (AttributeRequest attrReq : request.getAttributes()) {
+            // Tìm hoặc tạo Attribute
+            Attribute attribute = attributeRepository.findByNameIgnoreCase(attrReq.getAttributeName().trim())
+                    .orElseGet(() -> {
+                        Attribute newAttr = new Attribute();
+                        newAttr.setName(attrReq.getAttributeName().toLowerCase().trim());
+                        return attributeRepository.save(newAttr);
+                    });
+
+            // Tìm hoặc tạo AttributeValue
+            AttributeValue value = attributeValueRepository.findByValueIgnoreCase(attrReq.getAttributeValueName().trim())
+                    .orElseGet(() -> {
+                        AttributeValue newValue = new AttributeValue();
+                        newValue.setValue(attrReq.getAttributeValueName().toLowerCase().trim());
+                        return attributeValueRepository.save(newValue);
+                    });
+
+            // Tạo mới ProductAttribute
+            ProductAttribute pa = ProductAttribute.builder()
+                    .attribute(attribute)
+                    .value(value)
+                    .product(product)
+                    .build();
+            productAttributes.add(pa);
+        }
+
+        product.setProductAttributes(productAttributes);
 
         //  Nếu có ảnh mới -> Xóa ảnh cũ và upload ảnh mới
         if (imageUrls != null && !imageUrls.isEmpty()) {

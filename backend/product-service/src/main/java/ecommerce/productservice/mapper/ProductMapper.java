@@ -1,7 +1,6 @@
 package ecommerce.productservice.mapper;
 
 import ecommerce.productservice.dto.request.CreateProductRequest;
-import ecommerce.productservice.dto.response.CreateProductResponse;
 import ecommerce.productservice.dto.response.ProductAttributeResponse;
 import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.dto.response.TagResponse;
@@ -29,12 +28,13 @@ public interface ProductMapper {
 
     @Mapping(source = "category.id", target = "categoryId")
     @Mapping(source = "category.name", target = "categoryName")
-    @Mapping(target = "tags", ignore = true)
+    @Mapping(source = "tags", target = "tags", qualifiedByName = "mapTags")
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "thumbnailUrl", ignore = true)
     @Mapping(source = "skuCode", target = "skuCode")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "discount", target = "discountPrice")
+    @Mapping(source = "productAttributes", target = "attributes", qualifiedByName = "mapAttributes")
     ProductResponse toResponse(Product product);
 
     default Set<Tag> mapTags(List<Long> tagIds) {
@@ -48,31 +48,30 @@ public interface ProductMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Mapping(source = "category.id", target = "categoryId")
-    @Mapping(source = "category.name", target = "categoryName")
-    @Mapping(target = "discountPrice", source = "discount")
-    @Mapping(source = "tags", target = "tags", qualifiedByName = "mapTags")
-    @Mapping(source = "productAttributes", target = "attributes", qualifiedByName = "mapAttributes")
-    CreateProductResponse toCreate(Product product);
-
     @Named("mapTags")
     default List<TagResponse> mapTags(Set<Tag> tags) {
-        return tags == null ? List.of() :
-                tags.stream()
-                        .map(tag -> new TagResponse(tag.getId(), tag.getName()))
-                        .collect(Collectors.toList());
+        if (tags == null) return List.of();
+        return tags.stream()
+                .map(tag -> TagResponse.builder()
+                        .id(tag.getId())
+                        .name(tag.getName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Named("mapAttributes")
     default List<ProductAttributeResponse> mapAttributes(Set<ProductAttribute> productAttributes) {
-        return productAttributes == null ? List.of() :
-                productAttributes.stream()
-                        .collect(Collectors.groupingBy(
-                                pa -> pa.getAttribute().getName(),
-                                Collectors.mapping(pa -> pa.getValue().getValue(), Collectors.toList())
-                        ))
-                        .entrySet().stream()
-                        .map(entry -> new ProductAttributeResponse(entry.getKey(), entry.getValue()))
-                        .collect(Collectors.toList());
+        if (productAttributes == null) return List.of();
+        return productAttributes.stream()
+                .collect(Collectors.groupingBy(
+                        pa -> pa.getAttribute().getName(),
+                        Collectors.mapping(pa -> pa.getValue().getValue(), Collectors.toList())
+                ))
+                .entrySet().stream()
+                .map(entry -> ProductAttributeResponse.builder()
+                        .attribute(entry.getKey())
+                        .values(entry.getValue())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
