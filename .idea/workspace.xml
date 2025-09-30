@@ -5,37 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/backend/cart-service-nodeJS/cart-service-nodeJS.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/cart-service-nodeJS/config/db.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/cart-service-nodeJS/config/eureka-client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/config/GatewayGlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/config/GatewayGlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/filter/JwtGlobalFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/filter/JwtGlobalFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/router/GateWayRouter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/java/ecommerce/gateway/router/GateWayRouter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/payment-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/payment-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/controller/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/CreateProductRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/CreateProductRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/ProductUpdateInfoRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/request/ProductUpdateInfoRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/CreateProductResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ProductAttributeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ProductAttributeResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ProductResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/dto/response/ProductResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/mapper/ProductMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductAttributeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/repository/ProductAttributeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/product-service/src/main/java/ecommerce/productservice/service/impl/ProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/mapper/UserAccMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/ecommerce/userservice/mapper/UserAccMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/featured-products/featured-products.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/featured-products/featured-products.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/pages/user/components/featured-products/featured-products.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/pages/user/components/featured-products/featured-products.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -561,31 +533,7 @@
       <workItem from="1758901375060" duration="2802000" />
       <workItem from="1759028391094" duration="3122000" />
       <workItem from="1759109489859" duration="16331000" />
-      <workItem from="1759208884338" duration="706000" />
-    </task>
-    <task id="LOCAL-00029" summary="update">
-      <option name="closed" value="true" />
-      <created>1753620278318</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1753620278318</updated>
-    </task>
-    <task id="LOCAL-00030" summary="frontend">
-      <option name="closed" value="true" />
-      <created>1753624343988</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1753624343988</updated>
-    </task>
-    <task id="LOCAL-00031" summary="cập nhật đặt hàng">
-      <option name="closed" value="true" />
-      <created>1753713608638</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1753713608638</updated>
+      <workItem from="1759208884338" duration="1242000" />
     </task>
     <task id="LOCAL-00032" summary="cập nhật đặt hàng">
       <option name="closed" value="true" />
@@ -955,7 +903,31 @@
       <option name="project" value="LOCAL" />
       <updated>1758790349948</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="update">
+      <option name="closed" value="true" />
+      <created>1759209633631</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1759209633631</updated>
+    </task>
+    <task id="LOCAL-00079" summary="update">
+      <option name="closed" value="true" />
+      <created>1759209755843</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1759209755843</updated>
+    </task>
+    <task id="LOCAL-00080" summary="update">
+      <option name="closed" value="true" />
+      <created>1759209858058</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1759209858058</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
