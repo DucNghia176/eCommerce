@@ -1,0 +1,91 @@
+<div class="flex gap-6 w-full">
+  <!--  ảnh-->
+  <div class="flex flex-col items-center gap-4 w-full">
+    <!-- Ảnh lớn -->
+    <div class="w-80 h-60">
+      <img [src]="selectedImage" alt="Selected" class="w-full h-full object-contain rounded"/>
+    </div>
+    <!-- Thumbnails -->
+    <div class="relative w-full">
+      <!-- Nút trái -->
+      <button
+        (click)="scrollLeft()"
+        class="absolute left-0 top-1/2 -translate-y-1/2 bg-orange-500 shadow rounded-full p-2 z-10 w-8 h-8 flex items-center justify-center"
+      >
+        <fa-icon [icon]="faArrowLeft" class="text-white"></fa-icon>
+      </button>
+
+      <div #scrollContainer class="flex gap-4 px-2">
+        <div
+          (click)="selectImage(i)"
+          *ngFor="let img of product.imageUrl; let i = index"
+          [ngClass]="{
+    'border-orange-500': selectedImage === img,
+    'border-gray-300': selectedImage !== img
+  }"
+          class="flex-shrink-0 w-20 h-20 p-1 border cursor-pointer"
+        >
+          <img [src]="img" class="w-full h-full object-contain"/>
+        </div>
+      </div>
+      <!-- Nút phải -->
+      <button
+        (click)="scrollRight()"
+        class="absolute right-0 top-1/2 -translate-y-1/2 bg-orange-500 shadow rounded-full p-2 z-10 w-8 h-8 flex items-center justify-center"
+      >
+        <fa-icon [icon]="faArrowRight" class="text-white"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <!--  //info-->
+  <div class="flex flex-col gap-2 w-full">
+    <div class="border-b border-gray-100 pb-3 gap-2">
+      <div class="mt-2 flex items-center justify-between text-sm">
+        <div class="flex items-center gap-1">
+          <nz-rate
+            [ngModel]="product.rating"
+            [nzDisabled]="true"
+            nzAllowHalf>
+          </nz-rate>
+          <span>{{ product.rating }} Star rating</span>
+          <span class="ml-1 text-gray-500 text-sm">({{ product.userView }} User feedback)</span>
+        </div>
+      </div>
+      <p class="font-semibold text-2xl">{{ product.name }}</p>
+      <div class="flex gap-32 text-sm items-center">
+        <div class="flex flex-col gap-1">
+          <span>Sku: {{ product.id }}</span>
+          <span>Brand: {{ product.id }}</span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span>Availability: {{ product.id }}</span>
+          <span>Category: {{ product.id }}</span>
+        </div>
+      </div>
+      <p class="font-semibold text-2xl text-blue-500">{{ product.price | currency:"VND" }}</p>
+    </div>
+    <!--button-->
+    <div class="flex gap-3">
+      <div class="flex items-center border border-gray-100 rounded overflow-hidden w-1/4">
+        <!-- Nút giảm -->
+        <button (click)="decrease()" class="flex-1 hover:bg-gray-100 text-center p-2">
+          <fa-icon [icon]="faMinus"></fa-icon>
+        </button>
+        <!-- Hiển thị số lượng -->
+        <span class="flex-1 text-center">{{ quantity }}</span>
+        <!-- Nút tăng -->
+        <button (click)="increase()" class="flex-1 hover:bg-gray-100 text-center p-2">
+          <fa-icon [icon]="faPlus"></fa-icon>
+        </button>
+      </div>
+
+      <button class="flex gap-2 bg-orange-500 p-2 items-center justify-center rounded w-1/2">
+        ADD TO CARD
+        <fa-icon [icon]="faCartPlus"></fa-icon>
+      </button>
+      <button class="p-2 w-1/4 text-orange-500 border border-orange-500 items-center justify-center rounded">
+        BUY NOW
+      </button>
+    </div>
+  </div>
+</div>
