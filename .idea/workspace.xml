@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/bin_www.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/cart-service-ex/routes/carts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="13697e8a-c56f-4937-b22c-a47aa6ac51d3" name="Changes" comment="cartNodeJS">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cart-service-nodeJS/cart-service-nodeJS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service-ex/cart-service-ex.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cart-service-nodeJS/config/db.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service-ex/config/db.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cart-service-nodeJS/config/eureka-client.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cart-service-ex/config/eureka-client.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -541,23 +535,7 @@
       <workItem from="1759028391094" duration="3122000" />
       <workItem from="1759109489859" duration="16331000" />
       <workItem from="1759208884338" duration="2156000" />
-      <workItem from="1759212443297" duration="1521000" />
-    </task>
-    <task id="LOCAL-00035" summary="OrderStatus">
-      <option name="closed" value="true" />
-      <created>1753714448404</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1753714448404</updated>
-    </task>
-    <task id="LOCAL-00036" summary="Payment">
-      <option name="closed" value="true" />
-      <created>1753714457553</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1753714457553</updated>
+      <workItem from="1759212443297" duration="1812000" />
     </task>
     <task id="LOCAL-00037" summary="cấu hình frontend">
       <option name="closed" value="true" />
@@ -935,7 +913,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759212511482</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="cartNodeJS">
+      <option name="closed" value="true" />
+      <created>1759214193119</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1759214193119</updated>
+    </task>
+    <task id="LOCAL-00085" summary="cartNodeJS">
+      <option name="closed" value="true" />
+      <created>1759214199912</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1759214199912</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -978,7 +972,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="OrderStatus" />
     <MESSAGE value="Payment" />
     <MESSAGE value="cấu hình frontend" />
     <MESSAGE value="luồng thanh toán" />
@@ -1003,7 +996,8 @@
     <MESSAGE value="aouth2" />
     <MESSAGE value="m2" />
     <MESSAGE value="update" />
-    <option name="LAST_COMMIT_MESSAGE" value="update" />
+    <MESSAGE value="cartNodeJS" />
+    <option name="LAST_COMMIT_MESSAGE" value="cartNodeJS" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

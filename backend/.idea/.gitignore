@@ -8,6 +8,19 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# Environment files
+.env
+.env.*.local
 
 #payment
 ../payment-service/src/main/resources/application.properties
