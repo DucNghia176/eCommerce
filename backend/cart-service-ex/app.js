@@ -4,13 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const cartRouter = require('./routes/carts'); // file chứa router.get('/cart-items', ...)
+const cartRouter = require('./src/controller/carts');
 
 var app = express();
-const db = require('./config/db');
-db.init();
+const jwtAuthentication = require("./src/middleware/jwtAuthentication");
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,8 +19,8 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use(jwtAuthentication);
+
 app.use('/api/cart', cartRouter);
 
 // catch 404 and forward to error handler
