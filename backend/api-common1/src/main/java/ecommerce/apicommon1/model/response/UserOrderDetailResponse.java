@@ -32,7 +32,7 @@ public class UserOrderDetailResponse {
     }
 
     public void setFormattedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, h:mm a", Locale.ENGLISH);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, h:mm CachedPage", Locale.ENGLISH);
         this.formattedDate = this.orderDate.format(formatter);
     }
 }

@@ -6,6 +6,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -54,6 +55,18 @@ public class JwtUtil {
         }
     }
 
+    public long getTokenRemainingSeconds(String token) {
+        try {
+            Date expiration = extractExpiration(token); // dùng hàm hiện có
+            long now = System.currentTimeMillis();
+            long remainingMillis = expiration.getTime() - now;
+            return remainingMillis > 0 ? remainingMillis / 1000 : 0;
+        } catch (Exception e) {
+            log.error("Lỗi khi lấy thời gian còn lại của token", e);
+            return 0;
+        }
+    }
+
     public Map<String, Object> validateAndExtractClaims(String token, String signerKey) {
         try {
             JWSObject jwsObject = JWSObject.parse(token);
@@ -99,6 +112,14 @@ public class JwtUtil {
         } catch (Exception e) {
             throw new IllegalArgumentException("Token không hợp lệ hoặc không chứa ID", e);
         }
+    }
+
+    public String getTokenFromRequest(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsTFunction) {
