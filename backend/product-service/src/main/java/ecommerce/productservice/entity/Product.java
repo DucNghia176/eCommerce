@@ -34,7 +34,7 @@ public class Product {
 
     @Column(name = "SKU_CODE", nullable = false)
     private String skuCode;
-    @Lob
+
     @Column(name = "DESCRIPTION")
     private String description;
 
@@ -44,7 +44,7 @@ public class Product {
     @Column(name = "DISCOUNT")
     private BigDecimal discount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CATEGORY_ID", nullable = false)
     @JsonIgnore
     private Category category;

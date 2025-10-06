@@ -3,7 +3,6 @@ package ecommerce.productservice.controller;
 import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.apicommon1.model.response.ProductPriceResponse;
 import ecommerce.productservice.dto.request.CreateProductRequest;
-import ecommerce.productservice.dto.request.ProductSearchRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.request.SearchRequest;
 import ecommerce.productservice.dto.response.ProductResponse;
@@ -40,12 +39,6 @@ public class ProductController {
                 .data(productResponse)
                 .build();
     }
-
-//    @PutMapping("update/{id}")
-//    public ApiResponse<ProductResponse> updateProduct(@PathVariable Long id,
-//                                                      @RequestBody ProductRequest request) {
-//        return productService.updateProduct(id, request);
-//    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("update/{id}")
@@ -86,15 +79,6 @@ public class ProductController {
                 .build();
     }
 
-    @PostMapping("search")
-    public ApiResponse<Page<ProductResponse>> searchProduct(
-            @RequestBody ProductSearchRequest request,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return productService.searchProduct(request, page, size);
-    }
-
     @GetMapping("search")
     public ApiResponse<Page<SearchProductResponse>> search(@RequestParam(required = false) String keyword,
                                                            @RequestParam(required = false) Long category,
@@ -103,13 +87,14 @@ public class ProductController {
                                                            @RequestParam(required = false) BigDecimal priceTo,
                                                            @RequestParam(required = false) Double ratingFrom,
                                                            Pageable pageable) {
-        SearchRequest request = new SearchRequest();
-        request.setKeyword(keyword);
-        request.setCategoryId(category);
-        request.setBrandId(brand);
-        request.setPriceFrom(priceFrom);
-        request.setPriceTo(priceTo);
-        request.setRatingFrom(ratingFrom);
+        SearchRequest request = SearchRequest.builder()
+                .keyword(keyword)
+                .categoryId(category)
+                .brandId(brand)
+                .priceFrom(priceFrom)
+                .priceTo(priceTo)
+                .ratingFrom(ratingFrom)
+                .build();
         Page<SearchProductResponse> responses = productService.search(request, pageable);
         return ApiResponse.<Page<SearchProductResponse>>builder()
                 .code(200)
@@ -124,19 +109,18 @@ public class ProductController {
         return productService.getSkuCodeByProductId(id);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/{id}/price")
-    public BigDecimal getPrice(@PathVariable Long id) {
-        return productService.getPriceByProductId1(id);
-    }
-
-    @GetMapping("/{id}")
-    public ApiResponse<ProductResponse> getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
+    @GetMapping("/allProductByTag")
+    public ApiResponse<Page<ProductResponse>> getAllProductByTag(@RequestParam(required = false) List<String> tags, Pageable pageable) {
+        Page<ProductResponse> responses = productService.getAllProductByTag(tags, pageable);
+        return ApiResponse.<Page<ProductResponse>>builder()
+                .code(200)
+                .message("thành công")
+                .data(responses)
+                .build();
     }
 
     @GetMapping("/view/{id}")
-    public ApiResponse<ProductViewResponse> getAllProducts(@PathVariable Long id) {
+    public ApiResponse<ProductViewResponse> viewProduct(@PathVariable Long id) {
         ProductViewResponse productViewResponse = productService.viewProduct(id);
         return ApiResponse.<ProductViewResponse>builder()
                 .code(200)
@@ -145,7 +129,7 @@ public class ProductController {
                 .build();
     }
 
-    @PostMapping("exists")
+    @PostMapping("/exists")
     public Map<Long, Boolean> checkProduct(@RequestBody List<Long> ids) {
         return productService.findProduct(ids);
     }

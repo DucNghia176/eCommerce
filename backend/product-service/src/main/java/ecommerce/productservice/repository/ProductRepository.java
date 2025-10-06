@@ -83,4 +83,16 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             @Param("ratingFrom") Double ratingFrom,
             Pageable pageable
     );
+
+    @Query("""
+                SELECT DISTINCT p
+                FROM Product p
+                JOIN FETCH p.category
+                JOIN p.tags t
+                WHERE t.id IN :tagIds
+            """)
+    Page<Product> getAllByTagIds(@Param("tagIds") List<Long> tagIds, Pageable pageable);
+
+    @Query("SELECT p.id FROM Product p WHERE p.category.id = :categoryId AND p.id <> :productId")
+    List<Long> findRelatedProductIds(@Param("categoryId") Long categoryId, @Param("productId") Long productId);
 }

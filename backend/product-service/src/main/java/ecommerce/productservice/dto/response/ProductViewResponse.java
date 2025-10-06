@@ -14,7 +14,7 @@ public class ProductViewResponse {
     private Long id;
     private String name;
     private String skuCode;
-    private int quantity;
+    private Integer quantity;
     private BigDecimal price;
     private String brand;
     private String category;
@@ -22,6 +22,7 @@ public class ProductViewResponse {
     private Long user;
     private List<String> imageUrls;
     private List<ProductAttributeResponse> attributes;
+    private List<Long> relatedProducts;
 
     public ProductViewResponse(Long id, String name, String skuCode, BigDecimal price, String brand, String category, Double score, Long user) {
         this.id = id;

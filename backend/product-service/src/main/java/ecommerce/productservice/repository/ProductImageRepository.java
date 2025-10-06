@@ -18,4 +18,6 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
             SELECT pi.imageUrl FROM ProductImage pi WHERE pi.product.id = :productId
             """)
     List<String> findImageUrl(@Param("productId") Long productId);
+
+    List<ProductImage> findAllByProductId(Long productId);
 }

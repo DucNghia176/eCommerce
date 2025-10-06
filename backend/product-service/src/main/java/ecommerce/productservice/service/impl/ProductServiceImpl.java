@@ -1,10 +1,15 @@
 package ecommerce.productservice.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ecommerce.apicommon1.client.RedisClient;
 import ecommerce.apicommon1.kafka.event.ProductCreateEvent;
-import ecommerce.apicommon1.model.response.ApiResponse;
 import ecommerce.apicommon1.model.response.ProductPriceResponse;
+import ecommerce.apicommon1.util.CacheHelper;
 import ecommerce.productservice.client.InventoryClient;
-import ecommerce.productservice.dto.request.*;
+import ecommerce.productservice.dto.request.AttributeRequest;
+import ecommerce.productservice.dto.request.CreateProductRequest;
+import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
+import ecommerce.productservice.dto.request.SearchRequest;
 import ecommerce.productservice.dto.response.*;
 import ecommerce.productservice.entity.*;
 import ecommerce.productservice.kafka.event.NotificationEvent;
@@ -13,8 +18,6 @@ import ecommerce.productservice.repository.*;
 import ecommerce.productservice.service.CloudinaryService;
 import ecommerce.productservice.service.ProductService;
 import ecommerce.productservice.status.NotificationType;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +25,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -49,113 +53,56 @@ public class ProductServiceImpl implements ProductService {
     private final ProductAttributeRepository productAttributeRepository;
     private final AttributeRepository attributeRepository;
     private final AttributeValueRepository attributeValueRepository;
+    private final RedisClient redisClient;
+    private final ObjectMapper objectMapper;
+    private final CacheHelper cacheHelper;
 
     @Transactional
     @Override
     public ProductResponse createProduct(CreateProductRequest request, List<MultipartFile> imageUrls) {
-        Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + request.getCategoryId()));
+        Category category = findCategory(request.getCategoryId());
 
-
-//        tạo skuCode
+        // Tạo SKU và entity
         Product product = productMapper.toEntity(request);
-
         String generatedSku = "SKU-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         product.setSkuCode(generatedSku);
 
-        Set<ProductAttribute> productAttributes = new HashSet<>();
-        for (AttributeRequest attrReq : request.getAttributes()) {
-            // 1. Attribute
-            Attribute attribute = attributeRepository.findByNameIgnoreCase(attrReq.getAttributeName().trim())
-                    .orElseGet(() -> {
-                        Attribute newAttr = new Attribute();
-                        newAttr.setName(attrReq.getAttributeName().toLowerCase().trim());
-                        return attributeRepository.save(newAttr);
-                    });
-
-            // 2. AttributeValue
-            AttributeValue value = attributeValueRepository.findByValueIgnoreCase(attrReq.getAttributeValueName().trim())
-                    .orElseGet(() -> {
-                        AttributeValue newValue = new AttributeValue();
-                        newValue.setValue(attrReq.getAttributeValueName().toLowerCase().trim());
-                        return attributeValueRepository.save(newValue);
-                    });
-
-            // 3. Tạo ProductAttribute
-            ProductAttribute pa = ProductAttribute.builder()
-                    .attribute(attribute)
-                    .value(value)
-                    .product(product)
-                    .build();
-            productAttributes.add(pa);
-        }
-
-// 4. Gán vào product
+        // Thuộc tính sản phẩm
+        Set<ProductAttribute> productAttributes = buildProductAttributes(product, request.getAttributes());
         product.setProductAttributes(productAttributes);
         product.setCategory(category);
 
-        Product saved = productRepository.save(product);
+        // Lưu để có ID cho upload ảnh
+        productRepository.save(product);
 
-        List<ProductImage> imagesToSave = new ArrayList<>();
+        // Upload ảnh
+        replaceProductImages(product, imageUrls, false);
 
-        for (int i = 0; i < imageUrls.size(); i++) {
-            MultipartFile file = imageUrls.get(i);
-            if (!file.isEmpty()) {
-                String url = cloudinaryService.uploadFileProduct(file, product.getId());
-
-                ProductImage newImage = new ProductImage();
-                newImage.setProduct(product);
-                newImage.setImageUrl(url);
-                newImage.setIsThumbnail(i == 0 ? 1 : 0);
-                imagesToSave.add(newImage);
-            }
-        }
-
-        productImageRepository.saveAll(imagesToSave);
-
-        ProductResponse response = productMapper.toResponse(saved);
-        response.setTags(saved.getTags().stream()
-                .map(tag -> new TagResponse(tag.getId(), tag.getName()))
-                .toList());
-
-        List<ProductImage> imageEntities = productImageRepository.findByProductId(saved.getId());
-        response.setImageUrls(imageEntities.stream().map(ProductImage::getImageUrl).toList());
-        response.setThumbnailUrl(
-                imageEntities.stream()
-                        .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail() == 1)
-                        .map(ProductImage::getImageUrl)
-                        .findFirst()
-                        .orElse(null)
-        );
-
-        ProductCreateEvent event = new ProductCreateEvent(
+        // Gửi event Kafka
+        productKafka.send("product-create", new ProductCreateEvent(
                 product.getSkuCode(),
                 product.getName(),
                 product.getPrice()
-        );
-        productKafka.send("product-create", event);
+        ));
 
-        NotificationEvent notificationEvent = new NotificationEvent(
+        notificationKafka.send("new-product-topic", new NotificationEvent(
                 null,
                 "Sản phẩm mới: " + product.getName(),
                 NotificationType.NEW_PRODUCT,
                 product.getId()
-        );
-        notificationKafka.send("new-product-topic", notificationEvent);
+        ));
 
-        return response;
+        return buildProductResponse(product);
     }
 
     @Transactional
     @Override
     public ProductResponse updateProduct(Long id, ProductUpdateInfoRequest request, List<MultipartFile> imageUrls) {
-        //  Lấy product và category
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy sản phẩm với ID: " + id));
-        Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + request.getCategoryId()));
+        Category category = findCategory(request.getCategoryId());
 
-        // Cập nhật thông tin product
+        // Cập nhật thông tin cơ bản
         product.setName(request.getName());
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
@@ -164,74 +111,94 @@ public class ProductServiceImpl implements ProductService {
         product.setUnit(request.getUnit());
         product.setCategory(category);
 
+        // Cập nhật tags
         List<Tag> tags = tagRepository.findAllById(request.getTags());
-        product.getTags().clear(); // Xóa tag cũ
+        product.getTags().clear();
         product.getTags().addAll(tags);
 
+        // Cập nhật thuộc tính
         productAttributeRepository.deleteByProductId(product.getId());
+        Set<ProductAttribute> productAttributes = buildProductAttributes(product, request.getAttributes());
+        product.setProductAttributes(productAttributes);
+
+        // Cập nhật ảnh
+        replaceProductImages(product, imageUrls, true);
+
+        productRepository.save(product);
+        return buildProductResponse(product);
+    }
+
+// Các hàm phụ trợ
+
+    private Category findCategory(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + categoryId));
+    }
+
+    private Set<ProductAttribute> buildProductAttributes(Product product, List<AttributeRequest> attributes) {
         Set<ProductAttribute> productAttributes = new HashSet<>();
-        for (AttributeRequest attrReq : request.getAttributes()) {
-            // Tìm hoặc tạo Attribute
+
+        for (AttributeRequest attrReq : attributes) {
             Attribute attribute = attributeRepository.findByNameIgnoreCase(attrReq.getAttributeName().trim())
                     .orElseGet(() -> {
-                        Attribute newAttr = new Attribute();
-                        newAttr.setName(attrReq.getAttributeName().toLowerCase().trim());
+                        Attribute newAttr = Attribute.builder()
+                                .name(attrReq.getAttributeName().toLowerCase().trim())
+                                .build();
                         return attributeRepository.save(newAttr);
                     });
 
-            // Tìm hoặc tạo AttributeValue
             AttributeValue value = attributeValueRepository.findByValueIgnoreCase(attrReq.getAttributeValueName().trim())
                     .orElseGet(() -> {
-                        AttributeValue newValue = new AttributeValue();
-                        newValue.setValue(attrReq.getAttributeValueName().toLowerCase().trim());
+                        AttributeValue newValue = AttributeValue.builder()
+                                .value(attrReq.getAttributeValueName().toLowerCase().trim())
+                                .build();
                         return attributeValueRepository.save(newValue);
                     });
 
-            // Tạo mới ProductAttribute
-            ProductAttribute pa = ProductAttribute.builder()
+            productAttributes.add(ProductAttribute.builder()
                     .attribute(attribute)
                     .value(value)
                     .product(product)
-                    .build();
-            productAttributes.add(pa);
+                    .build());
         }
+        return productAttributes;
+    }
 
-        product.setProductAttributes(productAttributes);
-
-        //  Nếu có ảnh mới -> Xóa ảnh cũ và upload ảnh mới
-        if (imageUrls != null && !imageUrls.isEmpty()) {
+    private void replaceProductImages(Product product, List<MultipartFile> imageUrls, boolean clearOld) {
+        if (clearOld) {
             productImageRepository.deleteByProductId(product.getId());
             cloudinaryService.deleteFolderByProductId(product.getId());
-
-            for (int i = 0; i < imageUrls.size(); i++) {
-                MultipartFile file = imageUrls.get(i);
-                if (!file.isEmpty()) {
-                    String url = cloudinaryService.uploadFileProduct(file, product.getId());
-
-                    ProductImage newImage = new ProductImage();
-                    newImage.setProduct(product);
-                    newImage.setImageUrl(url);
-                    newImage.setIsThumbnail(i == 0 ? 1 : 0);
-                    productImageRepository.save(newImage);
-                }
-            }
         }
 
-        // Save product sau khi cập nhật đầy đủ
-        productRepository.save(product);
+        List<ProductImage> newImages = new ArrayList<>();
+        for (int i = 0; i < imageUrls.size(); i++) {
+            MultipartFile file = imageUrls.get(i);
+            if (!file.isEmpty()) {
+                String url = cloudinaryService.uploadFileProduct(file, product.getId());
+                ProductImage image = new ProductImage();
+                image.setProduct(product);
+                image.setImageUrl(url);
+                image.setIsThumbnail(i == 0 ? 1 : 0);
+                newImages.add(image);
+            }
+        }
+        productImageRepository.saveAll(newImages);
+    }
 
-        //  Lấy danh sách ảnh để trả về
+    private ProductResponse buildProductResponse(Product product) {
         ProductResponse response = productMapper.toResponse(product);
-        List<ProductImage> imageEntities = productImageRepository.findByProductId(product.getId());
-        response.setImageUrls(imageEntities.stream().map(ProductImage::getImageUrl).toList());
+        List<ProductImage> images = productImageRepository.findByProductId(product.getId());
+        response.setImageUrls(images.stream().map(ProductImage::getImageUrl).toList());
         response.setThumbnailUrl(
-                imageEntities.stream()
+                images.stream()
                         .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail() == 1)
                         .map(ProductImage::getImageUrl)
                         .findFirst()
                         .orElse(null)
         );
-
+        response.setTags(product.getTags().stream()
+                .map(tag -> new TagResponse(tag.getId(), tag.getName()))
+                .toList());
         return response;
     }
 
@@ -268,108 +235,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiResponse<Page<ProductResponse>> searchProduct(ProductSearchRequest request, int page, int size) {
-        try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-
-            Specification<Product> spec = (root, query, cb) -> cb.equal(root.get("isActive"), 1);
-
-            if (request.getName() != null && !request.getName().isBlank()) {
-                Specification<Product> nameSpec = (root, query, cb) ->
-                        cb.like(cb.lower(root.get("name")), "%" + request.getName().toLowerCase() + "%");
-                spec = and(spec, nameSpec);
-            }
-
-            if (request.getPriceFrom() != null && request.getPriceTo() != null) {
-                spec = and(spec, (root, query, cb) ->
-                        cb.between(root.get("price"), request.getPriceFrom(), request.getPriceTo()));
-            } else if (request.getPriceFrom() != null) {
-                spec = and(spec, (root, query, cb) ->
-                        cb.greaterThanOrEqualTo(root.get("price"), request.getPriceFrom()));
-            } else if (request.getPriceTo() != null) {
-                spec = and(spec, (root, query, cb) ->
-                        cb.lessThanOrEqualTo(root.get("price"), request.getPriceTo()));
-            }
-
-            if (request.getCategoryName() != null && !request.getCategoryName().isBlank()) {
-                Specification<Product> categorySpec = (root, query, cb) ->
-                        cb.equal(cb.lower(root.get("category").get("name")), request.getCategoryName().toLowerCase());
-                spec = and(spec, categorySpec);
-            }
-
-            if (request.getHasDiscount() != null) {
-                if (request.getHasDiscount()) {
-                    spec = and(spec, (root, query, cb) ->
-                            cb.isNotNull(root.get("discountPrice")));
-                } else {
-                    spec = and(spec, (root, query, cb) ->
-                            cb.isNull(root.get("discountPrice")));
-                }
-            }
-
-            if (request.getTagName() != null && !request.getTagName().isEmpty()) {
-                spec = and(spec, (root, query, cb) -> {
-                    Join<Product, Tag> tagJoin = root.join("tags", JoinType.INNER);
-                    query.distinct(true);
-                    return tagJoin.get("id").in(request.getTagName());
-                });
-            }
-
-            // Sử dụng findAll với Pageable
-            Page<Product> productPage = productRepository.findAll(spec, pageable);
-
-            Page<ProductResponse> responsePage = productPage.map(product -> {
-                ProductResponse res = productMapper.toResponse(product);
-
-                // Lấy tags
-                List<TagResponse> tags = product.getTags().stream()
-                        .map(tag -> new TagResponse(tag.getId(), tag.getName()))
-                        .toList();
-                res.setTags(tags);
-
-                // Lấy ảnh
-                List<ProductImage> imageEntities = productImageRepository.findByProductId(product.getId());
-                res.setImageUrls(imageEntities.stream().map(ProductImage::getImageUrl).toList());
-
-                // Thumbnail
-                String thumbnail = imageEntities.stream()
-                        .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail() == 1)
-                        .map(ProductImage::getImageUrl)
-                        .findFirst()
-                        .orElse(null);
-                res.setThumbnailUrl(thumbnail);
-
-                // Brand
-                if (product.getBrandId() != null) {
-                    brandRepository.findById(product.getBrandId())
-                            .ifPresent(brand -> res.setBrand(new BrandResponse(brand.getId(), brand.getName())));
-                }
-
-                // Quantity
-                int quantity = inventoryClient.getQuantity(productRepository.findSkuCodeById(product.getId()));
-                res.setQuantity(quantity);
-
-                return res;
-            });
-
-            return ApiResponse.<Page<ProductResponse>>builder()
-                    .code(200)
-                    .message(responsePage.isEmpty() ? "Không tìm thấy sản phẩm phù hợp" : "Tìm kiếm thành công")
-                    .data(responsePage)
-                    .build();
-
-        } catch (Exception e) {
-            return ApiResponse.<Page<ProductResponse>>builder()
-                    .code(500)
-                    .message("Đã xảy ra lỗi khi tìm kiếm")
-                    .data(null)
-                    .build();
-        }
-    }
-
-    @Override
     public Page<SearchProductResponse> search(SearchRequest request, Pageable pageable) {
-        return productRepository.searchProducts(
+        String redisKey = String.format(
+                "product:search:%s_%s_%s_%s_%s_%s_%d_%d",
+                request.getKeyword(),
+                request.getCategoryId(),
+                request.getBrandId(),
+                request.getPriceFrom(),
+                request.getPriceTo(),
+                request.getRatingFrom(),
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
+        if (redisClient.exists(redisKey)) {
+            cacheHelper.getPageCache(redisKey, SearchProductResponse.class);
+        }
+
+        Page<SearchProductResponse> responses = productRepository.searchProducts(
                 request.getKeyword(),
                 request.getCategoryId(),
                 request.getBrandId(),
@@ -378,6 +261,9 @@ public class ProductServiceImpl implements ProductService {
                 request.getRatingFrom(),
                 pageable
         );
+        cacheHelper.setPageCache(redisKey, responses, 15, TimeUnit.MINUTES);
+
+        return responses;
     }
 
     @Override
@@ -386,63 +272,91 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public BigDecimal getPriceByProductId1(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NoSuchElementException("Product not found"));
+    public Page<ProductResponse> getAllProductByTag(List<String> tags, Pageable pageable) {
+        String tagPart = String.join(",", tags);
+        String redisKey = String.format(
+                "product:getByTag:%s_%d_%d",
+                tagPart,
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
 
-        BigDecimal price = product.getPrice();
-        BigDecimal discount = product.getDiscount();
-
-        return price.multiply(BigDecimal.ONE.subtract(discount));
-    }
-
-    private Specification<Product> and(Specification<Product> base, Specification<Product> addition) {
-        return (base == null) ? addition : base.and(addition);
-    }
-
-    @Override
-    public ApiResponse<ProductResponse> getProductById(Long id) {
-        try {
-            Product product = productRepository.findById(id)
-                    .orElseThrow(() -> new NoSuchElementException("Không tìm thấy sản phẩm " + id));
-            ProductResponse response = productMapper.toResponse(product);
-            List<ProductImage> imageEntities = productImageRepository.findByProductId(product.getId());
-
-            List<TagResponse> tags = product.getTags().stream()
-                    .map(tag -> new TagResponse(tag.getId(), tag.getName()))
-                    .toList();
-            response.setTags(tags);
-
-            response.setImageUrls(imageEntities.stream().map(ProductImage::getImageUrl).toList());
-            response.setThumbnailUrl(
-                    imageEntities.stream()
-                            .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail() == 1)
-                            .map(ProductImage::getImageUrl)
-                            .findFirst()
-                            .orElse(null)
-            );
-            return ApiResponse.<ProductResponse>builder()
-                    .code(200)
-                    .message("Lấy sản phầm với id =" + id)
-                    .data(response)
-                    .build();
-        } catch (Exception e) {
-            return ApiResponse.<ProductResponse>builder()
-                    .code(500)
-                    .message("Lỗi hệ thống: " + e.getMessage())
-                    .data(null)
-                    .build();
+        if (!redisClient.exists(redisKey)) {
+            cacheHelper.getPageCache(redisKey, ProductResponse.class);
         }
+
+        List<Long> tagIds = tagRepository.findByNameIn(tags)
+                .stream()
+                .map(Tag::getId)
+                .toList();
+        Page<Product> products = productRepository.getAllByTagIds(tagIds, pageable);
+
+        // Lấy quantity qua feign-client
+        List<String> skuCodes = products.getContent().stream()
+                .map(Product::getSkuCode)
+                .toList();
+        Map<String, Integer> quantityMap = inventoryClient.getQuantities(skuCodes);
+
+        // Lấy Brand
+        List<Long> brandIds = products.getContent().stream()
+                .map(Product::getBrandId)
+                .toList();
+        Map<Long, Brand> brandMap = brandRepository.findAllById(brandIds)
+                .stream()
+                .collect(Collectors.toMap(Brand::getId, Function.identity()));
+
+        Page<ProductResponse> responses = products.map(product -> {
+            ProductResponse response = productMapper.toResponse(product);
+
+            // Set quantity
+            response.setQuantity(quantityMap.getOrDefault(product.getSkuCode(), 0));
+
+            // Set brand
+            Brand brand = brandMap.get(product.getBrandId());
+            if (brand != null) {
+                response.setBrand(BrandResponse.builder()
+                        .name(brand.getName())
+                        .id(brand.getId())
+                        .build());
+            } else {
+                response.setBrand(null);
+            }
+
+            // Set images và thumbnail
+            List<ProductImage> images = productImageRepository.findAllByProductId(product.getId());
+            response.setImageUrls(images.stream().map(ProductImage::getImageUrl).toList());
+            response.setThumbnailUrl(images.stream()
+                    .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail() == 1)
+                    .map(ProductImage::getImageUrl)
+                    .findFirst()
+                    .orElse(null));
+
+            return response;
+        });
+
+        cacheHelper.setPageCache(redisKey, responses, 15, TimeUnit.MINUTES);
+
+        return responses;
     }
 
     @Override
     public ProductViewResponse viewProduct(Long productId) {
-        productRepository.findById(productId)
+        String redisKey = "product:view:" + productId;
+
+        if (redisClient.exists(redisKey)) {
+            Object cached = redisClient.getCache(redisKey);
+            return objectMapper.convertValue(cached, ProductViewResponse.class);
+        }
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + productId));
 
         ProductViewResponse response = productRepository.findProduct(productId);
 
-        response.setQuantity(inventoryClient.getQuantity(response.getSkuCode()));
+        try {
+            response.setQuantity(inventoryClient.getQuantity(response.getSkuCode()));
+        } catch (Exception e) {
+            response.setQuantity(null);
+        }
 
         List<String> imageUrls = productImageRepository.findImageUrl(productId);
 
@@ -457,6 +371,16 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
         response.setImageUrls(imageUrls);
         response.setAttributes(attribute);
+
+        List<Long> relatedIds = productRepository.findRelatedProductIds(product.getCategory().getId(), productId);
+        if (relatedIds.size() > 100) {
+            Collections.shuffle(relatedIds); // trộn random
+            relatedIds = relatedIds.subList(0, 100); // lấy 100 sp đầu
+        }
+        response.setRelatedProducts(relatedIds);
+
+        redisClient.putTtlCache(redisKey, response, 12, TimeUnit.HOURS);
+
         return response;
     }
 
@@ -466,7 +390,6 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(Product::getId)
                 .collect(Collectors.toSet());
-
 
         return ids.stream()
                 .collect(Collectors.toMap(Function.identity(), existingIds::contains));
@@ -479,7 +402,7 @@ public class ProductServiceImpl implements ProductService {
         BigDecimal originalPrice = product.getPrice();
         BigDecimal discountPercent = product.getDiscount();
         BigDecimal discountDecimal = discountPercent != null
-                ? discountPercent.divide(BigDecimal.valueOf(100))
+                ? discountPercent.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
         BigDecimal finalPrice = originalPrice.multiply(BigDecimal.ONE.subtract(discountDecimal));
