@@ -1,5 +1,6 @@
 package ecommerce.userservice.service.impl;
 
+import ecommerce.apicommon1.client.RedisClient;
 import ecommerce.apicommon1.model.response.AuthResponse;
 import ecommerce.apicommon1.model.status.RoleStatus;
 import ecommerce.apicommon1.util.JwtUtil;
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,6 +44,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserAccRepository userAccRepository;
     private final UserAccMapper userAccMapper;
     private final RoleRepository roleRepository;
+    private final RedisClient redisClient;
     @Value("${jwt.signing-key}")
     private String SIGNER_KEY;
 
@@ -82,57 +85,6 @@ public class AuthServiceImpl implements AuthService {
 
         return response;
     }
-
-//    @Override
-//    public AuthResponse loginOauth2(String idToken) {
-//        Map<String, Object> userInfo = verifyIdTokenWithGoogle(idToken);
-//        String oauth2Id = (String) userInfo.get("sub");
-//        String username = (String) userInfo.get("name");
-//        String email = (String) userInfo.get("email");
-//
-//        UserAcc user = userAccRepository.findByOauth2Id(oauth2Id)
-//                .orElseGet(() -> {
-//                    UserAcc userAcc = new UserAcc();
-//                    userAcc.setOauth2Id(oauth2Id);
-//                    userAcc.setUsername(username);
-//                    userAcc.setEmail(email);
-//
-//                    Role userRole = roleRepository.findByRoleName(RoleStatus.USER)
-//                            .orElseThrow(() -> new RuntimeException("Role USER không tồn tại"));
-//
-//                    userAcc.getRoles().add(userRole);
-//                    return userAccRepository.save(userAcc);
-//                });
-//
-//        if (user.getIsLock() == 1) {
-//            throw new AccessDeniedException("Tài khoản đã bị khóa");
-//        }
-//
-//        List<String> roleNames = user.getRoles()
-//                .stream()
-//                .map(role -> role.getRoleName().toString())
-//                .toList();
-//
-//        Map<String, Object> claims = Map.of(
-//                "userId", user.getId(),
-//                "role", roleNames
-//        );
-//        String subject = user.getUsername() + "/" + user.getEmail();
-//        String token = jwtUtil.generateToken(claims, subject, SIGNER_KEY);
-//
-//        AuthResponse response = AuthResponse.builder()
-//                .username(username)
-//                .email(email)
-//                .role(roleNames)
-//                .token(token)
-//                .lastLogin(LocalDateTime.now())
-//                .build();
-//
-//        user.setLastLogin(LocalDateTime.now());
-//        userAccRepository.save(user);
-//
-//        return response;
-//    }
 
     private Map<String, Object> verifyIdTokenWithGoogle(String idToken) {
         // Gọi Google tokeninfo endpoint
@@ -212,5 +164,13 @@ public class AuthServiceImpl implements AuthService {
         Role role = roleRepository.findByRoleName(status)
                 .orElseThrow(() -> new RuntimeException("Role " + status + " không tồn tại"));
         user.getRoles().add(role);
+    }
+
+    @Override
+    public void logout(String token) {
+        long ttlInSeconds = jwtUtil.getTokenRemainingSeconds(token);
+        if (ttlInSeconds > 0) {
+            redisClient.tokenBlacklist(token, ttlInSeconds, TimeUnit.SECONDS);
+        }
     }
 }

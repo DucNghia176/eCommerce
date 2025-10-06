@@ -8,9 +8,9 @@ import ecommerce.userservice.dto.respone.UserCreateResponse;
 public interface AuthService {
     AuthResponse login(AuthRequest request);
 
-//    AuthResponse loginOauth2(String idToken);
-
     UserCreateResponse createUser(UserCreateRequest request);
 
     UserCreateResponse confirmCreateUser(String email, String otp);
+
+    void logout(String token);
 }

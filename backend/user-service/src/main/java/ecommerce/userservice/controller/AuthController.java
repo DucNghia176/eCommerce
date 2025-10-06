@@ -30,14 +30,6 @@ public class AuthController {
                 .build();
     }
 
-//    @PostMapping("/login-oauth")
-//    public ResponseEntity<AuthResponse> loginOauth(@RequestBody Map<String, String> body) {
-//        String idToken = body.get("idToken");
-//        AuthResponse response = authService.loginOauth2(idToken);
-//        return ResponseEntity.ok(response);
-//    }
-
-
     @PostMapping("/register")
     public ApiResponse<UserCreateResponse> createUser(@Valid @RequestBody UserCreateRequest request) {
         UserCreateResponse userCreateResponse = authService.createUser(request);
