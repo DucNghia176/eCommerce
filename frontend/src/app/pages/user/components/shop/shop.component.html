@@ -1,0 +1,131 @@
+<div class="grid grid-cols-4 gap-4">
+  <!-- left-->
+  <aside class="space-y-6 col-span-1">
+    <!--category-->
+    <div class=" border-b border-gray-200 pb-3">
+      <h3 class="font-medium text-base mb-2">CATEGORY</h3>
+      <div class="space-y-1 flex flex-col">
+        <div (click)="toggleCategory(cate.id)"
+             *ngFor="let cate of categories"
+             class="flex items-center  cursor-pointer gap-2"
+        >
+          <input
+            [checked]="selectedCategoryId === cate.id"
+            class="radio-orange"
+            name="category"
+            type="radio"
+          />
+          <span
+            [ngClass]="{
+            'text-black font-medium': selectedCategoryId === cate.id,
+            'text-gray-700': selectedCategoryId !== cate.id
+          }"
+          >
+          {{ cate.name }}
+        </span>
+        </div>
+      </div>
+    </div>
+
+    <!--    price-->
+    <div class="border-b border-gray-200 pb-3 space-y-2">
+      <h3 class="font-medium text-base">PRICE RANGE</h3>
+
+      <!-- Hiển thị giá trị hiện tại -->
+      <div class="flex items-center gap-2">
+        <label class="text-gray-700">Min:</label>
+        <nz-input-number
+          (ngModelChange)="onMinInputChange($event)"
+          [(ngModel)]="priceRange[0]"
+          [nzMax]="priceRange[1]"
+          [nzMin]="0"
+          [nzStep]="1"
+          class="w-24"
+        ></nz-input-number>
+
+        <label class="text-gray-700">Max:</label>
+        <nz-input-number
+          (ngModelChange)="onMaxInputChange($event)"
+          [(ngModel)]="priceRange[1]"
+          [nzMax]="1000"
+          [nzMin]="priceRange[0]"
+          [nzStep]="1"
+          class="w-24"
+        ></nz-input-number>
+      </div>
+
+      <!-- Slider 2 đầu -->
+      <nz-slider
+        [(ngModel)]="priceRange"
+        [nzMax]="1000"
+        [nzMin]="0"
+        [nzRange]="true"
+        [nzStep]="1"
+        [nzTipFormatter]="tooltipFormatter"
+        nzTooltipPlacement="top"
+      ></nz-slider>
+    </div>
+
+    <!--brand-->
+    <div class="border-b border-gray-200 pb-3 space-y-2">
+      <h3 class="font-medium text-base">POPULAR BRANDS</h3>
+      <div class="grid grid-cols-2 gap-2">
+        <label
+          *ngFor="let brand of brands"
+          class="flex items-center gap-2 cursor-pointer text-gray-700"
+        >
+          <input
+            (change)="toggleBrand(brand.id)"
+            [checked]="selectedBrandIds.includes(brand.id)"
+            class="w-4 h-4 accent-orange-500"
+            type="checkbox"
+          />
+          {{ brand.name }}
+        </label>
+      </div>
+    </div>
+  </aside>
+
+  <!-- right -->
+  <section class=" col-span-3 gap-3">
+
+    <!--    header-->
+    <div class="flex justify-between items-center gap-3 mb-4">
+      <!--    search-->
+      <div class="w-2/5">
+        <label class="relative border border-gray-200 flex items-center gap-2 rounded overflow-hidden">
+          <input
+            class="w-full p-2 outline-none"
+            placeholder="Search products name..."
+            type="search"
+          >
+          <fa-icon [icon]="faSearch" class="text-gray-500 right-2 absolute"></fa-icon>
+        </label>
+      </div>
+
+      <!--      sort by-->
+      <div class="flex items-center gap-2">
+        <label class="text-gray-500 ">Sort by:</label>
+        <select
+          [(ngModel)]="selectedSort"
+          class="border border-gray-300 rounded p-2 outline-none"
+        >
+          <option value="laster">Mới nhất</option>
+          <option value="price">Giá</option>
+          <option value="name">Giá</option>
+        </select>
+      </div>
+    </div>
+
+    <!--    sản phẩm-->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+      <app-product-card
+        *ngFor="let product of products"
+        [product]="product"
+        viewMode="page"
+      >
+      </app-product-card>
+    </div>
+  </section>
+</div>
+

@@ -1,0 +1,41 @@
+<!-- product-card.component.html -->
+<div class="relative border border-gray-100 p-2 rounded overflow-hidden group hover:shadow-lg transition">
+  <div class="relative rounded overflow-hidden">
+    <img [alt]="product.name"
+         [src]="product.thumbnailUrl"
+         class="w-full h-24 sm:h-28 md:h-32 object-cover rounded"/>
+
+    <!-- Hover icons -->
+    <div
+      class="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-20 rounded">
+      <button (click)="addToWishlist(product)" class="p-2 bg-white rounded-full shadow hover:scale-110 transition">
+        <fa-icon [icon]="faHeart"></fa-icon>
+      </button>
+      <button (click)="addToCart(product)" class="p-2 bg-white rounded-full shadow hover:scale-110 transition">
+        <fa-icon [icon]="faCartPlus"></fa-icon>
+      </button>
+      <button (click)="viewDetail(product)" class="p-2 bg-orange-600 rounded-full shadow hover:scale-110 transition">
+        <fa-icon [icon]="faEye"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Product info -->
+  <div class="mt-1 flex items-center justify-between">
+    <div class="flex items-center gap-1">
+      <nz-rate
+        [ngModel]="product.score"
+        [nzDisabled]="true"
+        class="text-sm"
+        nzAllowHalf
+      >
+      </nz-rate>
+
+      <span class="ml-1 text-gray-500 text-xs">({{ product.user }})</span>
+    </div>
+  </div>
+
+  <h3 class="mt-1 font-semibold text-sm sm:text-base">{{ product.name }}</h3>
+  <p class="text-blue-600 font-semibold mt-1 text-sm">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</p>
+</div>
+
