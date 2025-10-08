@@ -18,7 +18,7 @@
       <div #scrollContainer class="flex gap-4 px-2">
         <div
           (click)="selectImage(i)"
-          *ngFor="let img of product.imageUrl; let i = index"
+          *ngFor="let img of product.imageUrls; let i = index"
           [ngClass]="{
     'border-orange-500': selectedImage === img,
     'border-gray-300': selectedImage !== img
@@ -43,23 +43,23 @@
       <div class="mt-2 flex items-center justify-between text-sm">
         <div class="flex items-center gap-1">
           <nz-rate
-            [ngModel]="product.rating"
+            [ngModel]="product.score"
             [nzDisabled]="true"
             nzAllowHalf>
           </nz-rate>
-          <span>{{ product.rating }} Star rating</span>
-          <span class="ml-1 text-gray-500 text-sm">({{ product.userView }} User feedback)</span>
+          <span>{{ product.user }} Star rating</span>
+          <span class="ml-1 text-gray-500 text-sm">({{ product.user }} User feedback)</span>
         </div>
       </div>
       <p class="font-semibold text-2xl">{{ product.name }}</p>
       <div class="flex gap-32 text-sm items-center">
         <div class="flex flex-col gap-1">
-          <span>Sku: {{ product.id }}</span>
-          <span>Brand: {{ product.id }}</span>
+          <span>Sku: {{ product.skuCode }}</span>
+          <span>Brand: {{ product.brand.name }}</span>
         </div>
         <div class="flex flex-col gap-1">
-          <span>Availability: {{ product.id }}</span>
-          <span>Category: {{ product.id }}</span>
+          <span>Availability: {{ product.quantity }}</span>
+          <span>Category: {{ product.categoryName }}</span>
         </div>
       </div>
       <p class="font-semibold text-2xl text-blue-500">{{ product.price | currency:"VND" }}</p>
@@ -83,7 +83,9 @@
         ADD TO CARD
         <fa-icon [icon]="faCartPlus"></fa-icon>
       </button>
-      <button class="p-2 w-1/4 text-orange-500 border border-orange-500 items-center justify-center rounded">
+      <button
+        (click)="checkout()"
+        class="p-2 w-1/4 text-orange-500 border border-orange-500 items-center justify-center rounded">
         BUY NOW
       </button>
     </div>

@@ -1,16 +1,16 @@
 import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {CommonModule, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
+import {CommonModule, NgForOf, NgIf} from "@angular/common";
 import {PageComponent} from "../../../../shared/components/page/page.component";
 import {faAdd, faEdit, faFileExport, faSearch, faTrash, faWarehouse} from "@fortawesome/free-solid-svg-icons";
 import {PageSize} from "../../../../shared/status/page-size";
 import {ProductService} from "../../../../core/services/product.service";
 import {RouterLink} from "@angular/router";
 import {SelectionService} from "../../../../core/services/selection.service";
-import {debounceTime, finalize, forkJoin, Subject, switchMap, takeUntil} from "rxjs";
+import {finalize, forkJoin, Subject} from "rxjs";
 import {DialogService} from "../../../../core/services/dialog.service";
 import {FormsModule} from "@angular/forms";
-import {ProductResponse, ProductSearchRequest} from "../../../../core/models/product.model";
+import {ProductResponse} from "../../../../core/models/product.model";
 import {LoadingSpinnerComponent} from "../../../../shared/components/loading-spinner/loading-spinner.component";
 import {ToastComponent} from "../../../../shared/components/toast/toast.component";
 import {InventoryService} from "../../../../core/services/inventory.service";
@@ -29,8 +29,7 @@ import {InventoryRequest} from "../../../../core/models/inventory.model";
     LoadingSpinnerComponent,
     ToastComponent,
     FormsModule,
-    CommonModule,
-    NgOptimizedImage
+    CommonModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
@@ -72,28 +71,6 @@ export class ProductsComponent implements OnInit {
   private destroy$ = new Subject<void>();
 
   ngOnInit() {
-    this.searchTerm$
-      .pipe(
-        debounceTime(300),
-        switchMap(term => {
-          const request: ProductSearchRequest = {name: term};
-          return this.productService.searchProduct(request, 0, 10);
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (data) => {
-          const allProduct = data.content;
-          this.currentPage = data.number;
-          this.totalItems = data.totalElements;
-          this.totalPages = data.totalPages;
-          this.products = allProduct;
-          this.errorMessage = null;
-        },
-        error: (err) => {
-          this.toastService.show("Lỗi hệ thống: " + err, "f");
-        }
-      });
     this.loadProduct();
   }
 

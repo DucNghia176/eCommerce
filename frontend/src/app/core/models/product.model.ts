@@ -15,6 +15,7 @@ export interface ProductResponse {
   quantity: number,
   skuCode: string,
   brand: BrandResponse,
+  attributes: ProductAttributeResponse[]
 }
 
 export interface CreateProductResponse {
@@ -35,6 +36,27 @@ export interface CreateProductResponse {
   attributes: ProductAttributeResponse[]
 }
 
+export interface SearchProductResponse {
+  id: number,
+  productName: string,
+  imageUrls: string,
+  price: string,
+  discount: string,
+  rating: string,
+  totalUser: number,
+}
+
+export interface ProductViewResponse extends ProductResponse {
+  score: string,
+  user: number,
+  relatedProducts: number[],
+}
+
+export interface ProductByTagResponse extends ProductResponse {
+  score: string,
+  user: number,
+}
+
 export interface ProductAttributeResponse {
   attribute: string,
   value: string[]
@@ -49,6 +71,7 @@ export interface ProductRequest {
   tags: number[] | null,
   unit: string,
   brandId: number | null,
+  attributes: ProductAttributeResponse[]
 }
 
 export interface CreateProductRequest {
@@ -66,15 +89,4 @@ export interface CreateProductRequest {
 export interface AttributeRequest {
   attributeName: string,
   attributeValueName: string,
-}
-
-export interface ProductSearchRequest {
-  name?: string;
-  priceFrom?: number;
-  priceTo?: number;
-  price?: number;
-  discountPrice?: number;
-  categoryName?: string;
-  tagName?: number[];
-  hasDiscount?: boolean;
 }

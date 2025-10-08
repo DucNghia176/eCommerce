@@ -2,17 +2,17 @@
   <h2 class="font-bold text-xl">Featured Products</h2>
 
   <div class="flex text-sm items-center gap-3">
-    <button (click)="selectCategory('All Product')"
+    <button (click)="selectCategory(-1)"
             [ngClass]="{
-        'border-b-2 border-orange-500': selectedCategory === 'All Product'
+        'border-b-2 border-orange-500': selectedCategory === -1
       }"
             class="font-semibold pb-1">All Product
     </button>
     <div class="flex gap-3">
-      <div (click)="selectCategory(cate.name)"
+      <div (click)="selectCategory(cate.id)"
            *ngFor="let cate of categories | slice:0:4"
            [ngClass]="{
-          'border-b-2 border-orange-500': selectedCategory === cate.name
+          'border-b-2 border-orange-500': selectedCategory === cate.id
         }"
            class="pb-1">
         <button>{{ cate.name }}</button>
@@ -27,46 +27,11 @@
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-  <div *ngFor="let product of displayedProducts | slice:0:8"
-       class="relative border border-gray-100 p-3 rounded overflow-hidden group hover:scale-105 hover:shadow-lg transition-transform">
-
-    <!-- Image wrapper -->
-    <div class="relative rounded overflow-hidden">
-      <img [alt]="product.name"
-           [src]="product.imageUrl[0]"
-           class="w-full h-40 object-cover rounded sm:h-48 md:h-56"/>
-
-      <!-- Hover icons chỉ trên ảnh -->
-      <div
-        class="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-20 rounded">
-        <button (click)="addToWishlist(product)"
-                class="pointer-events-auto p-3 bg-white rounded-full shadow hover:scale-110 transform transition">
-          <fa-icon [icon]="faHeart"></fa-icon>
-        </button>
-
-        <button (click)="addToCart(product)"
-                class="pointer-events-auto p-3 bg-white rounded-full shadow hover:scale-110 transform transition">
-          <fa-icon [icon]="faCartPlus"></fa-icon>
-        </button>
-
-        <button (click)="viewDetail(product)"
-                class="pointer-events-auto p-3 bg-orange-600 rounded-full shadow hover:scale-110 transform transition">
-          <fa-icon [icon]="faEye"></fa-icon>
-        </button>
-      </div>
-    </div>
-
-    <!-- Product info -->
-    <div class="mt-2 flex items-center justify-between">
-      <div class="flex items-center gap-1">
-        <nz-rate [ngModel]="product.rating" [nzDisabled]="true" nzAllowHalf></nz-rate>
-        <span class="ml-1 text-gray-500 text-sm">({{ product.userView }})</span>
-      </div>
-    </div>
-
-    <h3 class="mt-2 font-semibold">{{ product.name }}</h3>
-    <p class="text-blue-600 font-semibold">{{ product.price | currency:"VND" }}</p>
-  </div>
+  <app-product-card
+    *ngFor="let product of displayedProducts | slice:0:8"
+    [product]="product"
+    viewMode="modal"
+  ></app-product-card>
 </div>
 
 

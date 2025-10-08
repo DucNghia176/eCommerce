@@ -111,7 +111,7 @@ export class UsersService {
         }), catchError(this.handleError)
       )
   }
-
+  
   toggleLock1(id: string): Observable<ApiResponse<UserResponse>> {
     return this.http.put<ApiResponse<UserResponse>>(`${this.apiUrl}/toggle/lock/${id}`, null)
   }

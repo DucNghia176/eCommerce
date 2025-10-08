@@ -4,11 +4,11 @@ import {BrandResponse, TagResponse} from "../../../../../core/models/TagBrand.mo
 import {ProductService} from "../../../../../core/services/product.service";
 import {ToastService} from "../../../../../core/services/toast.service";
 import {CategoryService} from "../../../../../core/services/category.service";
-import {CommonModule, Location, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
+import {CommonModule, Location, NgForOf, NgIf} from "@angular/common";
 import {TagBrandService} from "../../../../../core/services/brand.service";
 import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {validateAndFocusFirstError} from "../../../../../shared/utils/validation";
-import {ProductRequest} from "../../../../../core/models/product.model";
+import {ProductAttributeResponse, ProductRequest} from "../../../../../core/models/product.model";
 import {finalize} from "rxjs";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {LoadingSpinnerComponent} from "../../../../../shared/components/loading-spinner/loading-spinner.component";
@@ -28,7 +28,7 @@ import {handleImagesSelected} from "../../../../../shared/utils/file-upload.util
     NgForOf,
     NgIf,
     ReactiveFormsModule,
-    ToastComponent, CommonModule, NgOptimizedImage
+    ToastComponent, CommonModule
   ],
   templateUrl: './update-product.component.html',
   styleUrl: './update-product.component.scss'
@@ -49,6 +49,7 @@ export class UpdateProductComponent implements OnInit {
   isLoading = false;
   categories: CategoryResponse[] = [];
   brands: BrandResponse[] = [];
+  attributes: ProductAttributeResponse[] = [];
   tags: TagResponse[] = [];
   @ViewChild('formRef') formRef!: ElementRef;
   showMiniForm = false;
@@ -123,7 +124,8 @@ export class UpdateProductComponent implements OnInit {
       categoryId: this.categoryId,
       tags: this.selectTag,
       unit: this.units,
-      brandId: this.brandId
+      brandId: this.brandId,
+      attributes: this.attributes
     }
     const files: File[] = [];
     for (const image of this.images) {
