@@ -35,6 +35,11 @@ class InventoryController {
         return inventoryService.isInStock(skuCode, quantity);
     }
 
+    @GetMapping("/checkQuantity")
+    public boolean checkQuantity(@RequestParam Long productId, @RequestParam int quantity) {
+        return inventoryService.checkQuantity(productId, quantity);
+    }
+
     @GetMapping("/findSkuCode")
     public Optional<Inventory> findBySkuCode(@RequestParam String skuCode) {
         return inventoryService.findBySkuCode(skuCode);

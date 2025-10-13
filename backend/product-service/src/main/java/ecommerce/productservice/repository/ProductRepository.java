@@ -77,7 +77,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<SearchProductResponse> searchProducts(
             @Param("keyword") String keyword,
             @Param("categoryId") Long categoryId,
-            @Param("brandId") Long brandId,
+            @Param("brandId") List<Long> brandId,
             @Param("priceFrom") BigDecimal priceFrom,
             @Param("priceTo") BigDecimal priceTo,
             @Param("ratingFrom") Double ratingFrom,
@@ -87,9 +87,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query("""
                 SELECT DISTINCT p
                 FROM Product p
-                JOIN FETCH p.category
+                JOIN FETCH p.category c
                 JOIN p.tags t
-                WHERE t.id IN :tagIds
+                WHERE t.id IN :tagIds AND c.children IS EMPTY
             """)
     Page<Product> getAllByTagIds(@Param("tagIds") List<Long> tagIds, Pageable pageable);
 

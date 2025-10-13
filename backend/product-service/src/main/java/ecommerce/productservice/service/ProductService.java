@@ -4,6 +4,7 @@ import ecommerce.apicommon1.model.response.ProductPriceResponse;
 import ecommerce.productservice.dto.request.CreateProductRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.request.SearchRequest;
+import ecommerce.productservice.dto.response.ProductByTagResponse;
 import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.dto.response.ProductViewResponse;
 import ecommerce.productservice.dto.response.SearchProductResponse;
@@ -29,7 +30,7 @@ public interface ProductService {
 
     String getSkuCodeByProductId(Long productId);
 
-    Page<ProductResponse> getAllProductByTag(List<String> tags, Pageable pageable);
+    Page<ProductByTagResponse> getAllProductByTag(List<String> tags, Pageable pageable);
 
     ProductViewResponse viewProduct(Long productId);
 

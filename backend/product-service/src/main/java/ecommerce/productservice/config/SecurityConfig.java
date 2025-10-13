@@ -23,7 +23,8 @@ public class SecurityConfig {
             "/api/brand/**",
             "/api/tag/**",
             "/api/category/**",
-            "/api/product/view/**"
+            "/api/product/view/**",
+            "/api/product/productByTag/**"
     };
 
     @Bean

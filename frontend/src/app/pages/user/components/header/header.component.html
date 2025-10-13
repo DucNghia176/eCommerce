@@ -44,6 +44,7 @@
     <!-- Search -->
     <div class="relative flex-1 max-w-md">
       <input
+        (keyup.enter)="onSearchInput($event)"
         class="w-full rounded-md py-2 pl-10 pr-3 text-sm text-gray-900 focus:outline-none focus:ring focus:ring-sky-500"
         placeholder="Search products..."
         type="text"

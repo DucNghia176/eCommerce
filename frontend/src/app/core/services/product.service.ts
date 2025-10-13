@@ -99,7 +99,7 @@ export class ProductService {
   searchProduct(params: {
     keyword?: string,
     categoryId?: number,
-    brandId?: number,
+    brandId?: number[],
     priceFrom?: number,
     priceTo?: number,
     ratingFrom?: number,
@@ -111,9 +111,15 @@ export class ProductService {
     Object.keys(params).forEach((key: string) => {
       const value = (params as any)[key];
       if (value !== undefined && value !== null) {
-        queryParams = queryParams.append(key, value);
+        if (Array.isArray(value)) {
+          value.forEach(v => {
+            queryParams = queryParams.append(key, encodeURIComponent(v.toString()));
+          });
+        } else {
+          queryParams = queryParams.append(key, encodeURIComponent(value.toString()));
+        }
       }
-    })
+    });
     return this.http.get<ApiResponse<Page<SearchProductResponse>>>(`${this.apiUrl}/search`, {params: queryParams})
       .pipe(
         map(response => {

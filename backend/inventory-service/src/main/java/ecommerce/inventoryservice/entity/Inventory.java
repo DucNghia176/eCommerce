@@ -24,6 +24,9 @@ public class Inventory {
     @Column(name = "SKU_CODE")
     private String skuCode;
 
+    @Column(name = "PRODUCT_ID")
+    private Long productId;
+
     @Column(name = "NAME")
     private String name;
 

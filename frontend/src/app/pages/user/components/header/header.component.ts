@@ -64,6 +64,15 @@ export class HeaderComponent implements OnInit {
     this.loadCategories();
   }
 
+  onSearchInput(event: any) {
+    const keyword = event.target.value.trim();
+
+    if (keyword.length > 0) {
+      // Điều hướng sang trang tìm kiếm, truyền keyword qua query params
+      this.router.navigate(['/user/shop'], {queryParams: {keyword}});
+    }
+  }
+
   private loadCategories() {
     this.categoryService.getAllWithFeature()
       .subscribe({

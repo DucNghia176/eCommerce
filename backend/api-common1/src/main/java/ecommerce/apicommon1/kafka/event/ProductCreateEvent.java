@@ -6,10 +6,11 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProductCreateEvent {
+    private Long productId;
     private String skuCode;
     private String name;
     //    private Integer quantity;

@@ -38,12 +38,12 @@ export interface CreateProductResponse {
 
 export interface SearchProductResponse {
   id: number,
-  productName: string,
-  imageUrls: string,
+  name: string,
+  thumbnailUrl: string,
   price: string,
-  discount: string,
-  rating: string,
-  totalUser: number,
+  discountPrice: string,
+  score: string,
+  user: number,
 }
 
 export interface ProductViewResponse extends ProductResponse {

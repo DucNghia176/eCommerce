@@ -21,6 +21,7 @@ public class InventoryListenerToProduct {
         log.info("📦 Nhận event tạo sản phẩm: {}", event);
         Inventory inventory = Inventory.builder()
                 .skuCode(event.getSkuCode())
+                .productId(event.getProductId())
                 .name(event.getName())
                 .quantity(0)
                 .reservedQuantity(0)

@@ -1,4 +1,4 @@
-<div class="grid grid-cols-4 gap-4">
+<div class="grid grid-cols-4 gap-10">
   <!-- left-->
   <aside class="space-y-6 col-span-1">
     <!--category-->
@@ -30,28 +30,29 @@
     <!--    price-->
     <div class="border-b border-gray-200 pb-3 space-y-2">
       <h3 class="font-medium text-base">PRICE RANGE</h3>
-
       <!-- Hiển thị giá trị hiện tại -->
-      <div class="flex items-center gap-2">
-        <label class="text-gray-700">Min:</label>
-        <nz-input-number
-          (ngModelChange)="onMinInputChange($event)"
-          [(ngModel)]="priceRange[0]"
-          [nzMax]="priceRange[1]"
-          [nzMin]="0"
-          [nzStep]="1"
-          class="w-24"
-        ></nz-input-number>
+      <div *ngIf="priceRange">
+        <div class="flex items-center gap-2">
+          <label class="text-gray-700">Min:</label>
+          <nz-input-number
+            (ngModelChange)="onMinInputChange($event)"
+            [(ngModel)]="priceRange[0]"
+            [nzMax]="priceRange[1]"
+            [nzMin]="0"
+            [nzStep]="1"
+            class="w-24"
+          ></nz-input-number>
 
-        <label class="text-gray-700">Max:</label>
-        <nz-input-number
-          (ngModelChange)="onMaxInputChange($event)"
-          [(ngModel)]="priceRange[1]"
-          [nzMax]="1000"
-          [nzMin]="priceRange[0]"
-          [nzStep]="1"
-          class="w-24"
-        ></nz-input-number>
+          <label class="text-gray-700">Max:</label>
+          <nz-input-number
+            (ngModelChange)="onMaxInputChange($event)"
+            [(ngModel)]="priceRange[1]"
+            [nzMax]="1000000000"
+            [nzMin]="priceRange[0]"
+            [nzStep]="1"
+            class="w-24"
+          ></nz-input-number>
+        </div>
       </div>
 
       <!-- Slider 2 đầu -->
@@ -84,6 +85,37 @@
         </label>
       </div>
     </div>
+
+    <!-- SCORE -->
+    <div class="border-b border-gray-200 pb-3 space-y-2">
+      <h3 class="font-medium text-base">SCORE</h3>
+
+      <div class="flex flex-col space-y-2">
+        <label
+          *ngFor="let star of [5,4,3,2,1]"
+          [ngClass]="{'bg-gray-100': ratingFrom === star}"
+          class="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-gray-100 transition-colors"
+        >
+          <!-- radio ẩn, chỉ để binding -->
+          <input
+            [(ngModel)]="ratingFrom"
+            [value]="star"
+            class="hidden"
+            type="radio"
+          />
+          <nz-rate
+            (click)="ratingFrom = star; search()"
+            [ngModel]="star"
+            [nzAllowHalf]="false"
+            [nzCount]="5"
+            [nzDisabled]="true"
+          ></nz-rate>
+
+          <!-- Text "trở lên" -->
+          <span *ngIf="star !== 5" class="text-gray-700 text-sm">trở lên</span>
+        </label>
+      </div>
+    </div>
   </aside>
 
   <!-- right -->
@@ -92,28 +124,41 @@
     <!--    header-->
     <div class="flex justify-between items-center gap-3 mb-4">
       <!--    search-->
-      <div class="w-2/5">
-        <label class="relative border border-gray-200 flex items-center gap-2 rounded overflow-hidden">
-          <input
-            class="w-full p-2 outline-none"
-            placeholder="Search products name..."
-            type="search"
-          >
-          <fa-icon [icon]="faSearch" class="text-gray-500 right-2 absolute"></fa-icon>
-        </label>
-      </div>
+      <!--      <div class="w-2/5">-->
+      <!--        <label class="relative border border-gray-200 flex items-center gap-2 rounded overflow-hidden">-->
+      <!--          <input-->
+      <!--            (input)="onSearchInput($event)"-->
+      <!--            class="w-full p-2 outline-none"-->
+      <!--            placeholder="Search products name..."-->
+      <!--            type="search"-->
+      <!--          >-->
+      <!--          <fa-icon [icon]="faSearch" class="text-gray-500 right-2 absolute"></fa-icon>-->
+      <!--        </label>-->
+      <!--      </div>-->
 
       <!--      sort by-->
+      <!-- Sort by -->
       <div class="flex items-center gap-2">
-        <label class="text-gray-500 ">Sort by:</label>
+        <label class="text-gray-500">Sort by:</label>
+
         <select
+          (change)="onSortChange($event)"
           [(ngModel)]="selectedSort"
           class="border border-gray-300 rounded p-2 outline-none"
         >
-          <option value="laster">Mới nhất</option>
-          <option value="price">Giá</option>
-          <option value="name">Giá</option>
+          <option value="name">Name</option>
+          <option value="price">Price</option>
+          <option value="score">Rating</option>
         </select>
+
+        <!-- Nút đổi chiều sort -->
+        <button
+          (click)="toggleSortOrder()"
+          class="text-gray-500 hover:text-orange-500 transition"
+          title="Đổi chiều sắp xếp"
+        >
+          {{ sortOrder === 'asc' ? '↑' : '↓' }}
+        </button>
       </div>
     </div>
 

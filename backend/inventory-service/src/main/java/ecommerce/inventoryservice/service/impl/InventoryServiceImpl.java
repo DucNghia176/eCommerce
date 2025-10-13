@@ -32,6 +32,13 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public boolean checkQuantity(Long productId, int quantity) {
+        Inventory inventory = inventoryRepository.findByProductId(productId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với mã : " + productId));
+        return inventory.getQuantity() >= quantity;
+    }
+
+    @Override
     public Optional<Inventory> findBySkuCode(String skuCode) {
         return inventoryRepository.findBySkuCode(skuCode);
     }
@@ -110,7 +117,7 @@ public class InventoryServiceImpl implements InventoryService {
                     .quantity(inventory.getQuantity())
                     .reservedQuantity(inventory.getReservedQuantity())
                     .build();
-            
+
             return ApiResponse.<InventoryResponse>builder()
                     .code(200)
                     .message("Đặt hàng thành công. Kho đã được cập nhật.")
@@ -165,6 +172,7 @@ public class InventoryServiceImpl implements InventoryService {
             return 0;
         }
     }
+
 
     @Override
     public Map<String, Integer> extractSkuCodes(List<String> skuCodes) {

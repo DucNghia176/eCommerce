@@ -21,6 +21,7 @@ import ecommerce.productservice.status.NotificationType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,11 +57,13 @@ public class ProductServiceImpl implements ProductService {
     private final RedisClient redisClient;
     private final ObjectMapper objectMapper;
     private final CacheHelper cacheHelper;
+    private final RatingRepository ratingRepository;
 
     @Transactional
     @Override
     public ProductResponse createProduct(CreateProductRequest request, List<MultipartFile> imageUrls) {
-        Category category = findCategory(request.getCategoryId());
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + request.getCategoryId()));
 
         // Tạo SKU và entity
         Product product = productMapper.toEntity(request);
@@ -79,12 +82,13 @@ public class ProductServiceImpl implements ProductService {
         replaceProductImages(product, imageUrls, false);
 
         // Gửi event Kafka
-        productKafka.send("product-create", new ProductCreateEvent(
-                product.getSkuCode(),
-                product.getName(),
-                product.getPrice()
-        ));
-
+        productKafka.send("product-create", ProductCreateEvent.builder()
+                .productId(product.getId())
+                .skuCode(product.getSkuCode())
+                .name(product.getName())
+                .importPrice(product.getPrice())
+                .build());
+        
         notificationKafka.send("new-product-topic", new NotificationEvent(
                 null,
                 "Sản phẩm mới: " + product.getName(),
@@ -100,16 +104,20 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse updateProduct(Long id, ProductUpdateInfoRequest request, List<MultipartFile> imageUrls) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy sản phẩm với ID: " + id));
-        Category category = findCategory(request.getCategoryId());
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + request.getCategoryId()));
 
         // Cập nhật thông tin cơ bản
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setPrice(request.getPrice());
-        product.setDiscount(request.getDiscount());
-        product.setBrandId(request.getBrandId());
-        product.setUnit(request.getUnit());
-        product.setCategory(category);
+        product = Product.builder()
+                .name(request.getName())
+                .price(request.getPrice())
+                .description(request.getDescription())
+                .category(category)
+                .discount(request.getDiscount())
+                .brandId(request.getBrandId())
+                .unit(request.getUnit())
+                .build();
 
         // Cập nhật tags
         List<Tag> tags = tagRepository.findAllById(request.getTags());
@@ -128,12 +136,6 @@ public class ProductServiceImpl implements ProductService {
         return buildProductResponse(product);
     }
 
-// Các hàm phụ trợ
-
-    private Category findCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy danh mục với ID: " + categoryId));
-    }
 
     private Set<ProductAttribute> buildProductAttributes(Product product, List<AttributeRequest> attributes) {
         Set<ProductAttribute> productAttributes = new HashSet<>();
@@ -272,7 +274,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductResponse> getAllProductByTag(List<String> tags, Pageable pageable) {
+    public Page<ProductByTagResponse> getAllProductByTag(List<String> tags, Pageable pageable) {
         String tagPart = String.join(",", tags);
         String redisKey = String.format(
                 "product:getByTag:%s_%d_%d",
@@ -281,8 +283,8 @@ public class ProductServiceImpl implements ProductService {
                 pageable.getPageSize()
         );
 
-        if (!redisClient.exists(redisKey)) {
-            cacheHelper.getPageCache(redisKey, ProductResponse.class);
+        if (redisClient.exists(redisKey)) {
+            cacheHelper.getPageCache(redisKey, ProductByTagResponse.class);
         }
 
         List<Long> tagIds = tagRepository.findByNameIn(tags)
@@ -305,9 +307,11 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .collect(Collectors.toMap(Brand::getId, Function.identity()));
 
-        Page<ProductResponse> responses = products.map(product -> {
-            ProductResponse response = productMapper.toResponse(product);
+        Page<ProductByTagResponse> responses = products.map(product -> {
+            ProductByTagResponse response = new ProductByTagResponse();
+            ProductResponse base = productMapper.toResponse(product);
 
+            BeanUtils.copyProperties(base, response);
             // Set quantity
             response.setQuantity(quantityMap.getOrDefault(product.getSkuCode(), 0));
 
@@ -331,6 +335,9 @@ public class ProductServiceImpl implements ProductService {
                     .findFirst()
                     .orElse(null));
 
+            response.setScore(Optional.ofNullable(ratingRepository.getAverageScoreByProductId(product.getId())).orElse(0.0));
+            response.setUser(Optional.ofNullable(ratingRepository.countByProductId(product.getId())).orElse(0L));
+
             return response;
         });
 
@@ -352,11 +359,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductViewResponse response = productRepository.findProduct(productId);
 
-        try {
-            response.setQuantity(inventoryClient.getQuantity(response.getSkuCode()));
-        } catch (Exception e) {
-            response.setQuantity(null);
-        }
+        response.setQuantity(inventoryClient.getQuantity(response.getSkuCode()));
 
         List<String> imageUrls = productImageRepository.findImageUrl(productId);
 

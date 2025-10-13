@@ -38,16 +38,28 @@ export class BreadcrumbComponent implements OnInit {
   }
 
   createBreadcrumbs(url: string): void {
-    const segments = url.split('/').filter(x => x); // cắt url thành mảng
+    // Bỏ phần query string (nếu có)
+    const cleanUrl = url.split('?')[0];
+
+    // Cắt url thành mảng các segment, loại bỏ rỗng
+    const segments = cleanUrl.split('/').filter(x => x);
+
     let accumulatedUrl = '';
     this.breadcrumbs = segments.map(segment => {
       accumulatedUrl += '/' + segment;
+
+      // Nếu là "user" thì không thêm vào breadcrumb
+      if (segment.toLowerCase() === 'user') {
+        return null;
+      }
+
       return {
         label: this.formatLabel(segment),
         url: accumulatedUrl
       };
-    });
+    }).filter(Boolean) as { label: string; url: string }[];
   }
+
 
   // Cắt chữ cho đẹp (viết hoa chữ cái đầu)
   formatLabel(segment: string): string {

@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface InventoryService {
     boolean isInStock(String skuCode, int quantity);
 
+    boolean checkQuantity(Long productId, int quantity);
+
     Optional<Inventory> findBySkuCode(String skuCode);
 
     ApiResponse<InventoryResponse> importQuantity(InventoryRequest request);

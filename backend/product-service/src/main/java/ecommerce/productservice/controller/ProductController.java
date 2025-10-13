@@ -5,6 +5,7 @@ import ecommerce.apicommon1.model.response.ProductPriceResponse;
 import ecommerce.productservice.dto.request.CreateProductRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.request.SearchRequest;
+import ecommerce.productservice.dto.response.ProductByTagResponse;
 import ecommerce.productservice.dto.response.ProductResponse;
 import ecommerce.productservice.dto.response.ProductViewResponse;
 import ecommerce.productservice.dto.response.SearchProductResponse;
@@ -79,10 +80,10 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("search")
+    @GetMapping("/search")
     public ApiResponse<Page<SearchProductResponse>> search(@RequestParam(required = false) String keyword,
                                                            @RequestParam(required = false) Long category,
-                                                           @RequestParam(required = false) Long brand,
+                                                           @RequestParam(required = false) List<Long> brand,
                                                            @RequestParam(required = false) BigDecimal priceFrom,
                                                            @RequestParam(required = false) BigDecimal priceTo,
                                                            @RequestParam(required = false) Double ratingFrom,
@@ -109,10 +110,10 @@ public class ProductController {
         return productService.getSkuCodeByProductId(id);
     }
 
-    @GetMapping("/allProductByTag")
-    public ApiResponse<Page<ProductResponse>> getAllProductByTag(@RequestParam(required = false) List<String> tags, Pageable pageable) {
-        Page<ProductResponse> responses = productService.getAllProductByTag(tags, pageable);
-        return ApiResponse.<Page<ProductResponse>>builder()
+    @GetMapping("/productByTag")
+    public ApiResponse<Page<ProductByTagResponse>> getAllProductByTag(@RequestParam(required = false) List<String> tags, Pageable pageable) {
+        Page<ProductByTagResponse> responses = productService.getAllProductByTag(tags, pageable);
+        return ApiResponse.<Page<ProductByTagResponse>>builder()
                 .code(200)
                 .message("thành công")
                 .data(responses)

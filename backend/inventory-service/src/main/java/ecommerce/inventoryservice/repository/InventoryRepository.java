@@ -29,4 +29,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, String> {
             nativeQuery = true
     )
     int reserveStock(String skuCode, int orderQty);
+
+    Optional<Inventory> findByProductId(Long productId);
 }

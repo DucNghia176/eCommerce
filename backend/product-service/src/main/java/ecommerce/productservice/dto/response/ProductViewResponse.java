@@ -1,36 +1,33 @@
 package ecommerce.productservice.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductViewResponse {
-    private Long id;
-    private String name;
-    private String skuCode;
-    private Integer quantity;
-    private BigDecimal price;
-    private String brand;
-    private String category;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ProductViewResponse extends ProductResponse {
     private Double score;
     private Long user;
-    private List<String> imageUrls;
-    private List<ProductAttributeResponse> attributes;
     private List<Long> relatedProducts;
 
     public ProductViewResponse(Long id, String name, String skuCode, BigDecimal price, String brand, String category, Double score, Long user) {
-        this.id = id;
-        this.name = name;
-        this.skuCode = skuCode;
-        this.price = price;
-        this.brand = brand;
-        this.category = category;
+        super.setId(id);
+        super.setName(name);
+        super.setSkuCode(skuCode);
+        super.setPrice(price);
+        super.setBrand(BrandResponse.builder()
+                .name(brand)
+                .build());
+        super.setCategoryName(category);
         this.score = score;
         this.user = user;
     }

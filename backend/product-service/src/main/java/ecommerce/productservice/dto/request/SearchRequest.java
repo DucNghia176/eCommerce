@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
 public class SearchRequest {
     private String keyword;
     private Long categoryId;
-    private Long brandId;
+    private List<Long> brandId;
     private BigDecimal priceFrom;
     private BigDecimal priceTo;
     private Double ratingFrom;

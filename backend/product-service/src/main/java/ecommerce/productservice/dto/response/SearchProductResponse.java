@@ -13,10 +13,10 @@ import java.math.BigDecimal;
 @Builder
 public class SearchProductResponse {
     private Long id;
-    private String productName;
-    private String imageUrl;
+    private String name;
+    private String thumbnailUrl;
     private BigDecimal price;
-    private BigDecimal discount;
-    private Double rating;
-    private Long totalUser;
+    private BigDecimal discountPrice;
+    private Double score;
+    private Long user;
 }

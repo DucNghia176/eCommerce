@@ -1,12 +1,15 @@
-import {Component} from '@angular/core';
+import {Component, inject, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {CommonModule, NgClass, NgForOf} from "@angular/common";
 import {NzSliderComponent} from "ng-zorro-antd/slider";
 import {FormsModule} from "@angular/forms";
 import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
-import {ProductViewResponse} from "../../../../core/models/product.model";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faSearch} from "@fortawesome/free-solid-svg-icons";
 import {ProductCardComponent} from "../../share/product-card/product-card.component";
+import {SearchProductResponse} from "../../../../core/models/product.model";
+import {ProductService} from "../../../../core/services/product.service";
+import {debounceTime, distinctUntilChanged, Subject} from "rxjs";
+import {NzRateComponent} from "ng-zorro-antd/rate";
 
 export interface Category {
   id: number;
@@ -30,11 +33,12 @@ export interface Brand {
     FaIconComponent,
     ProductCardComponent,
     CommonModule,
+    NzRateComponent,
   ],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.scss'
 })
-export class ShopComponent {
+export class ShopComponent implements OnInit, OnChanges {
   categories: Category[] = [
     {id: 1, name: 'Điện thoại'},
     {id: 2, name: 'Laptop'},
@@ -42,7 +46,6 @@ export class ShopComponent {
     {id: 4, name: 'Tai nghe'},
     {id: 5, name: 'Đồng hồ'},
   ];
-
   brands: Brand[] = [
     {id: 1, name: 'Apple'},
     {id: 2, name: 'Samsung'},
@@ -57,532 +60,252 @@ export class ShopComponent {
     {id: 11, name: 'Sony'},
     {id: 12, name: 'Xiaomi'},
   ];
-
-  products: ProductViewResponse[] = [
+  products: SearchProductResponse[] = [
     {
       id: 1,
-      name: "Điện thoại Galaxy S23",
-      description: "Smartphone cao cấp Samsung Galaxy S23 với màn hình Dynamic AMOLED 6.1 inch.",
-      price: "23000000",
-      discountPrice: "21500000",
-      categoryId: 101,
-      categoryName: "Điện thoại",
+      name: "Product 1",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 1, name: "Samsung"},
-        {id: 2, name: "New"}
-      ],
-      unit: "cái",
-      quantity: 50,
-      skuCode: "S23-001",
-      brand: {id: 1, name: "Samsung"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Đen", "Trắng", "Xanh"]},
-        {attribute: "Bộ nhớ", value: ["128GB", "256GB"]}
-      ],
-      score: "4.7",
-      user: 120,
-      relatedProducts: [2, 3]
+      price: "120000",
+      discountPrice: "100000",
+      score: "4.5",
+      user: 101
     },
     {
       id: 2,
-      name: "Laptop Dell XPS 13",
-      description: "Laptop Dell XPS 13 2025, i7 16GB RAM, 512GB SSD, màn hình FHD.",
-      price: "35000000",
-      discountPrice: "33000000",
-      categoryId: 102,
-      categoryName: "Laptop",
+      name: "Product 2",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 3, name: "Dell"},
-        {id: 4, name: "BestSeller"}
-      ],
-      unit: "cái",
-      quantity: 30,
-      skuCode: "XPS13-002",
-      brand: {id: 2, name: "Dell"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Bạc", "Đen"]},
-        {attribute: "RAM", value: ["16GB", "32GB"]}
-      ],
-      score: "4.5",
-      user: 75,
-      relatedProducts: [1, 3]
+      price: "250000",
+      discountPrice: "220000",
+      score: "4.0",
+      user: 102
     },
     {
       id: 3,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      name: "Product 3",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
+      price: "50000",
+      discountPrice: "45000",
+      score: "3.8",
+      user: 103
+    },
+    {
       id: 4,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      name: "Product 4",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
+      price: "300000",
+      discountPrice: "280000",
+      score: "4.7",
+      user: 104
+    },
+    {
       id: 5,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      name: "Product 5",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
+      price: "150000",
+      discountPrice: "130000",
+      score: "4.2",
+      user: 105
+    },
+    {
       id: 6,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      name: "Product 6",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
+      price: "80000",
+      discountPrice: "75000",
+      score: "3.5",
+      user: 106
+    },
+    {
       id: 7,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      name: "Product 7",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
+      price: "180000",
+      discountPrice: "160000",
+      score: "4.6",
+      user: 107
+    },
+    {
       id: 8,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      name: "Product 8",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 7,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "220000",
+      discountPrice: "200000",
+      score: "4.1",
+      user: 108
+    },
+    {
+      id: 9,
+      name: "Product 9",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 8,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "90000",
+      discountPrice: "85000",
+      score: "3.9",
+      user: 109
+    },
+    {
+      id: 10,
+      name: "Product 10",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
+      price: "270000",
+      discountPrice: "250000",
       score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 7,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      user: 110
+    },
+    {
+      id: 11,
+      name: "Product 11",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 8,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "140000",
+      discountPrice: "120000",
+      score: "4.3",
+      user: 111
+    },
+    {
+      id: 12,
+      name: "Product 12",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 7,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "100000",
+      discountPrice: "95000",
+      score: "3.7",
+      user: 112
+    },
+    {
+      id: 13,
+      name: "Product 13",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 8,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "320000",
+      discountPrice: "300000",
+      score: "4.9",
+      user: 113
+    },
+    {
+      id: 14,
+      name: "Product 14",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 7,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "60000",
+      discountPrice: "55000",
+      score: "3.6",
+      user: 114
+    },
+    {
+      id: 15,
+      name: "Product 15",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 8,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "400000",
+      discountPrice: "380000",
+      score: "4.4",
+      user: 115
+    },
+    {
+      id: 16,
+      name: "Product 16",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 7,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "75000",
+      discountPrice: "70000",
+      score: "3.8",
+      user: 116
+    },
+    {
+      id: 17,
+      name: "Product 17",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }, {
-      id: 8,
-      name: "Tai nghe AirPods Pro",
-      description: "Tai nghe không dây Apple AirPods Pro, chống ồn chủ động, sạc không dây.",
-      price: "7000000",
-      discountPrice: "6500000",
-      categoryId: 103,
-      categoryName: "Phụ kiện",
+      price: "200000",
+      discountPrice: "180000",
+      score: "4.0",
+      user: 117
+    },
+    {
+      id: 18,
+      name: "Product 18",
       thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-      imageUrls: [
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
-        "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg"
-      ],
-      tags: [
-        {id: 5, name: "Apple"},
-        {id: 6, name: "Hot"}
-      ],
-      unit: "cái",
-      quantity: 100,
-      skuCode: "APRO-003",
-      brand: {id: 3, name: "Apple"},
-      attributes: [
-        {attribute: "Màu sắc", value: ["Trắng"]}
-      ],
-      score: "4.8",
-      user: 200,
-      relatedProducts: [1, 2]
-    }
+      price: "95000",
+      discountPrice: "90000",
+      score: "3.9",
+      user: 118
+    },
+    {
+      id: 19,
+      name: "Product 19",
+      thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
+      price: "260000",
+      discountPrice: "240000",
+      score: "4.5",
+      user: 119
+    },
+    {
+      id: 20,
+      name: "Product 20",
+      thumbnailUrl: "https://res.cloudinary.com/dukqrda6g/image/upload/product/2/otkl8kxgl3byzklyhxxp.jpg",
+      price: "180000",
+      discountPrice: "160000",
+      score: "4.2",
+      user: 120
+    },
   ];
-
-  selectedCategoryId: number | null = null;
-  priceRange: [number, number] = [0, 5000];
-
+  @Input() keyword ?: string;
+  page: number = 0;
+  pageSize: number = 20;
+  total: number = 0;
+  sortOrder: 'asc' | 'desc' = 'desc';
+  ratingFrom?: number;
+  selectedCategoryId?: number;
+  priceRange!: [number, number];
   selectedBrandIds: number[] = [];
-  selectedSort = 'latest';
+  selectedSort = '';
   protected readonly faSearch = faSearch;
+  private searchSubject = new Subject<string>();
+  private productService = inject(ProductService);
 
-  toggleCategory(cateId: number): void {
-    this.selectedCategoryId = this.selectedCategoryId === cateId ? null : cateId;
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['keyword'] && !changes['keyword'].firstChange) {
+      this.search();
+    }
+  }
+
+  ngOnInit() {
+    if (this.keyword) {
+      this.search();
+    }
+
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(keyword => {
+      this.keyword = keyword;
+      this.search();
+    });
+
+    this.search();
+  }
+
+  onSearchInput(event: any) {
+    const value = event.target.value;
+    this.searchSubject.next(value);
+  }
+
+  toggleCategory(id: number): void {
+    this.selectedCategoryId = this.selectedCategoryId === id ? undefined : id;
+
+    this.search();
   }
 
   tooltipFormatter(value: number): string {
     return value.toLocaleString() + '₫';
   }
 
-  // Khi thay đổi giá trị min
   onMinInputChange(value: number) {
-    if (value <= this.priceRange[1]) {
-      this.priceRange = [value, this.priceRange[1]]; // update toàn bộ mảng
-    } else {
-      this.priceRange = [this.priceRange[1], this.priceRange[1]];
-    }
+    if (!this.priceRange) return;
+    const max = this.priceRange[1];
+    this.priceRange = [Math.min(value, max), max];
+    this.search();
   }
 
 // Khi thay đổi giá trị max
   onMaxInputChange(value: number) {
-    if (value >= this.priceRange[0]) {
-      this.priceRange = [this.priceRange[0], value]; // update toàn bộ mảng
-    } else {
-      this.priceRange = [this.priceRange[0], this.priceRange[0]];
-    }
+    if (!this.priceRange) return;
+    const min = this.priceRange[0];
+    this.priceRange = [min, Math.max(value, min)];
+    this.search();
   }
 
   toggleBrand(id: number) {
@@ -593,11 +316,45 @@ export class ShopComponent {
       // Thêm vào nếu chưa chọn
       this.selectedBrandIds.push(id);
     }
+    this.search();
   }
 
-  onSortChange() {
-    console.log('Sort by:', this.selectedSort);
-    // Ở đây bạn filter lại mảng products theo giá trị selectedSort
-    // Ví dụ: nếu price-asc → sort theo giá tăng dần
+
+  onSortChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.selectedSort = target.value;
+    this.sortOrder = 'desc';
+    this.search();
+  }
+
+  toggleSortOrder() {
+    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    this.search();
+  }
+
+
+  search(page: number = 0) {
+    console.log(`Sorting by ${this.selectedSort} in ${this.sortOrder} order`);
+
+    const params = {
+      keyword: this.keyword,
+      categoryId: this.selectedCategoryId ?? undefined,
+      brandId: this.selectedBrandIds.length > 0 ? this.selectedBrandIds : undefined,
+      priceFrom: this.priceRange?.[0],
+      priceTo: this.priceRange?.[1],
+      ratingFrom: this.ratingFrom,
+      page,
+      size: this.pageSize,
+      sort: `${this.selectedSort},${this.sortOrder}`
+    }
+    this.productService.searchProduct(params).subscribe({
+      next: data => {
+        this.products = data.content;
+        this.page = data.totalPages;
+        this.pageSize = data.size;
+        this.total = data.totalElements;
+      },
+      error: error => console.log(error)
+    })
   }
 }
