@@ -14,14 +14,15 @@ const jwtAuthentication = (req, res, next) => {
     const token = authHeader.substring(7); // Bỏ "Bearer "
 
     try {
-        const claims = jwt.verify(token, signerKey); // validate và decode token
+        const claims = jwt.verify(token, signerKey);
 
         // Lấy userId và roles từ payload
         req.user = {
-            userId: claims.sub,
+            userId: claims.userId,
             roles: Array.isArray(claims.role) ? claims.role : []
         };
 
+        global.jwtToken = authHeader;
         next(); // tiếp tục xử lý request
     } catch (err) {
         console.error('Invalid JWT:', err.message);

@@ -4,7 +4,6 @@ const {Eureka} = require('eureka-js-client');
 const client = new Eureka({
     instance: {
         app: 'cart-service-nodejs',
-        instanceId: 'cart-service-nodejs-1',
         hostName: 'localhost',
         ipAddr: '127.0.0.1',
         statusPageUrl: 'http://localhost:3000/info',
