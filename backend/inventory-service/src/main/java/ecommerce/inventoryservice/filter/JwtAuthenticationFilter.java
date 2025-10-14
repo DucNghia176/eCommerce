@@ -35,8 +35,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
+            System.out.println("🔑 Nhận token: " + jwt.substring(0, 40) + "...");
 
             if (!jwtUtil.validateToken(jwt)) {
+                System.out.println("❌ Token không hợp lệ");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
