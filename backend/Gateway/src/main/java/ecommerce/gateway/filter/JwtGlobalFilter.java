@@ -29,6 +29,8 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
             "/oauth2",
             "/login/oauth2",
             "/api/product/search",
+            "/api/product/productByTag",
+            "/api/product/productByTag/**",
             "/api/brand",
             "/api/category",
             "/api/cartNodejs",
