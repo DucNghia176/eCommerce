@@ -54,9 +54,18 @@
 
     <!-- Icons -->
     <div class="flex items-center gap-5 text-xl">
-      <fa-icon [icon]="faCartShopping" class="cursor-pointer hover:text-gray-300"></fa-icon>
-      <fa-icon [icon]="faHeart" class="cursor-pointer hover:text-gray-300"></fa-icon>
-      <fa-icon [icon]="faUser" class="cursor-pointer hover:text-gray-300"></fa-icon>
+      <fa-icon (click)="onCartClick()"
+               [icon]="faCartShopping"
+               class="cursor-pointer hover:text-gray-300">
+      </fa-icon>
+      <fa-icon (click)="onWishlistClick()"
+               [icon]="faHeart"
+               class="cursor-pointer hover:text-gray-300">
+      </fa-icon>
+      <fa-icon (click)="onProfileClick()"
+               [icon]="faUser"
+               class="cursor-pointer hover:text-gray-300">
+      </fa-icon>
     </div>
   </div>
 </header>

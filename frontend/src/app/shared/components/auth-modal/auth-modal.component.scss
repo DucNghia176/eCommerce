@@ -1,0 +1,32 @@
+
+::ng-deep .tailwind-auth-modal .ant-modal-content {
+  @apply rounded-xl shadow-lg;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+::ng-deep .tailwind-auth-modal .ant-modal-confirm-body-wrapper {
+  @apply p-4;
+}
+
+::ng-deep .tailwind-auth-modal .ant-modal-confirm-btns {
+  @apply flex justify-center mt-4;
+}
+
+::ng-deep .tailwind-auth-modal .ant-btn-primary {
+  @apply bg-sky-600 hover:bg-sky-700 border-0 text-white px-5 rounded-md;
+}
+
+::ng-deep .tailwind-auth-modal .ant-btn-default {
+  @apply border border-sky-500 text-sky-600 hover:bg-sky-50 px-5 rounded-md;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -17,6 +17,5 @@ export class StatusDirective {
     this.el.nativeElement.style.backgroundColor = meta.bgColor ?? '#f3f4f6';
     this.el.nativeElement.style.padding = '2px 8px';
     this.el.nativeElement.style.borderRadius = '8px';
-    // this.el.nativeElement.style.display = 'inline-block';
   }
 }

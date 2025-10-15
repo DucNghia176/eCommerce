@@ -19,6 +19,7 @@ import {AllCategoryComponent} from "../all-category/all-category.component";
 import {AuthService} from "../../../../core/services/auth.service";
 import {ChildCategoryResponse, FeaturedProductResponse} from "../../../../core/models/category.model";
 import {CategoryService} from "../../../../core/services/category.service";
+import {AuthModalService} from "../../../../shared/service/auth-modal.service";
 
 @Component({
   selector: 'app-header',
@@ -34,6 +35,7 @@ import {CategoryService} from "../../../../core/services/category.service";
 export class HeaderComponent implements OnInit {
   categories?: ChildCategoryResponse[];
   products?: FeaturedProductResponse[];
+  isLoggedIn?: boolean;
   protected readonly faTwitter = faTwitter;
   protected readonly faFacebook = faFacebook;
   protected readonly faPinterest = faPinterest;
@@ -54,6 +56,7 @@ export class HeaderComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private categoryService = inject(CategoryService);
+  private authModal = inject(AuthModalService);
 
   logout() {
     this.authService.logout();
@@ -61,6 +64,10 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService.isAuthenticated$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
+
     this.loadCategories();
   }
 
@@ -70,6 +77,30 @@ export class HeaderComponent implements OnInit {
     if (keyword.length > 0) {
       // Điều hướng sang trang tìm kiếm, truyền keyword qua query params
       this.router.navigate(['/user/shop'], {queryParams: {keyword}});
+    }
+  }
+
+  onCartClick(): void {
+    if (!this.isLoggedIn) {
+      this.authModal.openModal();
+    } else {
+      this.router.navigate(['/user/cart']);
+    }
+  }
+
+  onWishlistClick(): void {
+    if (!this.isLoggedIn) {
+      this.authModal.openModal();
+    } else {
+      this.router.navigate(['/user/wishlist']);
+    }
+  }
+
+  onProfileClick(): void {
+    if (!this.isLoggedIn) {
+      this.authModal.openModal();
+    } else {
+      this.router.navigate(['/user/profile']);
     }
   }
 
@@ -84,4 +115,5 @@ export class HeaderComponent implements OnInit {
         }
       })
   }
+
 }

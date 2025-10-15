@@ -8,6 +8,7 @@ import {NzRateComponent} from "ng-zorro-antd/rate";
 import {FormsModule} from "@angular/forms";
 import {CurrencyPipe} from "@angular/common";
 import {ProductDetailComponent} from "../../components/product-detail/product-detail.component";
+import {AuthModalService} from "../../../../shared/service/auth-modal.service";
 
 @Component({
   selector: 'app-product-card',
@@ -30,7 +31,7 @@ export class ProductCardComponent {
   protected readonly faCartPlus = faCartPlus;
   protected readonly faEye = faEye;
 
-  constructor(private modal: NzModalService, private router: Router) {
+  constructor(private modal: NzModalService, private router: Router, private authModal: AuthModalService,) {
   }
 
   viewDetail(product: any) {
@@ -53,40 +54,15 @@ export class ProductCardComponent {
 
   addToCart(product: any) {
     if (!this.isLoggedIn) {
-      this.openLoginModal();
+      this.authModal.openModal();
       return;
     }
-    // logic thêm vào cart
-    console.log('Add to cart', product);
   }
 
   addToWishlist(product: any) {
     if (!this.isLoggedIn) {
-      this.openLoginModal();
+      this.authModal.openModal();
       return;
     }
-    // logic thêm vào wishlist
-    console.log('Add to wishlist', product);
-  }
-
-  openLoginModal() {
-    this.modal.create({
-      nzTitle: 'Please login or register',
-      nzContent: 'Bạn cần đăng nhập để thực hiện thao tác này.',
-      nzFooter: [
-        {
-          label: 'Login',
-          onClick: () => {
-            this.router.navigate(['/auth/login']);
-          }
-        },
-        {
-          label: 'Register',
-          onClick: () => {
-            this.router.navigate(['/auth/register']);
-          }
-        }
-      ]
-    });
   }
 }
