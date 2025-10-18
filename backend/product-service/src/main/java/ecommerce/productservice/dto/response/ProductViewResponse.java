@@ -19,12 +19,13 @@ public class ProductViewResponse extends ProductResponse {
     private Long user;
     private List<Long> relatedProducts;
 
-    public ProductViewResponse(Long id, String name, String skuCode, BigDecimal price, String brand, String category, Double score, Long user) {
+    public ProductViewResponse(Long id, String name, String skuCode, BigDecimal price, Long branId, String brand, String category, Double score, Long user) {
         super.setId(id);
         super.setName(name);
         super.setSkuCode(skuCode);
         super.setPrice(price);
         super.setBrand(BrandResponse.builder()
+                .id(branId)
                 .name(brand)
                 .build());
         super.setCategoryName(category);

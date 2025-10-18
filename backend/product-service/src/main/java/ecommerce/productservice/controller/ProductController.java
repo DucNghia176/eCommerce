@@ -5,10 +5,7 @@ import ecommerce.apicommon1.model.response.ProductPriceResponse;
 import ecommerce.productservice.dto.request.CreateProductRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.request.SearchRequest;
-import ecommerce.productservice.dto.response.ProductByTagResponse;
-import ecommerce.productservice.dto.response.ProductResponse;
-import ecommerce.productservice.dto.response.ProductViewResponse;
-import ecommerce.productservice.dto.response.SearchProductResponse;
+import ecommerce.productservice.dto.response.*;
 import ecommerce.productservice.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -138,5 +135,10 @@ public class ProductController {
     @GetMapping("/price/{id}")
     public ProductPriceResponse productPrice(@PathVariable Long id) {
         return productService.getPriceByProductId(id);
+    }
+
+    @PostMapping("/image")
+    public Map<Long, ProductImageInfo> getProductImage(@RequestBody List<Long> ids) {
+        return productService.getImageUrl(ids);
     }
 }

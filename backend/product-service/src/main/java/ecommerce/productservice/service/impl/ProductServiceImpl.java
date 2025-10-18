@@ -88,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
                 .name(product.getName())
                 .importPrice(product.getPrice())
                 .build());
-        
+
         notificationKafka.send("new-product-topic", new NotificationEvent(
                 null,
                 "Sản phẩm mới: " + product.getName(),
@@ -377,8 +377,8 @@ public class ProductServiceImpl implements ProductService {
 
         List<Long> relatedIds = productRepository.findRelatedProductIds(product.getCategory().getId(), productId);
         if (relatedIds.size() > 100) {
-            Collections.shuffle(relatedIds); // trộn random
-            relatedIds = relatedIds.subList(0, 100); // lấy 100 sp đầu
+            Collections.shuffle(relatedIds);
+            relatedIds = relatedIds.subList(0, 100);
         }
         response.setRelatedProducts(relatedIds);
 
@@ -416,5 +416,19 @@ public class ProductServiceImpl implements ProductService {
                 .discountPercent(discountPercent)
                 .finalPrice(finalPrice)
                 .build();
+    }
+
+    @Override
+    public Map<Long, ProductImageInfo> getImageUrl(List<Long> ids) {
+        Map<Long, ProductImageInfo> response = productImageRepository.findByProductIdInAndIsThumbnail(ids)
+                .stream()
+                .collect(Collectors.toMap(
+                        img -> img.getProduct().getId(),
+                        img -> ProductImageInfo.builder()
+                                .imageUrl(img.getImageUrl())
+                                .name(img.getProduct().getName())
+                                .build()
+                ));
+        return response;
     }
 }

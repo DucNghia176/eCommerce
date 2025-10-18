@@ -54,7 +54,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<FeaturedProductResponse> findTopByCategoryIdAndTagName(@Param("categoryId") Long categoryId, @Param("tagName") String tagName, Pageable pageable);
 
     @Query("""
-            SELECT new ecommerce.productservice.dto.response.ProductViewResponse(p.id,p.name,p.skuCode,p.price, b.name, p.category.name, p.averageRating, p.totalReviews)
+            SELECT new ecommerce.productservice.dto.response.ProductViewResponse(p.id,p.name,p.skuCode,p.price,b.id, b.name, p.category.name, p.averageRating, p.totalReviews)
                          FROM Product p
                          LEFT JOIN Brand b ON b.id = p.brandId
                          WHERE p.id = :productId

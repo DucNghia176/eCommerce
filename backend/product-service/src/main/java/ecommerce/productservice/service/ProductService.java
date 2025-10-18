@@ -4,10 +4,7 @@ import ecommerce.apicommon1.model.response.ProductPriceResponse;
 import ecommerce.productservice.dto.request.CreateProductRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.request.SearchRequest;
-import ecommerce.productservice.dto.response.ProductByTagResponse;
-import ecommerce.productservice.dto.response.ProductResponse;
-import ecommerce.productservice.dto.response.ProductViewResponse;
-import ecommerce.productservice.dto.response.SearchProductResponse;
+import ecommerce.productservice.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,4 +35,5 @@ public interface ProductService {
 
     ProductPriceResponse getPriceByProductId(Long id);
 
+    Map<Long, ProductImageInfo> getImageUrl(List<Long> ids);
 }
