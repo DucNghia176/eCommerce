@@ -54,20 +54,38 @@
 
     <!-- Icons -->
     <div class="flex items-center gap-5 text-xl">
-      <fa-icon (click)="onCartClick()"
-               [icon]="faCartShopping"
-               class="cursor-pointer hover:text-gray-300">
-      </fa-icon>
-      <fa-icon (click)="onWishlistClick()"
-               [icon]="faHeart"
-               class="cursor-pointer hover:text-gray-300">
-      </fa-icon>
-      <fa-icon (click)="onProfileClick()"
-               [icon]="faUser"
-               class="cursor-pointer hover:text-gray-300">
-      </fa-icon>
+      <!--      giỏ hàng-->
+      <div (click)="onCartClick()" class="cart-wrapper hover:text-gray-300">
+        <fa-icon [icon]="faCartShopping" class="cart-icon"></fa-icon>
+        <nz-badge [nzCount]="cartItemCount" class="cart-badge" nzSize="small"></nz-badge>
+      </div>
+
+      <!--      //icon user-->
+      <button [nzDropdownMenu]="menuUser"
+              [nzTrigger]="'click'"
+              class="flex gap-2 border border-gray-200 p-2 hover:text-gray-300"
+              nz-dropdown
+              nzPlacement="bottomRight"
+      >
+        <ng-container *ngIf="isLoggedIn; else guest">
+          <span>{{ (user?.fullName || '').split(' ').slice(-1)[0] || user?.username }}</span>
+        </ng-container>
+        <ng-template #guest>
+          <span [routerLink]="['/auth/login']">Đăng nhập</span>
+        </ng-template>
+        <fa-icon [icon]="faUser"></fa-icon>
+      </button>
+
+      <nz-dropdown-menu #menuUser="nzDropdownMenu">
+        <ul *ngIf="isLoggedIn" nz-menu>
+          <li (click)="goToProfile()" nz-menu-item>Thông tin người dùng</li>
+          <li (click)="goToOrders()" nz-menu-item>Đơn hàng</li>
+          <li (click)="onLogout()" nz-menu-item>Đăng xuất</li>
+        </ul>
+      </nz-dropdown-menu>
     </div>
   </div>
+
 </header>
 
 <!-- Navbar -->

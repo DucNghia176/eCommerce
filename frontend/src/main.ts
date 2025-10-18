@@ -27,7 +27,11 @@ bootstrapApplication(AppComponent, {
       preventDuplicates: true,
       progressBar: true,
     }), provideNzI18n(en_US),
-    importProvidersFrom(FormsModule, BrowserAnimationsModule, NzModalModule),
+    importProvidersFrom(
+      FormsModule,
+      BrowserAnimationsModule,
+      NzModalModule
+    ),
     provideAnimationsAsync(),
     provideHttpClient()
   ]

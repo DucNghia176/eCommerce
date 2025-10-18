@@ -1,0 +1,40 @@
+.custom-badge {
+  margin-right: 20px;
+}
+
+::ng-deep .custom-badge .ant-badge-count {
+  background-color: white !important; /* Nền trắng */
+  color: #007bff !important; /* Chữ xanh */
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+}
+
+
+.cart-wrapper {
+  position: relative; /* để badge định vị so với icon */
+  display: inline-block;
+  cursor: pointer;
+}
+
+.cart-icon {
+  font-size: 25px; /* icon to */
+  color: #ffffff;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px; /* lên trên */
+  right: -6px; /* sang trái một chút */
+}
+
+.cart-badge ::ng-deep .ant-scroll-number {
+  background-color: #ff4d4f; /* màu đỏ */
+  color: #fff; /* chữ trắng */
+  border: none; /* bỏ viền */
+  min-width: 20px; /* chiều rộng tối thiểu */
+  height: 20px; /* chiều cao */
+  line-height: 20px; /* canh giữa chữ */
+  border-radius: 50%; /* bo tròn hoàn toàn */
+}
+
+

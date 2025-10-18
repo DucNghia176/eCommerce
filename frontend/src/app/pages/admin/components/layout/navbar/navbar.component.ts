@@ -1,7 +1,7 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {faBell, faChevronDown, faCommentAlt, faSearch} from "@fortawesome/free-solid-svg-icons";
-import {CommonModule, NgOptimizedImage} from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {Router} from "@angular/router";
 import {UserResponse} from "../../../../../core/models/user.model";
 import {UsersService} from "../../../../../core/services/users.service";
@@ -10,7 +10,7 @@ import {AuthService} from "../../../../../core/services/auth.service";
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [FontAwesomeModule, CommonModule, NgOptimizedImage],
+  imports: [FontAwesomeModule, CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
@@ -31,8 +31,12 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/user']);
+    this.authService.logout().subscribe({
+      next: () => {
+        window.location.href = '/user';
+      },
+      error: err => console.error(err)
+    });
   }
 
   ngOnInit() {

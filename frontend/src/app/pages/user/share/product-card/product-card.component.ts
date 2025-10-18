@@ -1,14 +1,16 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {NzModalModule, NzModalService} from "ng-zorro-antd/modal";
 import {Router} from "@angular/router";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faCartPlus, faHeart} from "@fortawesome/free-solid-svg-icons";
+import {faCartPlus} from "@fortawesome/free-solid-svg-icons";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {NzRateComponent} from "ng-zorro-antd/rate";
 import {FormsModule} from "@angular/forms";
 import {CurrencyPipe} from "@angular/common";
 import {ProductDetailComponent} from "../../components/product-detail/product-detail.component";
 import {AuthModalService} from "../../../../shared/service/auth-modal.service";
+import {AuthService} from "../../../../core/services/auth.service";
+import {CartService} from "../../../../core/services/cart.service";
 
 @Component({
   selector: 'app-product-card',
@@ -23,15 +25,22 @@ import {AuthModalService} from "../../../../shared/service/auth-modal.service";
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss'
 })
-export class ProductCardComponent {
+export class ProductCardComponent implements OnInit {
   @Input() product: any;
   isLoggedIn = false;
+  @Input() quantity: number = 1;
   @Input() viewMode: 'modal' | 'page' = 'modal';
-  protected readonly faHeart = faHeart;
   protected readonly faCartPlus = faCartPlus;
   protected readonly faEye = faEye;
+  private cartService = inject(CartService);
 
-  constructor(private modal: NzModalService, private router: Router, private authModal: AuthModalService,) {
+  constructor(private modal: NzModalService, private router: Router, private authModal: AuthModalService, private authService: AuthService) {
+  }
+
+  ngOnInit() {
+    this.authService.isAuthenticated$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
   }
 
   viewDetail(product: any) {
@@ -56,13 +65,13 @@ export class ProductCardComponent {
     if (!this.isLoggedIn) {
       this.authModal.openModal();
       return;
+    } else {
+      this.addToCartDetail(product.id, this.quantity);
     }
   }
 
-  addToWishlist(product: any) {
-    if (!this.isLoggedIn) {
-      this.authModal.openModal();
-      return;
-    }
+  addToCartDetail(productId: number, quantity: number) {
+    this.cartService.addToCart(productId, quantity).subscribe({});
   }
+
 }

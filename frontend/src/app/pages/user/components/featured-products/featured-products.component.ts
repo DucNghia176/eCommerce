@@ -37,7 +37,7 @@ export class FeaturedProductsComponent implements OnInit {
   products: ProductByTagResponse[] = [];
   categories: Category[] = [];
   selectedCategory: number = -1;
-  isLoggedIn = false; // giả sử lấy từ auth service
+  isLoggedIn = false;
   protected readonly faArrowRight = faArrowRight;
   protected readonly faHeart = faHeart;
   protected readonly faCartPlus = faCartPlus;

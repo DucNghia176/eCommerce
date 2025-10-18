@@ -6,8 +6,6 @@ import {
   faChevronDown,
   faCircleInfo,
   faHeadphones,
-  faHeadset,
-  faHeart,
   faLocationDot,
   faPhoneVolume,
   faRotate,
@@ -20,6 +18,15 @@ import {AuthService} from "../../../../core/services/auth.service";
 import {ChildCategoryResponse, FeaturedProductResponse} from "../../../../core/models/category.model";
 import {CategoryService} from "../../../../core/services/category.service";
 import {AuthModalService} from "../../../../shared/service/auth-modal.service";
+import {NgIf} from "@angular/common";
+import {UserResponse} from "../../../../core/models/user.model";
+import {UsersService} from "../../../../core/services/users.service";
+import {NzMenuModule} from "ng-zorro-antd/menu";
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import {NzAvatarModule} from "ng-zorro-antd/avatar";
+import {CartService} from "../../../../core/services/cart.service";
+import {Cart} from "../../../../core/models/cart.model";
+import {NzBadgeComponent} from "ng-zorro-antd/badge";
 
 @Component({
   selector: 'app-header',
@@ -27,7 +34,14 @@ import {AuthModalService} from "../../../../shared/service/auth-modal.service";
   imports: [
     FaIconComponent,
     RouterLink,
-    AllCategoryComponent
+    AllCategoryComponent,
+    NgIf,
+    NzMenuModule,
+    NzAvatarModule,
+    NzDropDownModule,
+    NzBadgeComponent,
+
+
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -35,7 +49,10 @@ import {AuthModalService} from "../../../../shared/service/auth-modal.service";
 export class HeaderComponent implements OnInit {
   categories?: ChildCategoryResponse[];
   products?: FeaturedProductResponse[];
-  isLoggedIn?: boolean;
+  isLoggedIn: boolean = false;
+  user: UserResponse | null = null;
+  cart: Cart | null = null;
+  cartItemCount = 0;
   protected readonly faTwitter = faTwitter;
   protected readonly faFacebook = faFacebook;
   protected readonly faPinterest = faPinterest;
@@ -43,12 +60,10 @@ export class HeaderComponent implements OnInit {
   protected readonly faInstagram = faInstagram;
   protected readonly faReddit = faReddit;
   protected readonly faCartShopping = faCartShopping;
-  protected readonly faHeart = faHeart;
   protected readonly faUser = faUser;
   protected readonly search = faSearch;
   protected readonly faLocationDot = faLocationDot;
   protected readonly faRotate = faRotate;
-  protected readonly faHeadset = faHeadset;
   protected readonly faCircleInfo = faCircleInfo;
   protected readonly faPhoneVolume = faPhoneVolume;
   protected readonly faHeadphones = faHeadphones;
@@ -57,17 +72,26 @@ export class HeaderComponent implements OnInit {
   private router = inject(Router);
   private categoryService = inject(CategoryService);
   private authModal = inject(AuthModalService);
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/auth']);
-  }
+  private userService = inject(UsersService);
+  private cartService = inject(CartService);
 
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe(status => {
       this.isLoggedIn = status;
+      if (status) {
+        this.userService.getUserById().subscribe({
+          next: (users) => {
+            this.user = users;
+          }
+        });
+        this.cartService.getCart();
+      }
     });
-
+    this.cartService.cart$.subscribe({
+      next: (cart) => {
+        this.cartItemCount = cart?.items?.length || 0;
+      }
+    });
     this.loadCategories();
   }
 
@@ -84,24 +108,27 @@ export class HeaderComponent implements OnInit {
     if (!this.isLoggedIn) {
       this.authModal.openModal();
     } else {
-      this.router.navigate(['/user/cart']);
+      this.router.navigate(['/user/shopCard']);
     }
   }
 
-  onWishlistClick(): void {
-    if (!this.isLoggedIn) {
-      this.authModal.openModal();
-    } else {
-      this.router.navigate(['/user/wishlist']);
-    }
+  onLogout() {
+    this.authService.logout().subscribe({
+      next: res => {
+        console.log(res.message);
+        this.user = null;
+        window.location.href = '/user';
+      },
+      error: err => console.error(err)
+    });
   }
 
-  onProfileClick(): void {
-    if (!this.isLoggedIn) {
-      this.authModal.openModal();
-    } else {
-      this.router.navigate(['/user/profile']);
-    }
+  goToProfile() {
+    this.router.navigate(['/user/profile']);
+  }
+
+  goToOrders() {
+    this.router.navigate(['/user/orders']);
   }
 
   private loadCategories() {
@@ -110,10 +137,9 @@ export class HeaderComponent implements OnInit {
         next: data => {
           this.categories = data;
           // this.products = data;
-        }, error: err => {
+        }, error: () => {
           this.categories = [];
         }
       })
   }
-
 }

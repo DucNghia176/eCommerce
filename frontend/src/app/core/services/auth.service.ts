@@ -14,11 +14,16 @@ export class AuthService {
 
   private tokenSubject = new BehaviorSubject<string | null>(null);
   token$ = this.tokenSubject.asObservable();
-  
+
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(private http: HttpClient) {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.tokenSubject.next(token);
+      this.isAuthenticatedSubject.next(true);
+    }
   }
 
   login(auth: AuthRequest): Observable<ApiResponse<{ token: string }>> {
@@ -26,6 +31,8 @@ export class AuthService {
       .pipe(
         map(response => {
           if (response.code === 200 && response.data) {
+            this.setToken(response.data.token);
+            this.isAuthenticatedSubject.next(true);
             return response;
           }
           throw new Error(response.message || 'Đăng nhập thất bại');
@@ -34,9 +41,31 @@ export class AuthService {
       );
   }
 
-  logout() {
-    this.clearToken();
+  logout(): Observable<ApiResponse<string>> {
+    const token = this.getToken();
+    if (!token) {
+      return throwError(() => new Error("Token không tồn tại"));
+    }
+
+    return this.http.post<ApiResponse<string>>(
+      `${this.apiUrl}/logout`,
+      null,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        responseType: 'text' as 'json',
+      }
+    ).pipe(
+      map(response => {
+        this.clearToken();
+        this.isAuthenticatedSubject.next(false);
+        return {code: 200, message: 'Đăng xuất thành công', data: null};
+      }),
+      catchError(this.handleError)
+    );
   }
+
 
   register(request: RegisterRequest): Observable<ApiResponse<UserResponse>> {
     return this.http.post<ApiResponse<UserResponse>>(`${this.apiUrl}/register`, request).pipe(

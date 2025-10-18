@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NavigationEnd, Router, RouterLink} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router, RouterLink} from "@angular/router";
 import {faHome} from "@fortawesome/free-solid-svg-icons";
 import {filter} from "rxjs";
 import {NzBreadCrumbItemComponent, NzBreadCrumbModule} from "ng-zorro-antd/breadcrumb";
@@ -23,46 +23,50 @@ export class BreadcrumbComponent implements OnInit {
   breadcrumbs: { label: string; url: string }[] = [];
   protected readonly faHome = faHome;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private route: ActivatedRoute) {
   }
 
-
   ngOnInit(): void {
-    this.createBreadcrumbs(this.router.url);
-
+    // Lắng nghe khi điều hướng thay đổi
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
-        this.createBreadcrumbs(this.router.url);
+        this.breadcrumbs = this.buildBreadCrumb(this.route.root);
       });
+
+    // Khởi tạo lần đầu
+    this.breadcrumbs = this.buildBreadCrumb(this.route.root);
   }
 
-  createBreadcrumbs(url: string): void {
-    // Bỏ phần query string (nếu có)
-    const cleanUrl = url.split('?')[0];
+  /**
+   * Đệ quy duyệt qua các route con để xây breadcrumb
+   */
+  buildBreadCrumb(
+    route: ActivatedRoute,
+    url: string = '',
+    breadcrumbs: { label: string; url: string }[] = []
+  ): { label: string; url: string }[] {
+    const children = route.children;
 
-    // Cắt url thành mảng các segment, loại bỏ rỗng
-    const segments = cleanUrl.split('/').filter(x => x);
+    if (children.length === 0) {
+      return breadcrumbs;
+    }
 
-    let accumulatedUrl = '';
-    this.breadcrumbs = segments.map(segment => {
-      accumulatedUrl += '/' + segment;
-
-      // Nếu là "user" thì không thêm vào breadcrumb
-      if (segment.toLowerCase() === 'user') {
-        return null;
+    for (const child of children) {
+      const routeURL = child.snapshot.url.map(segment => segment.path).join('/');
+      if (routeURL !== '') {
+        url += `/${routeURL}`;
       }
 
-      return {
-        label: this.formatLabel(segment),
-        url: accumulatedUrl
-      };
-    }).filter(Boolean) as { label: string; url: string }[];
-  }
+      const label = child.snapshot.data['breadcrumb'];
+      if (label) {
+        breadcrumbs.push({label, url});
+      }
 
+      // Tiếp tục đệ quy (không return sớm)
+      this.buildBreadCrumb(child, url, breadcrumbs);
+    }
 
-  // Cắt chữ cho đẹp (viết hoa chữ cái đầu)
-  formatLabel(segment: string): string {
-    return decodeURIComponent(segment.charAt(0).toUpperCase() + segment.slice(1));
+    return breadcrumbs;
   }
 }
