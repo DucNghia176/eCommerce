@@ -2,28 +2,33 @@ const cartRepository = require('../repo/CartRepository');
 const cartItemRepository = require('../repo/CartItemRepository');
 const inventoryClient = require('../client/InventoryClient');
 const productClient = require('../client/ProductClient');
-const {dataSource} = require('../config/data-source');
 
 class CartService {
-    async getAll() {
-        return await cartRepository.findAll();
-    }
-
     async _buildCartResponse(cart) {
         if (!cart) return null;
-
         const items = await cartItemRepository.findAllBy({cartId: cart.id});
+
+        const productIds = items.map(i => i.productId);
+        let imageMap = {};
+        if (productIds && productIds.length > 0) {
+            imageMap = await productClient.getImageUrl(productIds);
+        }
+
+        const itemsWithImage = items.map(i => ({
+            cart_item_id: i.id,
+            productId: i.productId,
+            quantity: i.quantity,
+            unitPrice: i.unitPrice,
+            name: imageMap[i.productId]?.name || null,
+            imageUrl: imageMap[i.productId]?.imageUrl || null,
+        }));
+
         const totalAmount = items.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0);
 
         return {
             id: cart.id,
             userId: cart.userId,
-            items: items.map(i => ({
-                cart_item_id: i.id,
-                productId: i.productId,
-                quantity: i.quantity,
-                unitPrice: i.unitPrice
-            })),
+            items: itemsWithImage,
             totalAmount,
         };
     }
@@ -48,10 +53,10 @@ class CartService {
 
         // Kiểm tra cart item có tồn tại
         let cartItem = await cartItemRepository.findOneBy({cartId: cart.id, productId});
-        let totalQuantity = quantity;
-        if (cartItem) totalQuantity += cartItem.quantity;
+        // let totalQuantity = quantity;
+        // if (cartItem) totalQuantity += cartItem.quantity;
         // Check inventory
-        const inStock = await inventoryClient.checkInventory(productId, totalQuantity);
+        const inStock = await inventoryClient.checkInventory(productId, quantity);
         if (!inStock) throw new Error('Sản phẩm không đủ số lượng trong kho');
 
         // Lấy giá sản phẩm

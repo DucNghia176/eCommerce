@@ -1,11 +1,6 @@
 const cartService = require('../service/CartService');
 
 class CartController {
-    async getAll(req, res) {
-        const carts = await cartService.getAll();
-        res.json(carts);
-    }
-
     async create(req, res) {
         try {
             const userId = req.user.userId;

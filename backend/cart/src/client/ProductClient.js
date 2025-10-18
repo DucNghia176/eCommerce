@@ -22,6 +22,11 @@ class ProductClient {
 
         return result;
     }
+
+    async getImageUrl(ids) {
+        const response = await axiosClient.post(`${baseUrl}/image`, ids);
+        return response.data;
+    }
 }
 
 module.exports = new ProductClient();

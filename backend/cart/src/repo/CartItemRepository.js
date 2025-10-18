@@ -6,7 +6,6 @@ class CartItemRepository {
         return AppDataSource.getRepository(CartItem);
     }
 
-    //lấy tất
     async findAll() {
         return await this.repo().find();
     }
@@ -36,7 +35,7 @@ class CartItemRepository {
             .createQueryBuilder('cart_item')
             .where('cart_item.CART_ID = :cartId', {cartId})
             .andWhere('cart_item.PRODUCT_ID IN (:...ids)', {ids})
-            .getMany(); // Trả về entity, có productId
+            .getMany();
     }
 }
 
