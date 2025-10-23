@@ -25,7 +25,8 @@ import java.util.List;
 public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
     private final static List<String> API_PUBLIC = List.of(
-            "/api/auth",
+            "/api/auth/login",
+            "/api/auth/**",
             "/oauth2",
             "/login/oauth2",
             "/api/product/search",
@@ -34,8 +35,7 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
             "/api/brand",
             "/api/category",
             "/api/cartNodejs",
-            "/api/product/view",
-            "/api/product/view/**"
+            "/api/product/view"
     );
     private static final String BLACKLIST_PREFIX = "token:blacklist:";
     private final JwtUtil jwtUtil;

@@ -27,14 +27,14 @@ public class GateWayRouter {
                 .route("USER-SERVICE", r -> r.path(USER_PATHS)
                         .uri("lb://USER-SERVICE"))
 
-                .route("CART-SERVICE-NODEJS", r -> r.path("/api/cartNodejs/**")
-                        .uri("lb://CART-SERVICE-NODEJS"))
-
                 .route("PRODUCT-SERVICE", r -> r.path(PRODUCT_PATHS)
                         .uri("lb://PRODUCT-SERVICE"))
 
                 .route("ORDER-SERVICE", r -> r.path("/api/orders/**")
                         .uri("lb://ORDER-SERVICE"))
+
+//                .route("CART-SERVICE", r -> r.path("/api/cart/**")
+//                        .uri("lb://CART-SERVICE"))
 
                 .route("CART-SERVICE", r -> r.path("/api/cart/**")
                         .uri("lb://CART-SERVICE"))
