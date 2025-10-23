@@ -10,6 +10,7 @@ import ecommerce.userservice.service.AuthService;
 import ecommerce.userservice.service.EmailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +29,13 @@ public class AuthController {
                 .message("Đăng nhập thành công")
                 .data(authResponse)
                 .build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        authService.logout(token);
+        return ResponseEntity.ok("Token blacklisted: " + token);
     }
 
     @PostMapping("/register")
@@ -51,7 +59,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("send")
+    @PostMapping("/send")
     public ApiResponse<String> sendEmail(@RequestParam String email) {
         String otp = emailService.sendOtp(email);
         return ApiResponse.<String>builder()

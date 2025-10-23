@@ -12,7 +12,6 @@ import ecommerce.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,13 +27,6 @@ public class UserController {
     private final UserService userService;
     private final AuthService authService;
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        authService.logout(token);
-        return ResponseEntity.ok("Token blacklisted: " + token);
-    }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")

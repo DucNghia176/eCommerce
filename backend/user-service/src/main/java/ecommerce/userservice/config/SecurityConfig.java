@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers("/api/brand/").hasAuthority("ADMIN")
                         .requestMatchers(API_PUBLIC).permitAll()
                         .anyRequest().authenticated()
@@ -54,7 +55,9 @@ public class SecurityConfig {
                         .loginPage("http://localhost:4200/auth/login")
                         .failureUrl("http://localhost:4200/auth/login?error=true")
                 )
+                .logout(logout -> logout.disable())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
