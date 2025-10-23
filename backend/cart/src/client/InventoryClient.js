@@ -8,9 +8,8 @@ class InventoryClient {
     }
 
     async checkInventory(productId, quantity) {
-
         const response = await axiosClient.get(`${baseUrl}/checkQuantity`, {
-            params: {productId, quantity}
+            params: {productId, quantity},
         });
         return response.data;
     }

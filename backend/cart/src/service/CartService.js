@@ -2,6 +2,8 @@ const cartRepository = require('../repo/CartRepository');
 const cartItemRepository = require('../repo/CartItemRepository');
 const inventoryClient = require('../client/InventoryClient');
 const productClient = require('../client/ProductClient');
+const redisClient = require('../config/redis');
+const CACHE_PREFIX = 'cache:';
 
 class CartService {
     async _buildCartResponse(cart) {
@@ -31,6 +33,18 @@ class CartService {
             items: itemsWithImage,
             totalAmount,
         };
+    }
+
+    async _updateCartCache(userId, cart) {
+        const cacheKey = `${CACHE_PREFIX}cart:${userId}`;
+        const result = await this._buildCartResponse(cart);
+
+        const cachedCart = await redisClient.get(cacheKey);
+        if (!cachedCart || cachedCart !== JSON.stringify(result)) {
+            await redisClient.setEx(cacheKey, 1800, JSON.stringify(result));
+        }
+
+        return result;
     }
 
     async addProductToCart(userId, productId, quantity) {
@@ -78,7 +92,7 @@ class CartService {
         await cartItemRepository.save(cartItem);
 
         // Trả về giỏ hàng mới
-        return await this._buildCartResponse(cart);
+        return await this._updateCartCache(cart.userId, cart);
     }
 
     async updateCart(userId, productId, quantity) {
@@ -96,13 +110,24 @@ class CartService {
         }
         await cartRepository.save(cart);
 
-        return await this._buildCartResponse(cart);
+        return await this._updateCartCache(cart.userId, cart);
     }
 
     async getCartByUser(userId) {
         if (!userId) throw new Error('Vui lòng đăng nhập');
+        const cacheKey = `${CACHE_PREFIX}cart:${userId}`;
+
+        const cachedCart = await redisClient.get(cacheKey);
+        if (cachedCart) {
+            return JSON.parse(cachedCart);
+        }
         let cart = await cartRepository.findOneBy({userId});
-        return await this._buildCartResponse(cart);
+
+        const result = await this._buildCartResponse(cart);
+
+        await redisClient.setEx(cacheKey, 1800, JSON.stringify(result));
+
+        return result;
     }
 
     async removeProductsFromCart(userId, productIds) {
@@ -130,7 +155,7 @@ class CartService {
         }
 
         // Trả về giỏ hàng mới
-        return this._buildCartResponse(cart);
+        return await this._updateCartCache(cart.userId, cart);
     }
 }
 

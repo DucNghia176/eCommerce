@@ -47,7 +47,8 @@ class CartController {
     async remove(req, res) {
         try {
             const userId = req.user.userId;
-            const productIds = req.body.productIds;
+            const productIds = Array.isArray(req.body) ? req.body : req.body.productIds;
+            
             if (!Array.isArray(productIds) || productIds.length === 0) {
                 return res.status(400).json({message: "Vui lòng cung cấp danh sách productIds"});
             }
