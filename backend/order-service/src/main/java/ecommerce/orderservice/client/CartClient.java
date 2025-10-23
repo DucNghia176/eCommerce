@@ -18,8 +18,8 @@ public interface CartClient {
     @GetMapping
     ApiResponse<CartResponse> getCartByUserId();
 
-    @PostMapping("/clear")
-    ApiResponse<Void> clearSelectedCartItems(@RequestBody List<Long> itemId);
+    @PostMapping("/remove")
+    ApiResponse<Void> clearSelectedCartItems(@RequestBody List<Long> productIds);
 
     @PostMapping("/selected-items")
     ApiResponse<List<CartItemResponse>> getSelectedCartItem(@RequestBody Map<Long, Boolean> items);
