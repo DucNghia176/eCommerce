@@ -14,19 +14,21 @@ export class OrdersService {
   constructor(private http: HttpClient) {
   }
 
-  placeOrder(request: OrderCreateRequest): Observable<OrderCreateResponse> {
-    return this.http.post<ApiResponse<OrderCreateResponse>>(`${this.apiUrl}/order`, request)
-      .pipe(map(response => {
-        if (response.code === 200 && response.data) {
-          return response.data;
-        }
-        throw new Error(response.message);
-      }))
+  createOrder(request: OrderCreateRequest): Observable<OrderCreateResponse> {
+    return this.http.post<ApiResponse<OrderCreateResponse>>(`${this.apiUrl}/create`, request)
+      .pipe(
+        map(response => {
+          if (response.code === 200 && response.data) {
+            return response.data;
+          }
+          throw new Error(response.message);
+        })
+      )
   }
 
   getAll(page: number = 0, size: number = 0): Observable<Page<OrderAD>> {
     const params: any = {page: page, size: size};
-    return this.http.get<ApiResponse<Page<OrderAD>>>(`${this.apiUrl}`, {
+    return this.http.get<ApiResponse<Page<OrderAD>>>(`${this.apiUrl}/orders`, {
       params
     }).pipe(
       map((response) => {

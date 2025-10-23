@@ -1,93 +1,21 @@
-<div class="container mx-auto grid grid-cols-3 gap-4">
+<div class="container mx-auto grid grid-cols-12 gap-6 py-6">
   <!-- Giỏ hàng -->
-  <section class="border border-gray-200 rounded col-span-2">
-    <div class="p-4">
-      <table class="w-full text-left border-collapse">
-        <thead>
-        <tr class="border-b">
-          <th class="pb-3">
-            <input (change)="toggleSelectAll($event)" [checked]="isAllSelected" type="checkbox">
-          </th>
-          <th class="pb-3">PRODUCTS</th>
-          <th class="pb-3">PRICE</th>
-          <th class="pb-3 text-center">QUANTITY</th>
-          <th class="pb-3 text-right">SUB-TOTAL</th>
-          <th class="pb-3 text-center">ACTION</th>
-        </tr>
-        </thead>
+  <section class="col-span-12 lg:col-span-8">
+    <app-cart-detail
+      (selectedItemsChange)="setSelectedItems($event)"
+      (selectedSubtotal)="setTotal($event)"
+      [cartItems]="cartItems"
+      [cart]="cart"
+    ></app-cart-detail>
 
-        <tbody>
-        <tr *ngFor="let item of cartItems; let i = index" class="border-b hover:bg-gray-50">
-          <!-- Checkbox chọn -->
-          <td class="py-2 text-center">
-            <input (change)="updateSelectedItems()" [(ngModel)]="item.selected" type="checkbox">
-          </td>
-
-          <!-- Tên và ảnh -->
-          <td class="py-2 flex items-center gap-4">
-            <img [src]="item.imageUrl" class="w-14 h-14 rounded border">
-            <p class="font-medium">{{ item.name }}</p>
-          </td>
-
-          <!-- Giá -->
-          <td class="py-4">{{ item.unitPrice | currency:'VND':'symbol':'1.0-0' }}</td>
-
-          <!-- Số lượng -->
-          <td class="py-4 text-center">
-            <div class="inline-flex items-center border border-gray-300 rounded">
-              <button (click)="decreaseQuantity(item)" class="px-2 py-1 text-gray-600 hover:bg-gray-100">−</button>
-              <span class="px-4 font-medium">{{ item.quantity }}</span>
-              <button (click)="increaseQuantity(item)" class="px-2 py-1 text-gray-600 hover:bg-gray-100">+</button>
-            </div>
-          </td>
-
-          <!-- Tổng -->
-          <td class="py-4 text-right">{{ item.quantity * item.unitPrice | currency:'VND':'symbol':'1.0-0' }}</td>
-
-          <!-- Nút xóa -->
-          <td class="text-center">
-            <button (click)="removeFromCart(item)" class="text-red-500 hover:text-red-700 font-semibold">Xóa</button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <footer class="border-t border-gray-200 p-4 flex justify-between items-center">
-      <button class="flex border-2 border-blue-400 gap-2 text-blue-400 px-3 py-2 rounded hover:bg-blue-50 transition">
-        <fa-icon [icon]="faArrowLeft"></fa-icon>
-        <span class="font-medium">RETURN TO SHOP</span>
-      </button>
-    </footer>
   </section>
 
   <!-- Thanh toán -->
-  <section class="flex flex-col gap-6">
-    <div class="border border-gray-200 px-4 rounded pb-4">
-      <h1 class="text-lg font-medium border-b border-gray-200 py-4">Cart Totals</h1>
-
-      <div class="flex flex-col text-sm gap-2 border-b border-gray-200 pb-4 mt-2">
-        <div class="flex justify-between">
-          <span>Sub-total</span>
-          <span>{{ selectedSubtotal | currency:'VND':'symbol':'1.0-0' }}</span>
-        </div>
-        <div class="flex justify-between">
-          <span>Shipping</span>
-          <span>Free</span>
-        </div>
-      </div>
-
-      <div class="flex justify-between text-base font-semibold py-4">
-        <span>Total</span>
-        <span>{{ selectedSubtotal | currency:'VND':'symbol':'1.0-0' }}</span>
-      </div>
-
-      <button
-        [disabled]="selectedSubtotal === 0"
-        class="flex justify-center gap-2 p-3 text-white font-bold bg-orange-500 hover:bg-orange-600 w-full rounded transition">
-        <span>PROCEED TO CHECKOUT</span>
-        <fa-icon [icon]="faArrowRight"></fa-icon>
-      </button>
-    </div>
-  </section>
+  <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+    <app-cart-total
+      (orderCreated)="onOrderCreated()"
+      [items]="selectedItems"
+      [subTotal]="subtotal"
+    ></app-cart-total>
+  </div>
 </div>
