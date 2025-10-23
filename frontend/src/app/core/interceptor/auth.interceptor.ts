@@ -1,7 +1,7 @@
 import {inject} from '@angular/core';
-import {HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest} from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest} from '@angular/common/http';
 import {AuthService} from '../services/auth.service';
-import {Observable} from 'rxjs';
+import {catchError, Observable, throwError} from 'rxjs';
 
 export const AuthInterceptor: HttpInterceptorFn = (
   request: HttpRequest<unknown>,
@@ -18,5 +18,14 @@ export const AuthInterceptor: HttpInterceptorFn = (
     });
   }
 
-  return next(request);
+  return next(request).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        console.warn('⚠️ Token hết hạn hoặc không hợp lệ — tự động logout');
+        authService.clearToken();
+        window.location.href = '/user';
+      }
+      return throwError(() => error);
+    })
+  );
 };

@@ -1,4 +1,5 @@
 import {Routes} from '@angular/router';
+import {adminGuard} from "./guard/admin.guard";
 
 export const routes: Routes = [
   {
@@ -8,6 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [adminGuard],
     loadChildren: () =>
       import('./pages/admin/admin.routes').then(m => m.adminRoutes)
   },

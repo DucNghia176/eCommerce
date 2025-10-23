@@ -17,12 +17,14 @@ export class AuthService {
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  private tokenCheckInterval: any;
 
   constructor(private http: HttpClient) {
     const token = localStorage.getItem('token');
     if (token) {
       this.tokenSubject.next(token);
       this.isAuthenticatedSubject.next(true);
+      this.startTokenMonitor();
     }
   }
 
@@ -33,6 +35,7 @@ export class AuthService {
           if (response.code === 200 && response.data) {
             this.setToken(response.data.token);
             this.isAuthenticatedSubject.next(true);
+            this.startTokenMonitor();
             return response;
           }
           throw new Error(response.message || 'Đăng nhập thất bại');
@@ -66,6 +69,30 @@ export class AuthService {
     );
   }
 
+  startTokenMonitor() {
+    if (this.tokenCheckInterval) clearInterval(this.tokenCheckInterval);
+    this.tokenCheckInterval = setInterval(() => {
+      const token = this.getToken();
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const expTime = payload.exp * 1000;
+          const now = Date.now();
+
+          if (expTime <= now) {
+            console.warn("⚠️ Token đã hết hạn, tiến hành logout...");
+            this.logout();
+            clearInterval(this.tokenCheckInterval);
+            window.location.href = '/user';
+          }
+        } catch (err) {
+          console.error("Token không hợp lệ:", err);
+          this.logout();
+          clearInterval(this.tokenCheckInterval);
+        }
+      }
+    }, 1000);
+  }
 
   register(request: RegisterRequest): Observable<ApiResponse<UserResponse>> {
     return this.http.post<ApiResponse<UserResponse>>(`${this.apiUrl}/register`, request).pipe(
@@ -117,7 +144,7 @@ export class AuthService {
 
   setToken(token: string) {
     this.tokenSubject.next(token);
-    localStorage.setItem('token', token); // lưu nếu cần giữ lâu dài
+    localStorage.setItem('token', token);
   }
 
   getToken(): string | null {
