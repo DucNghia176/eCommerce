@@ -1,0 +1,35 @@
+<div class="p-3">
+  <div class="mb-3">
+    <label class="block mb-1 font-medium">Tỉnh / Thành phố</label>
+    <nz-select
+      (ngModelChange)="onProvinceChange($event)"
+      [(ngModel)]="selectedProvince"
+      nzPlaceHolder="Chọn tỉnh/thành"
+      nzShowSearch
+      style="width: 100%;">
+      <nz-option *ngFor="let p of provinces" [nzLabel]="p.name" [nzValue]="p"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="mb-3">
+    <label class="block mb-1 font-medium">Phường / Xã</label>
+    <nz-select
+      [(ngModel)]="selectedWard"
+      [nzDisabled]="!selectedProvince"
+      nzPlaceHolder="Chọn phường/xã"
+      nzShowSearch
+      style="width: 100%;">
+      <nz-option *ngFor="let w of wards" [nzLabel]="w.name" [nzValue]="w"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="mb-3">
+    <label class="block mb-1 font-medium">Địa chỉ chi tiết</label>
+    <input [(ngModel)]="detail" nz-input placeholder="Số nhà, tên đường...">
+  </div>
+
+  <div class="flex justify-end gap-2 mt-4">
+    <button (click)="onSave.emit(null)" nz-button nzSize="default" nzType="default">Hủy</button>
+    <button (click)="save()" nz-button nzSize="default" nzType="primary">Lưu</button>
+  </div>
+</div>

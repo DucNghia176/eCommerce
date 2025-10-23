@@ -1,0 +1,74 @@
+<div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+  <!-- Tiêu đề -->
+  <h1 class="text-xl font-bold text-gray-800 pb-3 border-b border-gray-200 flex items-center gap-2">
+    🧾 <span>Đặt Hàng</span>
+  </h1>
+
+  <!-- Thông tin tổng -->
+  <div class="mt-5 flex flex-col text-sm gap-3 border-b border-gray-100 pb-4">
+    <div class="flex justify-between text-gray-700">
+      <span>Tạm tính</span>
+      <span class="font-medium">{{ subTotal | currency:'VND':'symbol':'1.0-0' }}</span>
+    </div>
+    <div class="flex justify-between text-gray-700">
+      <span>Phí vận chuyển</span>
+      <span class="text-green-600 font-medium">Miễn phí</span>
+    </div>
+  </div>
+
+  <!-- Tổng cộng -->
+  <div class="flex justify-between items-center text-lg font-semibold py-5 text-gray-900">
+    <span>Tổng cộng</span>
+    <span class="text-indigo-600">{{ subTotal | currency:'VND':'symbol':'1.0-0' }}</span>
+  </div>
+
+  <!-- Form thông tin -->
+  <div class="flex flex-col gap-4 text-sm">
+    <div>
+      <label class="block mb-1 font-medium">Địa chỉ giao hàng</label>
+      <div class="flex gap-2">
+        <select (ngModelChange)="onSelectAddress($event)"
+                [(ngModel)]="selectedAddressId"
+                class="border rounded-lg px-3 py-2 w-full"
+        >
+          <option [ngValue]="null" disabled>-- Chọn địa chỉ --</option>
+          <option *ngFor="let addr of savedAddresses" [ngValue]="addr.id">
+            {{ addr.address }}
+          </option>
+        </select>
+        <button (click)="openAddressModal()" nz-button nzType="primary">+ Thêm</button>
+      </div>
+    </div>
+
+    <!-- Phương thức thanh toán -->
+    <div>
+      <label class="font-medium text-gray-700 block mb-1">Phương thức thanh toán</label>
+      <select [(ngModel)]="paymentMethod"
+              class="border border-gray-300 rounded-lg px-3 py-2.5 w-full bg-white focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-300 transition">
+        <option [ngValue]="PaymentMethodStatus.COD">💵 Thanh toán khi nhận hàng</option>
+        <option [ngValue]="PaymentMethodStatus.PAYPAL">💳 Thanh toán qua PayPal</option>
+      </select>
+    </div>
+
+    <!-- Ghi chú đơn hàng -->
+    <div>
+      <label class="font-medium text-gray-700 block mb-1">Ghi chú đơn hàng</label>
+      <textarea [(ngModel)]="note"
+                class="border border-gray-300 rounded-lg px-3 py-2.5 w-full resize-none focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-300 transition"
+                placeholder="Ghi chú cho người bán (nếu có)..."
+                rows="2"></textarea>
+    </div>
+  </div>
+
+  <!-- Nút đặt hàng -->
+  <button
+    (click)="createOrder()"
+    [disabled]="subTotal === 0 || !shippingAddress"
+    class="flex justify-center items-center gap-2 mt-6 px-5 py-3 text-white font-semibold rounded-lg shadow-md
+           bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700
+           active:scale-95 transition disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed"
+    nz-button>
+    <span>ĐẶT HÀNG NGAY</span>
+    <fa-icon [icon]="faArrowRight"></fa-icon>
+  </button>
+</div>
