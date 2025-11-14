@@ -48,4 +48,6 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
                                                 @Param("status") OrderStatus status);
 
     Optional<Orders> findByUserIdAndCartSignature(Long userId, String cartSignature);
+
+    List<Orders> findOrdersByUserId(Long userId);
 }

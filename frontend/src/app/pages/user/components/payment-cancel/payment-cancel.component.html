@@ -1,0 +1,50 @@
+<div
+  class="min-h-screen bg-slate-950 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 flex items-center justify-center px-4">
+  <div class="max-w-xl w-full">
+    <div
+      class="bg-slate-900/70 border border-slate-700/70 shadow-2xl shadow-rose-500/10 rounded-3xl p-8 md:p-10 backdrop-blur-xl space-y-6">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-rose-500/10 flex items-center justify-center">
+          <div class="w-8 h-8 rounded-full bg-rose-500/90 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
+              <path d="M15 9L9 15M9 9l6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2.2"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-semibold text-white">
+            Thanh toán đã bị hủy
+          </h1>
+          <p class="text-slate-400 text-sm md:text-base mt-1">
+            Đơn hàng của bạn chưa được thanh toán. Bạn có thể thử lại sau.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 md:p-5 text-sm text-slate-300 space-y-2">
+        <p>
+          Nếu bạn gặp vấn đề khi thanh toán qua Stripe, hãy thử:
+        </p>
+        <ul class="list-disc list-inside text-xs md:text-sm text-slate-400 space-y-1">
+          <li>Kiểm tra lại kết nối Internet</li>
+          <li>Thử lại bằng trình duyệt khác hoặc thiết bị khác</li>
+          <li>Liên hệ hỗ trợ nếu vẫn không thanh toán được</li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-2">
+        <button
+          class="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-sm font-medium text-slate-950 transition duration-150"
+          routerLink="/user/shopCard">
+          Quay lại giỏ hàng
+        </button>
+        <button
+          class="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-sm font-medium text-slate-100 transition duration-150"
+          routerLink="/user/dashboard/orders">
+          Xem đơn hàng của tôi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,218 @@
+services:
+  ecommerce-db:
+    image: gvenzl/oracle-xe:21-slim-faststart
+    container_name: ecommerce-db
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PASSWORD=${ORACLE_PASSWORD}
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    networks:
+      - ecommerce-network
+    healthcheck:
+      test: [ "CMD-SHELL", "echo 'select 1 from dual;' | sqlplus -S system/${ORACLE_PASSWORD}@localhost:1521/XEPDB1" ]
+      interval: 20s
+      timeout: 15s
+      retries: 10
+      start_period: 40s
+
+  eureka-server:
+    build:
+      context: ./backend/eureka
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8762:8762"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - kafka
+  gateway:
+    build:
+      context: ./backend/Gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "8085:8085"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - eureka-server
+  redis-server:
+    build:
+      context: ./backend/redis
+      dockerfile: Dockerfile
+    container_name: redis-server
+    ports:
+      - "8095:8095"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - redis
+  user-server:
+    build:
+      context: ./backend/user-service
+      dockerfile: Dockerfile
+    container_name: user-server
+    ports:
+      - "8080:8080"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - ecommerce-db
+      - eureka-server
+      - gateway
+      - redis-server
+
+  product-server:
+    build:
+      context: ./backend/product-service
+      dockerfile: Dockerfile
+    container_name: product-server
+    ports:
+      - "8081:8081"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - ecommerce-db
+      - eureka-server
+      - redis-server
+      - gateway
+
+  inventory-server:
+    build:
+      context: ./backend/inventory-service
+      dockerfile: Dockerfile
+    container_name: inventory-server
+    ports:
+      - "8083:8083"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - ecommerce-db
+      - eureka-server
+      - redis-server
+      - gateway
+  cart-server:
+    build:
+      context: ./backend/cart-service
+      dockerfile: Dockerfile
+    container_name: cart-server
+    ports:
+      - "8082:8082"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - ecommerce-db
+      - eureka-server
+      - redis-server
+      - gateway
+  order-server:
+    build:
+      context: ./backend/order-service
+      dockerfile: Dockerfile
+    container_name: order-server
+    ports:
+      - "8084:8084"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - ecommerce-db
+      - eureka-server
+      - redis-server
+      - gateway
+  payment-server:
+    build:
+      context: ./backend/payment-service
+      dockerfile: Dockerfile
+    container_name: payment-server
+    ports:
+      - "8086:8086"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - ecommerce-db
+      - eureka-server
+      - redis-server
+      - gateway
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_datalog:/var/lib/zookeeper/log
+    networks:
+      - ecommerce-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://172.31.192.1:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - ecommerce-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8089:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: ecommerce-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    networks:
+      - ecommerce-network
+
+
+  redis:
+    image: redis:7.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: [
+      "redis-server",
+      "--requirepass", "${REDIS_PASSWORD}",
+      "--save", "60", "1",
+      "--loglevel", "warning"
+    ]
+
+    volumes:
+      - redis_data:/data
+    networks:
+      - ecommerce-network
+    healthcheck:
+      test: [ "CMD", "redis-cli","-a","${REDIS_PASSWORD}", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  ecommerce-network:
+    driver: bridge
+
+volumes:
+  oracle_data:
+  redis_data:
+  zookeeper_data:
+  zookeeper_datalog:
+  kafka_data:

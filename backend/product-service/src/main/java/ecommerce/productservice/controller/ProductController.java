@@ -1,7 +1,8 @@
 package ecommerce.productservice.controller;
 
 import ecommerce.apicommon1.model.response.ApiResponse;
-import ecommerce.apicommon1.model.response.ProductPriceResponse;
+import ecommerce.apicommon1.model.response.PageResponse;
+import ecommerce.apicommon1.model.response.ProductSimpleResponse;
 import ecommerce.productservice.dto.request.CreateProductRequest;
 import ecommerce.productservice.dto.request.ProductUpdateInfoRequest;
 import ecommerce.productservice.dto.request.SearchRequest;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
 public class ProductController {
@@ -78,13 +78,13 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ApiResponse<Page<SearchProductResponse>> search(@RequestParam(required = false) String keyword,
-                                                           @RequestParam(required = false) Long category,
-                                                           @RequestParam(required = false) List<Long> brand,
-                                                           @RequestParam(required = false) BigDecimal priceFrom,
-                                                           @RequestParam(required = false) BigDecimal priceTo,
-                                                           @RequestParam(required = false) Double ratingFrom,
-                                                           Pageable pageable) {
+    public ApiResponse<PageResponse<SearchProductResponse>> search(@RequestParam(required = false) String keyword,
+                                                                   @RequestParam(required = false) Long category,
+                                                                   @RequestParam(required = false) List<Long> brand,
+                                                                   @RequestParam(required = false) BigDecimal priceFrom,
+                                                                   @RequestParam(required = false) BigDecimal priceTo,
+                                                                   @RequestParam(required = false) Double ratingFrom,
+                                                                   Pageable pageable) {
         SearchRequest request = SearchRequest.builder()
                 .keyword(keyword)
                 .categoryId(category)
@@ -93,8 +93,8 @@ public class ProductController {
                 .priceTo(priceTo)
                 .ratingFrom(ratingFrom)
                 .build();
-        Page<SearchProductResponse> responses = productService.search(request, pageable);
-        return ApiResponse.<Page<SearchProductResponse>>builder()
+        PageResponse<SearchProductResponse> responses = productService.search(request, pageable);
+        return ApiResponse.<PageResponse<SearchProductResponse>>builder()
                 .code(200)
                 .message("Tìm kiếm thành công")
                 .data(responses)
@@ -108,9 +108,9 @@ public class ProductController {
     }
 
     @GetMapping("/productByTag")
-    public ApiResponse<Page<ProductByTagResponse>> getAllProductByTag(@RequestParam(required = false) List<String> tags, Pageable pageable) {
-        Page<ProductByTagResponse> responses = productService.getAllProductByTag(tags, pageable);
-        return ApiResponse.<Page<ProductByTagResponse>>builder()
+    public ApiResponse<PageResponse<ProductByTagResponse>> getAllProductByTag(@RequestParam(required = false) List<String> tags, Pageable pageable) {
+        PageResponse<ProductByTagResponse> responses = productService.getAllProductByTag(tags, pageable);
+        return ApiResponse.<PageResponse<ProductByTagResponse>>builder()
                 .code(200)
                 .message("thành công")
                 .data(responses)
@@ -132,8 +132,8 @@ public class ProductController {
         return productService.findProduct(ids);
     }
 
-    @GetMapping("/price/{id}")
-    public ProductPriceResponse productPrice(@PathVariable Long id) {
+    @GetMapping("/simple/{id}")
+    public ProductSimpleResponse productPrice(@PathVariable Long id) {
         return productService.getPriceByProductId(id);
     }
 

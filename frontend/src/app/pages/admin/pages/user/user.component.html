@@ -74,7 +74,7 @@
           </td>
           <td class="p-3">{{ user.address }}</td>
           <td class="p-3">{{ user.totalOrders }}</td>
-          <td class="p-3">{{ user.totalAmount | currency: 'VND' }}</td>
+          <td class="p-3">{{ user.totalAmount | currency: 'VND':'symbol':'1.0-0' }}</td>
           <td (click)="$event.stopPropagation()" class="p-3 text-center">
             <fa-icon
               (click)="toggleLock(user.id.toString())"

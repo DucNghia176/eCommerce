@@ -6,6 +6,7 @@ const {AppDataSource} = require('./src/config/data-source');
 const jwtAuthentication = require("./src/middleware/jwtAuthentication");
 const inventoryRouter = require('./src/router/InventoryRouter');
 var app = express();
+const InventoryListener = require('./src/kafka/inventory-listener');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -13,10 +14,12 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/inventory/', jwtAuthentication, inventoryRouter);
+app.use('/api/inventory/', inventoryRouter);
 AppDataSource.initialize()
-    .then(() =>
-        console.log('Kết nối db thành công')
+    .then(async () => {
+            console.log('Kết nối db thành công');
+            await InventoryListener.createInventoryForNewProduct();
+        }
     )
     .catch(err => console.log(err))
 

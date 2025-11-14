@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.TimeUnit;
 
-@FeignClient(name = "REDIS", path = "/api/redis")
+@FeignClient(name = "REDIS-SERVICE", path = "/api/redis")
 public interface RedisClient {
     @PostMapping("/put")
     void putCache(@RequestParam String key, @RequestBody Object value);

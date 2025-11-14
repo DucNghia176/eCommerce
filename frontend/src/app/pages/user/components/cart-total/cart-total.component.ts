@@ -11,6 +11,7 @@ import {FormsModule} from "@angular/forms";
 import {AddressModalComponent} from "../address-modal/address-modal.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NzButtonComponent} from "ng-zorro-antd/button";
+import {ToastComponent} from "../../../../shared/components/toast/toast.component";
 
 interface SavedAddress {
   id: number;
@@ -25,7 +26,8 @@ interface SavedAddress {
     FaIconComponent,
     FormsModule,
     NgForOf,
-    NzButtonComponent
+    NzButtonComponent,
+    ToastComponent
   ],
   templateUrl: './cart-total.component.html',
   styleUrl: './cart-total.component.scss'
@@ -65,7 +67,10 @@ export class CartTotalComponent {
     }
     this.orderService.createOrder(request).subscribe({
       next: res => {
-        this.toastService.show('Đặt hàng thành công', 'p');
+        if (res.checkoutUrl) {
+          window.location.href = res.checkoutUrl;
+          return;
+        }
         this.orderCreated.emit();
       },
       error: err => {

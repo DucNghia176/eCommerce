@@ -6,7 +6,9 @@ import ecommerce.apicommon1.model.response.UpdateOrderStatusResponse;
 import ecommerce.apicommon1.model.response.UserOrderDetailResponse;
 import ecommerce.orderservice.dto.request.OrderCreateRequest;
 import ecommerce.orderservice.dto.response.OrderCreateResponse;
+import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.dto.response.OrdersAD;
+import ecommerce.orderservice.dto.response.PaymentOrderResponse;
 import ecommerce.orderservice.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
@@ -36,12 +37,17 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/orders")
+    @GetMapping("")
     public ApiResponse<Page<OrdersAD>> getOrder(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return orderService.getOrders(page, size);
+    }
+
+    @GetMapping("/{orderId}")
+    public PaymentOrderResponse getOrderById(@PathVariable Long orderId) {
+        return orderService.getOrderById(orderId);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -50,7 +56,7 @@ public class OrderController {
         return orderService.extractOrderQuantity(usersId);
     }
 
-    @GetMapping("/orders/{userId}")
+    @GetMapping("/user/{userId}")
     public List<UserOrderDetailResponse> findOrdersDetailByUserId(@PathVariable("userId") Long userId) {
         return orderService.getUserOrderDetail(userId);
     }
@@ -69,5 +75,15 @@ public class OrderController {
     @GetMapping("/exists")
     boolean hasPurchased(@RequestParam Long userId, @RequestParam Long productId) {
         return orderService.existsByUserIdAndProductIdAndStatus(userId, productId);
+    }
+
+    @GetMapping("/my-order")
+    public ApiResponse<List<OrderResponse>> getOrderByUserId() {
+        List<OrderResponse> response = orderService.getOrderByUserId();
+        return ApiResponse.<List<OrderResponse>>builder()
+                .code(200)
+                .message("Lấy dữ liệu thành công với")
+                .data(response)
+                .build();
     }
 }

@@ -2,7 +2,6 @@ package ecommerce.orderservice.mapper;
 
 import ecommerce.orderservice.dto.request.OrderRequest;
 import ecommerce.orderservice.dto.response.OrderCreateResponse;
-import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.entity.Orders;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,10 +17,6 @@ public interface OrderMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Orders toOrderEntity(OrderRequest request);
-
-    @Mapping(target = "status", expression = "java(orders.getStatus() != null ? orders.getStatus().name() : null)")
-    @Mapping(source = "orderDetails", target = "orderDetails")
-    OrderResponse toResponse(Orders orders);
 
 
     @Mapping(target = "status", expression = "java(orders.getStatus() != null ? orders.getStatus().name() : null)")

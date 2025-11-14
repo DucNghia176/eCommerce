@@ -35,7 +35,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
@@ -182,16 +181,8 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(UserOrdersResponse::getId)
                 .toList();
-        CompletableFuture<Map<Long, Long>> quantityFuture = CompletableFuture.supplyAsync(() ->
-                orderClient.extractOrderQuantity(userIds), contextAwareExecutor);
-
-        CompletableFuture<Map<Long, BigDecimal>> amountFuture = CompletableFuture.supplyAsync(() ->
-                paymentClient.extractAmount(userIds), contextAwareExecutor);
-
-        CompletableFuture.allOf(quantityFuture, amountFuture).join();
-
-        Map<Long, Long> quantity = quantityFuture.join();
-        Map<Long, BigDecimal> amount = amountFuture.join();
+        Map<Long, Long> quantity = orderClient.extractOrderQuantity(userIds);
+        Map<Long, BigDecimal> amount = paymentClient.extractAmount(userIds);
 
         responses.getContent().forEach(item -> {
             item.setTotalOrders(quantity.getOrDefault(item.getId(), 0L));

@@ -1,6 +1,6 @@
 package ecommerce.orderservice.client;
 
-import ecommerce.apicommon1.model.response.ProductPriceResponse;
+import ecommerce.apicommon1.model.response.ProductSimpleResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +18,6 @@ public interface ProductClient {
     @PostMapping("exists")
     Map<Long, Boolean> checkProduct(@RequestBody List<Long> ids);
 
-    @GetMapping("/price/{id}")
-    ProductPriceResponse productPrice(@PathVariable Long id);
+    @GetMapping("/simple/{id}")
+    ProductSimpleResponse productPrice(@PathVariable Long id);
 }

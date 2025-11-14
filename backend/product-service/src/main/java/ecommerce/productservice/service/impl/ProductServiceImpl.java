@@ -3,7 +3,8 @@ package ecommerce.productservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecommerce.apicommon1.client.RedisClient;
 import ecommerce.apicommon1.kafka.event.ProductCreateEvent;
-import ecommerce.apicommon1.model.response.ProductPriceResponse;
+import ecommerce.apicommon1.model.response.PageResponse;
+import ecommerce.apicommon1.model.response.ProductSimpleResponse;
 import ecommerce.apicommon1.util.CacheHelper;
 import ecommerce.productservice.client.InventoryClient;
 import ecommerce.productservice.dto.request.AttributeRequest;
@@ -237,7 +238,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<SearchProductResponse> search(SearchRequest request, Pageable pageable) {
+    public PageResponse<SearchProductResponse> search(SearchRequest request, Pageable pageable) {
         String redisKey = String.format(
                 "product:search:%s_%s_%s_%s_%s_%s_%d_%d",
                 request.getKeyword(),
@@ -251,10 +252,10 @@ public class ProductServiceImpl implements ProductService {
         );
 
         if (redisClient.exists(redisKey)) {
-            cacheHelper.getPageCache(redisKey, SearchProductResponse.class);
+            cacheHelper.getPageResponseCache(redisKey, SearchProductResponse.class);
         }
 
-        Page<SearchProductResponse> responses = productRepository.searchProducts(
+        Page<SearchProductResponse> page = productRepository.searchProducts(
                 request.getKeyword(),
                 request.getCategoryId(),
                 request.getBrandId(),
@@ -263,9 +264,19 @@ public class ProductServiceImpl implements ProductService {
                 request.getRatingFrom(),
                 pageable
         );
-        cacheHelper.setPageCache(redisKey, responses, 15, TimeUnit.MINUTES);
 
-        return responses;
+
+        PageResponse<SearchProductResponse> response = PageResponse.<SearchProductResponse>builder()
+                .content(page.getContent())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
+
+        cacheHelper.setPageResponseCache(redisKey, response, 15, TimeUnit.MINUTES);
+
+        return response;
     }
 
     @Override
@@ -274,7 +285,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductByTagResponse> getAllProductByTag(List<String> tags, Pageable pageable) {
+    public PageResponse<ProductByTagResponse> getAllProductByTag(List<String> tags, Pageable pageable) {
         String tagPart = String.join(",", tags);
         String redisKey = String.format(
                 "product:getByTag:%s_%d_%d",
@@ -284,7 +295,7 @@ public class ProductServiceImpl implements ProductService {
         );
 
         if (redisClient.exists(redisKey)) {
-            cacheHelper.getPageCache(redisKey, ProductByTagResponse.class);
+            cacheHelper.getPageResponseCache(redisKey, ProductByTagResponse.class);
         }
 
         List<Long> tagIds = tagRepository.findByNameIn(tags)
@@ -307,7 +318,7 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .collect(Collectors.toMap(Brand::getId, Function.identity()));
 
-        Page<ProductByTagResponse> responses = products.map(product -> {
+        List<ProductByTagResponse> responses = products.getContent().stream().map(product -> {
             ProductByTagResponse response = new ProductByTagResponse();
             ProductResponse base = productMapper.toResponse(product);
 
@@ -339,11 +350,19 @@ public class ProductServiceImpl implements ProductService {
             response.setUser(Optional.ofNullable(ratingRepository.countByProductId(product.getId())).orElse(0L));
 
             return response;
-        });
+        }).toList();
 
-        cacheHelper.setPageCache(redisKey, responses, 15, TimeUnit.MINUTES);
+        PageResponse<ProductByTagResponse> pageResponse = PageResponse.<ProductByTagResponse>builder()
+                .content(responses)
+                .page(products.getNumber())
+                .size(products.getSize())
+                .totalElements(products.getTotalElements())
+                .totalPages(products.getTotalPages())
+                .build();
 
-        return responses;
+        cacheHelper.setPageResponseCache(redisKey, pageResponse, 15, TimeUnit.MINUTES);
+
+        return pageResponse;
     }
 
     @Override
@@ -399,9 +418,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductPriceResponse getPriceByProductId(Long id) {
+    public ProductSimpleResponse getPriceByProductId(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Không có sản phẩm"));
 
+        String image = productImageRepository.findThumbnailUrlsByProductId(id);
         BigDecimal originalPrice = product.getPrice();
         BigDecimal discountPercent = product.getDiscount();
         BigDecimal discountDecimal = discountPercent != null
@@ -410,8 +430,10 @@ public class ProductServiceImpl implements ProductService {
 
         BigDecimal finalPrice = originalPrice.multiply(BigDecimal.ONE.subtract(discountDecimal));
 
-        return ProductPriceResponse.builder()
+        return ProductSimpleResponse.builder()
                 .productId(id)
+                .productName(product.getName())
+                .imageUrl(image)
                 .originalPrice(originalPrice)
                 .discountPercent(discountPercent)
                 .finalPrice(finalPrice)

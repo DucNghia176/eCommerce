@@ -7,7 +7,9 @@ import ecommerce.apicommon1.model.response.UpdateOrderStatusResponse;
 import ecommerce.apicommon1.model.response.UserOrderDetailResponse;
 import ecommerce.orderservice.dto.request.OrderCreateRequest;
 import ecommerce.orderservice.dto.response.OrderCreateResponse;
+import ecommerce.orderservice.dto.response.OrderResponse;
 import ecommerce.orderservice.dto.response.OrdersAD;
+import ecommerce.orderservice.dto.response.PaymentOrderResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -18,6 +20,8 @@ public interface OrderService {
 
     ApiResponse<Page<OrdersAD>> getOrders(int page, int size);
 
+    PaymentOrderResponse getOrderById(Long orderId);
+
     Map<Long, Long> extractOrderQuantity(List<Long> usersId);
 
     List<UserOrderDetailResponse> getUserOrderDetail(Long id);
@@ -25,4 +29,6 @@ public interface OrderService {
     UpdateOrderStatusResponse updateOrderStatus(UpdateOrderStatusRequest request);
 
     boolean existsByUserIdAndProductIdAndStatus(Long userId, Long productId);
+
+    List<OrderResponse> getOrderByUserId();
 }

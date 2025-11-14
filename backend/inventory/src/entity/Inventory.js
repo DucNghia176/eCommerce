@@ -33,7 +33,7 @@ module.exports = new EntitySchema({
         },
         importAt: {
             type: 'timestamp',
-            name: "IMPORT_PRICE",
+            name: "IMPORTED_AT",
             createDate: true,
             default: () => 'CURRENT_TIMESTAMP',
         }

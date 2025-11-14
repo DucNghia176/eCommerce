@@ -77,12 +77,36 @@
           </td>
 
           <!-- Trạng thái -->
+          <!-- Cột Trạng thái -->
           <td class="p-3">
+            <div class="inline-flex items-center gap-2">
+              <!-- Badge trạng thái -->
               <span
                 [appStatus]="OrderStatusMeta[order.orderStatus]"
                 class="inline-block px-2 py-1 rounded-full text-xs font-medium"
               ></span>
+
+              <!-- Dropdown đổi trạng thái -->
+              <select
+                (ngModelChange)="updateOrderStatus(order, $event)"
+                [ngModel]="order.orderStatus"
+                class="border rounded-lg text-xs px-2 py-1 outline-none hover:border-blue-400 cursor-pointer"
+              >
+                <!-- trạng thái hiện tại (disabled) -->
+                <option [ngValue]="order.orderStatus" disabled>
+                  {{ OrderStatusMeta[order.orderStatus].label }}
+                </option>
+
+                <!-- chỉ show trạng thái được phép -->
+                <ng-container *ngFor="let status of getAllowedNextStatuses(order.orderStatus)">
+                  <option [ngValue]="status">
+                    {{ OrderStatusMeta[status].label }}
+                  </option>
+                </ng-container>
+              </select>
+            </div>
           </td>
+
 
           <!-- Phương thức -->
           <td class="p-3 text-gray-700">
@@ -91,20 +115,34 @@
 
           <!-- Tổng tiền -->
           <td class="p-3 text-gray-800 font-semibold ">
-            {{ order.orderAmount | currency: 'VND' }}
+            {{ order.orderAmount | currency: 'VND':'symbol':'1.0-0' }}
           </td>
 
           <!-- Actions -->
           <td class="p-3 text-center">
             <div class="flex justify-center gap-2">
               <button
+                (click)="confirmOrder(order)"
+                *ngIf="canChangeTo(order.orderStatus, OrderStatus.confirmed)"
                 class="p-2 text-green-600 rounded-full hover:bg-green-50"
                 title="Xác nhận đơn"
               >
                 <fa-icon [icon]="faClipboardCheck"></fa-icon>
               </button>
+
               <button
-                *ngIf="order.paymentMethod === PaymentMethodStatus.COD && order.paymentStatus === PaymentStatus.Pending"
+                (click)="shipOrder(order)"
+                *ngIf="canChangeTo(order.orderStatus, OrderStatus.shipping)"
+                class="p-2 text-blue-600 rounded-full hover:bg-blue-50"
+                title="Bắt đầu giao hàng"
+              >
+                <fa-icon [icon]="faTruck"></fa-icon>
+              </button>
+
+              <button
+                (click)="confirmPaid(order)"
+                *ngIf="order.paymentMethod === PaymentMethodStatus.COD
+             && order.paymentStatus === PaymentStatus.Pending"
                 class="flex items-center text-blue-600 hover:text-blue-800 transition"
                 title="Xác nhận đã thanh toán"
               >

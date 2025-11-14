@@ -3,6 +3,7 @@ package ecommerce.orderservice.service.impl;
 import ecommerce.apicommon1.config.TokenInfo;
 import ecommerce.apicommon1.kafka.event.InventoryKafkaEvent;
 import ecommerce.apicommon1.kafka.event.PaymentKafkaEvent;
+import ecommerce.apicommon1.kafka.event.ShippingKafkaEvent;
 import ecommerce.apicommon1.model.request.UpdateOrderStatusRequest;
 import ecommerce.apicommon1.model.response.*;
 import ecommerce.apicommon1.model.status.OrderStatus;
@@ -14,9 +15,7 @@ import ecommerce.orderservice.client.ProductClient;
 import ecommerce.orderservice.client.UserClient;
 import ecommerce.orderservice.dto.request.OrderCreateRequest;
 import ecommerce.orderservice.dto.request.OrderItemRequest;
-import ecommerce.orderservice.dto.response.OrderCreateResponse;
-import ecommerce.orderservice.dto.response.OrderQuantityResponse;
-import ecommerce.orderservice.dto.response.OrdersAD;
+import ecommerce.orderservice.dto.response.*;
 import ecommerce.orderservice.entity.OrderDetail;
 import ecommerce.orderservice.entity.Orders;
 import ecommerce.orderservice.kafka.KafkaOrder;
@@ -32,15 +31,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
@@ -60,21 +56,12 @@ public class OrderServiceImpl implements OrderService {
     private final CartClient cartClient;
     private final TokenInfo tokenInfo;
     private final OrderDetailRepository orderDetailRepository;
-    private final KafkaTemplate<String, InventoryKafkaEvent> inventoryKafka;
-    private final KafkaTemplate<String, PaymentKafkaEvent> paymentKafka;
     private final ProductClient productClient;
     private final UserClient userClient;
     private final PaymentClient paymentClient;
     private final Executor contextAwareExecutor;
     private final OrderStatusUtil orderStatusUtil;
     private final GenerateKey generateKey;
-
-    private String generateOrderCode() {
-        String prefix = "ORD";
-        String dateTimePart = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-        int random = (int) (Math.random() * 900) + 100;
-        return prefix + "-" + dateTimePart + "-" + random;
-    }
 
     @Override
     @Transactional
@@ -89,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
 
         Optional<Orders> existingOrder = orderRepository.findByUserIdAndCartSignature(userId, cartSignature);
         if (existingOrder.isPresent()) {
-            return orderMapper.toDto(existingOrder.get()); // trả về order cũ
+            return orderMapper.toDto(existingOrder.get());
         }
 
         //lưu tạm order
@@ -99,13 +86,13 @@ public class OrderServiceImpl implements OrderService {
                 .status(PAYMENT_FLOW.getOrDefault(request.getPaymentMethod(), OrderStatus.PENDING))
                 .paymentMethod(request.getPaymentMethod())
                 .isActive(1)
+                .orderCode(generateKey.generateOrderCode())
                 .createdAt(LocalDateTime.now())
                 .note(request.getNote())
                 .cartSignature(cartSignature)
                 .build();
         orderRepository.save(order);
 
-        //nếu đặt hàng từ cart
         // nếu đặt hàng từ cart
         if (request.isFromCart()) {
             ApiResponse<CartResponse> cartRes = cartClient.getCartByUserId();
@@ -129,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
                 }
 
                 //Check giá hiện tại với giá trong giỏ
-                ProductPriceResponse productPrice = productClient.productPrice(item.getProductId());
+                ProductSimpleResponse productPrice = productClient.productPrice(item.getProductId());
                 BigDecimal currentPrice = productPrice.getFinalPrice();
                 BigDecimal cartPrice = cartProduct.getUnitPrice();
 
@@ -160,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal totalAmount = BigDecimal.ZERO;
 
         for (OrderItemRequest item : request.getItems()) {
-            ProductPriceResponse productPrice = productClient.productPrice(item.getProductId());
+            ProductSimpleResponse productPrice = productClient.productPrice(item.getProductId());
 
             OrderDetail detail = OrderDetail.builder()
                     .order(order)
@@ -188,7 +175,26 @@ public class OrderServiceImpl implements OrderService {
                 .paymentMethod(request.getPaymentMethod())
                 .timestamp(LocalDateTime.now())
                 .build();
-        paymentKafka.send("payment-topic", payment);
+        kafkaOrder.sendMessage("payment-topic", payment);
+
+        List<ShippingKafkaEvent.ProductItem> productItems = details.stream()
+                .map(d -> ShippingKafkaEvent.ProductItem.builder()
+                        .productId(d.getProductId())
+                        .productName(productClient.productPrice(d.getProductId()).getProductName())
+                        .quantity(d.getQuantity())
+                        .price(d.getUnitPrice())
+                        .build())
+                .toList();
+        ShippingKafkaEvent shipping = ShippingKafkaEvent.builder()
+                .orderId(order.getId())
+                .userId(userId)
+                .orderCode(order.getOrderCode())
+                .shippingAddress(request.getShippingAddress())
+                .totalAmount(totalAmount)
+                .items(productItems)
+                .createdAt(LocalDateTime.now())
+                .build();
+        kafkaOrder.sendMessage("shipping-topic", shipping);
 
         for (OrderDetail d : details) {
             String skuCode = productClient.getSkuCode(d.getProductId());
@@ -196,11 +202,18 @@ public class OrderServiceImpl implements OrderService {
                     .quantity(d.getQuantity())
                     .skuCode(skuCode)
                     .build();
-            inventoryKafka.send("place-order", event);
+            kafkaOrder.sendMessage("place-order", event);
         }
 
         if (request.isFromCart()) {
             cartClient.clearSelectedCartItems(productIds);
+        }
+
+        if (request.getPaymentMethod() == PaymentMethodStatus.PAYPAL) {
+            ApiResponse<PaymentIntentResponse> apiRes =
+                    paymentClient.createPayment(order.getId(), order.getTotalAmount());
+            PaymentIntentResponse paymentIntent = apiRes.getData();
+            response.setCheckoutUrl(paymentIntent.getCheckoutUrl());
         }
 
         return response;
@@ -213,30 +226,37 @@ public class OrderServiceImpl implements OrderService {
 
             Page<OrdersAD> response = orderRepository.getAll(pageable);
 
-            List<Long> ids = response.getContent()
+            // Lấy list customerId
+            List<Long> customerIds = response.getContent()
                     .stream()
                     .map(OrdersAD::getCustomerId)
+                    .filter(Objects::nonNull)
                     .distinct()
                     .toList();
 
-            List<Long> orders = response.getContent()
+            // Lấy list orderIds
+            List<Long> orderIds = response.getContent()
                     .stream()
                     .map(OrdersAD::getId)
+                    .filter(Objects::nonNull)
+                    .distinct()
                     .toList();
 
-            CompletableFuture<Map<Long, String>> usersFuture = CompletableFuture.supplyAsync(() ->
-                    userClient.extractFullName(ids), contextAwareExecutor);
-            CompletableFuture<Map<Long, PaymentStatus>> paymentsFuture = CompletableFuture.supplyAsync(() ->
-                    paymentClient.extractPaymentStatus(orders), contextAwareExecutor);
+            orderIds.forEach(id -> System.out.println("ORDER-ID: " + id));
 
-            CompletableFuture.allOf(usersFuture, paymentsFuture).join();
+            // Gọi tuần tự (sync)
+            Map<Long, String> usersMap = userClient.extractFullName(customerIds);
+            Map<Long, PaymentStatus> paymentStatusMap = paymentClient.extractPaymentStatus(orderIds);
 
-            Map<Long, String> usersMap = usersFuture.get();
-            Map<Long, PaymentStatus> paymentStatusMap = paymentsFuture.get();
-
+            // Gộp dữ liệu
             response.getContent().forEach(item -> {
                 item.setCustomerName(usersMap.get(item.getCustomerId()));
-                item.setPaymentStatus(paymentStatusMap.get(item.getId()));
+
+                PaymentStatus status = paymentStatusMap.getOrDefault(
+                        item.getId(),
+                        PaymentStatus.NOT_PAID
+                );
+                item.setPaymentStatus(status);
                 item.setFormattedDate();
             });
 
@@ -245,13 +265,27 @@ public class OrderServiceImpl implements OrderService {
                     .message("Lấy thành công")
                     .data(response)
                     .build();
+
         } catch (Exception e) {
             return ApiResponse.<Page<OrdersAD>>builder()
                     .code(500)
-                    .message("Lỗi hệ thống" + e.getMessage())
+                    .message("Lỗi hệ thống: " + e.getMessage())
                     .data(null)
                     .build();
         }
+    }
+
+    @Override
+    public PaymentOrderResponse getOrderById(Long orderId) {
+        Orders orders = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoSuchElementException("Không có đơn hàng với id = " + orderId));
+
+        return PaymentOrderResponse.builder()
+                .orderId(orders.getId())
+                .orderCode(orders.getOrderCode())
+                .userId(orders.getUserId())
+                .totalAmount(orders.getTotalAmount())
+                .build();
     }
 
     @Override
@@ -293,5 +327,48 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean existsByUserIdAndProductIdAndStatus(Long userId, Long productId) {
         return orderRepository.existsByUserIdAndProductIdAndStatus(userId, productId, OrderStatus.DELIVERED);
+    }
+
+    public List<OrderResponse> getOrderByUserId() {
+        Long userId = tokenInfo.getUserId();
+        List<Orders> orders = orderRepository.findOrdersByUserId(userId);
+
+        return orders.stream().map(order -> {
+            List<OrderDetailResponse> detail = order.getOrderDetails().stream()
+                    .map(d -> {
+                        String productName;
+                        String imageUrl = null;
+                        try {
+                            productName = productClient.productPrice(d.getProductId()).getProductName();
+                            imageUrl = productClient.productPrice(d.getProductId()).getImageUrl();
+                        } catch (feign.FeignException.NotFound e) {
+                            productName = "Sản phẩm đã bị xóa";
+                        }
+
+                        return OrderDetailResponse.builder()
+                                .productId(d.getProductId())
+                                .productName(productName)
+                                .imageUrl(imageUrl)
+                                .quantity(d.getQuantity())
+                                .unitPrice(d.getUnitPrice())
+                                .discount(d.getDiscount())
+                                .createdAt(d.getCreatedAt())
+                                .build();
+                    })
+                    .toList();
+
+            return OrderResponse.builder()
+                    .id(order.getId())
+                    .userId(order.getUserId())
+                    .orderCode(order.getOrderCode())
+                    .shippingAddress(order.getShippingAddress())
+                    .status(order.getStatus())
+                    .totalAmount(order.getTotalAmount())
+                    .isActive(order.getIsActive())
+                    .createdAt(order.getCreatedAt())
+                    .updatedAt(order.getUpdatedAt())
+                    .orderDetails(detail)
+                    .build();
+        }).toList();
     }
 }

@@ -1,0 +1,177 @@
+<div
+  class="min-h-screen bg-slate-950 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 flex items-center justify-center px-4">
+  <div class="max-w-3xl w-full">
+    <div
+      class="bg-slate-900/70 border border-slate-700/70 shadow-2xl shadow-emerald-500/10 rounded-3xl p-8 md:p-10 backdrop-blur-xl">
+      <!-- Loading -->
+      <div *ngIf="loading" class="flex flex-col items-center justify-center gap-4 py-10">
+        <div class="w-12 h-12 border-4 border-emerald-500/40 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-300 text-sm">Đang tải thông tin đơn hàng...</p>
+      </div>
+
+      <!-- Content -->
+      <div *ngIf="!loading" class="space-y-8">
+        <!-- Icon + Message -->
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+            <div class="w-8 h-8 rounded-full bg-emerald-500/90 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
+                <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="2.2"/>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h1 class="text-xl md:text-2xl font-semibold text-white">
+              Thanh toán thành công 🎉
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base mt-1">
+              Cảm ơn bạn đã mua sắm tại <span class="text-emerald-400 font-medium">SmartShop</span>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div *ngIf="order" class="grid md:grid-cols-3 gap-4 md:gap-6">
+          <div class="md:col-span-2 space-y-4">
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 md:p-5">
+              <div class="flex items-center justify-between gap-3 mb-3">
+                <div>
+                  <p class="text-xs tracking-wide text-slate-400 uppercase">
+                    Mã đơn hàng
+                  </p>
+                  <p class="text-sm md:text-base font-medium text-slate-100">
+                    #{{ order.orderCode || order.id }}
+                  </p>
+                </div>
+                <span
+                  class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-medium border border-emerald-500/40">
+                  ĐÃ XÁC NHẬN
+                </span>
+              </div>
+              <div class="grid grid-cols-2 gap-3 text-xs md:text-sm text-slate-300">
+                <div>
+                  <p class="text-slate-400 text-[11px] uppercase mb-1">Ngày đặt</p>
+                  <p>{{ order.createdAt | date: 'HH:mm dd/MM/yyyy' }}</p>
+                </div>
+                <div>
+                  <p class="text-slate-400 text-[11px] uppercase mb-1">Phương thức thanh toán</p>
+                  <p class="uppercase">
+                    {{ order.paymentMethod || 'PAYPAL' }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-slate-400 text-[11px] uppercase mb-1">Địa chỉ giao hàng</p>
+                  <p class="line-clamp-2">
+                    {{ order.shippingAddress }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-slate-400 text-[11px] uppercase mb-1">Trạng thái thanh toán</p>
+                  <p class="text-emerald-300">
+                    Đã thanh toán
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Products -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 md:p-5 space-y-3">
+              <div class="flex items-center justify-between mb-1">
+                <p class="text-xs md:text-sm font-medium text-slate-100">
+                  Sản phẩm trong đơn
+                </p>
+                <p class="text-xs text-slate-400">
+                  {{ order.orderDetails?.length || 0 }} sản phẩm
+                </p>
+              </div>
+
+              <div class="divide-y divide-slate-800/70 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+                <div *ngFor="let item of order.orderDetails"
+                     class="py-2.5 flex items-center justify-between gap-3">
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs md:text-sm text-slate-100 truncate">
+                      {{ item.productName || ('Sản phẩm #' + item.productId) }}
+                    </p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">
+                      SL: <span class="text-slate-200">{{ item.quantity }}</span>
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs md:text-sm text-slate-100">
+                      {{ item.subTotal | currency: 'VND':'symbol':'1.0-0' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Total -->
+              <div class="border-t border-slate-800 pt-3 flex items-center justify-between">
+                <span class="text-xs md:text-sm text-slate-400">
+                  Tổng thanh toán
+                </span>
+                <span class="text-lg md:text-xl font-semibold text-emerald-400">
+                  {{ order.totalAmount | currency: 'VND':'symbol':'1.0-0' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right side actions -->
+          <div class="space-y-4">
+            <div
+              class="bg-gradient-to-br from-emerald-500/15 via-emerald-500/10 to-slate-900/80 border border-emerald-500/40 rounded-2xl p-4 md:p-5">
+              <p class="text-xs md:text-sm text-slate-100 font-medium mb-2">
+                Đơn hàng của bạn đang được xử lý
+              </p>
+              <p class="text-xs text-slate-300 mb-4">
+                Bạn có thể theo dõi trạng thái đơn hàng trong mục
+                <span class="text-emerald-300 font-medium">Đơn hàng của tôi</span>.
+              </p>
+
+              <div class="space-y-2 text-xs text-slate-300">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span>Đã xác nhận thanh toán</span>
+                </div>
+                <div class="flex items-center gap-2 opacity-80">
+                  <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                  <span>Đang chuẩn bị hàng</span>
+                </div>
+                <div class="flex items-center gap-2 opacity-70">
+                  <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                  <span>Đang giao hàng</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <button
+                (click)="goToOrders()"
+                class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-sm font-medium text-slate-950 transition duration-150 shadow-lg shadow-emerald-500/25">
+                Xem đơn hàng của tôi
+              </button>
+              <button
+                (click)="continueShopping()"
+                class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-sm font-medium text-slate-100 transition duration-150">
+                Tiếp tục mua sắm
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nếu không có order -->
+        <div *ngIf="!order && !loading" class="text-center py-8">
+          <p class="text-slate-300 text-sm mb-4">
+            Không tìm thấy thông tin đơn hàng.
+          </p>
+          <button
+            (click)="continueShopping()"
+            class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-sm font-medium text-slate-950">
+            Quay lại mua sắm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
