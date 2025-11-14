@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderDetailResponse {
     private Long productId;
+    private String productName;
+    private String imageUrl;
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal discount;

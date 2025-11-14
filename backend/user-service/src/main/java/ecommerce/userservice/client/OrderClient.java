@@ -14,6 +14,6 @@ public interface OrderClient {
     @GetMapping("/quantity")
     Map<Long, Long> extractOrderQuantity(@RequestParam List<Long> usersId);
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     List<UserOrderDetailResponse> findOrdersDetailByUserId(@PathVariable("userId") Long userId);
 }

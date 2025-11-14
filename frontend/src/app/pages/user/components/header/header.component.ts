@@ -127,8 +127,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/user/profile']);
   }
 
-  goToOrders() {
-    this.router.navigate(['/user/orders']);
+  goToDashboard() {
+    this.router.navigate(['/user/dashboard']);
   }
 
   private loadCategories() {

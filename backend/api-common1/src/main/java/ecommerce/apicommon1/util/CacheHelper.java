@@ -3,6 +3,7 @@ package ecommerce.apicommon1.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecommerce.apicommon1.client.RedisClient;
 import ecommerce.apicommon1.model.response.CachedPage;
+import ecommerce.apicommon1.model.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,4 +49,30 @@ public class CacheHelper {
         );
         redisClient.putTtlCache(redisKey, cacheObj, ttl, ttlUnit);
     }
+
+    public <T> PageResponse<T> getPageResponseCache(String redisKey, Class<T> clazz) {
+        Object obj = redisClient.getCache(redisKey);
+        if (obj == null) return null;
+
+        try {
+            // Tạo kiểu PageResponse<T>
+            var type = objectMapper.getTypeFactory()
+                    .constructParametricType(PageResponse.class, clazz);
+
+            return objectMapper.convertValue(obj, type);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public <T> void setPageResponseCache(String redisKey, PageResponse<T> page, long ttl, TimeUnit ttlUnit) {
+        try {
+            redisClient.putTtlCache(redisKey, page, ttl, ttlUnit);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

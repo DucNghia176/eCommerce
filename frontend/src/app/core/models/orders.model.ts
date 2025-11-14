@@ -30,11 +30,27 @@ export interface OrderCreateResponse {
   totalAmount: string;
   status: string;
   createdAt: Date;
+  checkoutUrl: string;
+  orderDetails: OrderDetailResponse[];
+}
+
+export interface OrderResponse {
+  id: number;
+  userId: number;
+  orderCode: string;
+  shippingAddress: string;
+  totalAmount: string;
+  status: OrderStatus;
+  isActive: number;
+  createdAt: Date;
+  updatedAt: Date;
   orderDetails: OrderDetailResponse[];
 }
 
 export interface OrderDetailResponse {
   productId: number;
+  productName: string;
+  imageUrl: string;
   quantity: number;
   unitPrice: string;
   discount: string;
@@ -44,4 +60,14 @@ export interface OrderDetailResponse {
 export interface OrderItemRequest {
   productId: number;
   quantity: number;
+}
+
+export interface UpdateOrderStatusRequest {
+  orderId: number;
+  orderStatus: OrderStatus;
+}
+
+export interface UpdateOrderStatusResponse {
+  orderId: number;
+  orderStatus: string;
 }

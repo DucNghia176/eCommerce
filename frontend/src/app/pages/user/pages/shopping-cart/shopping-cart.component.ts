@@ -5,6 +5,8 @@ import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import {FormsModule} from "@angular/forms";
 import {CartTotalComponent} from "../../components/cart-total/cart-total.component";
 import {CartDetailComponent} from "../../components/cart-detail/cart-detail.component";
+import {ToastService} from "../../../../core/services/toast.service";
+import {ToastComponent} from "../../../../shared/components/toast/toast.component";
 
 @Component({
   selector: 'app-shopping-cart',
@@ -12,7 +14,8 @@ import {CartDetailComponent} from "../../components/cart-detail/cart-detail.comp
   imports: [
     FormsModule,
     CartTotalComponent,
-    CartDetailComponent
+    CartDetailComponent,
+    ToastComponent
   ],
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.scss'
@@ -24,9 +27,11 @@ export class ShoppingCartComponent implements OnInit {
   selectedItems: (CartItem & { selected?: boolean })[] = [];
   protected readonly faArrowLeft = faArrowLeft;
   private cartService = inject(CartService);
+  private toastService = inject(ToastService);
 
   onOrderCreated() {
     this.cartService.getCart();
+    this.toastService.show('Đơn hàng của bạn đã được tạo thành công!', 'p');
   }
 
   ngOnInit(): void {

@@ -53,7 +53,11 @@ class InventoryController {
 
     async getQuantity(req, res) {
         try {
-            const {skuCode} = req.params;
+            const skuCode = req.query.skuCode || req.params.skuCode;
+            if (!skuCode) {
+                return res.status(400).json({code: 400, message: 'Thiếu skuCode'});
+            }
+
             const quantity = await inventoryService.getQuantity(skuCode);
             res.status(200).json({
                 code: 200,

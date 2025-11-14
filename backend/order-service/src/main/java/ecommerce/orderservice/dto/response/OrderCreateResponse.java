@@ -19,4 +19,5 @@ public class OrderCreateResponse {
     private String status;
     private LocalDateTime createdAt;
     private List<OrderDetailResponse> orderDetails;
+    private String checkoutUrl;
 }

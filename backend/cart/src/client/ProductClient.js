@@ -8,7 +8,7 @@ class ProductClient {
     }
 
     async getProductPrice(productId) {
-        const response = await axiosClient.get(`${baseUrl}/price/${productId}`);
+        const response = await axiosClient.get(`${baseUrl}/simple/${productId}`);
         return response.data;
     }
 

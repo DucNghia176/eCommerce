@@ -48,6 +48,9 @@ public class GateWayRouter {
                 .route("NOTIFICATION-SERVICE", r -> r.path("/api/notification/**")
                         .uri("lb://NOTIFICATION-SERVICE"))
 
+                .route("SHIPPING-SERVICE", r -> r.path("/api/shipments/**")
+                        .uri("lb://SHIPPING-SERVICE"))
+
                 .build();
     }
 }

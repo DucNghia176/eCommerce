@@ -5,8 +5,6 @@ const cartRouter = require('./src/router/CartRouter');
 const jwtAuthentication = require("./src/middleware/jwtAuthentication");
 const TokenInfo = require('./src/middleware/TokenInfo');
 const app = express();
-const cors = require('cors');
-app.use(cors());
 
 // view engine setup
 app.use(express.json());

@@ -1,0 +1,135 @@
+<div class="max-w-7xl mx-auto">
+  <header class="">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Đơn Hàng Của Tôi</h1>
+  </header>
+
+  <!-- Filters -->
+  <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+    <div class="mb-4">
+      <input
+        (input)="filterOrders()"
+        [(ngModel)]="searchTerm"
+        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+        placeholder="Tìm kiếm theo mã đơn hàng..."
+        type="text"
+      />
+    </div>
+
+    <div class="flex gap-2 flex-wrap">
+      <button
+        (click)="filterByStatus(status.value)"
+        *ngFor="let status of statusOptions"
+        [class.bg-blue-500]="selectedStatus === status.value"
+        [class.border-blue-500]="selectedStatus === status.value"
+        [class.text-white]="selectedStatus === status.value"
+        class="px-4 py-2 border-2 border-gray-200 bg-white rounded-full text-sm font-medium hover:border-blue-500 hover:bg-blue-50 transition"
+      >
+        {{ status.label }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Orders List -->
+  <div class="space-y-4">
+    <div *ngIf="displayedOrders.length === 0" class="text-center py-16 bg-white rounded-xl shadow-md">
+      <p class="text-gray-500">Không tìm thấy đơn hàng nào</p>
+    </div>
+
+    <div *ngFor="let order of displayedOrders" class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+      <div class="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
+        <div class="text-gray-900 font-medium">
+          Mã đơn: {{ order.orderCode }}
+        </div>
+        <span
+          [style.background-color]="OrderStatusMeta[order.status].bgColor"
+          [style.color]="OrderStatusMeta[order.status].color"
+          class="px-3 py-1 rounded-full text-xs font-semibold"
+        >
+              {{ OrderStatusMeta[order.status].label }}
+        </span>
+      </div>
+
+      <div class="mb-4 text-gray-600 text-sm">
+        📅 {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+      </div>
+
+      <div class="mb-4">
+        <div class="divide-y divide-gray-50">
+          <div *ngFor="let item of order.orderDetails"
+               class="flex justify-between items-center py-2">
+            <div class="flex gap-3 items-center">
+              <img
+                [src]="item.imageUrl || 'assets/images/placeholder.png'"
+                alt="{{ item.productName }}"
+                class="w-12 h-12 object-cover rounded-md border border-gray-100"
+              />
+
+              <div>
+                <span class="block text-gray-900 font-medium">{{ item.productName }}</span>
+                <span class="text-gray-500 text-sm">x{{ item.quantity }}</span>
+              </div>
+            </div>
+            <span class="font-semibold text-green-600">
+              {{ item.unitPrice | number: '1.0-0' }}đ
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-4 border-t border-gray-100">
+        <div class="mb-3 text-gray-600 text-sm">
+          📍 {{ order.shippingAddress }}
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-gray-700 font-medium">Tổng cộng:</span>
+          <span class="text-green-600 text-xl font-bold">{{ order.totalAmount | number: '1.0-0' }}đ</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-4">
+        <button (click)="viewOrderDetails(order)"
+                class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition">
+          Xem chi tiết
+        </button>
+        <button
+          (click)="cancelOrder(order)"
+          *ngIf="order.status === OrderStatus.pending"
+          class="flex-1 bg-white text-gray-700 px-6 py-3 rounded-lg font-semibold border-2 border-gray-200 hover:border-red-500 hover:text-red-500 transition"
+        >
+          Hủy đơn
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="mt-8 flex justify-center items-center gap-2">
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+    >
+      ‹ Trước
+    </button>
+
+    <button
+      (click)="goToPage(page)"
+      *ngFor="let page of pages"
+      [class.bg-blue-500]="currentPage === page"
+      [class.border-blue-500]="currentPage === page"
+      [class.text-white]="currentPage === page"
+      class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 transition font-medium"
+    >
+      {{ page }}
+    </button>
+
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+    >
+      Sau ›
+    </button>
+  </div>
+</div>
+

@@ -24,7 +24,7 @@ module.exports = new EntitySchema({
             type: 'timestamp',
             name: 'UPDATED_AT',
             updateDate: true,
-            default: () => 'CURRENT_TIMESTAMP',
+            onUpdate: () => 'CURRENT_TIMESTAMP',
         },
     },
     relations: {

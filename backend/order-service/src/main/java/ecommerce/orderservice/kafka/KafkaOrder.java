@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class KafkaOrder {
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public void sendMessage(String topic, String message) {
+    public void sendMessage(String topic, Object message) {
         kafkaTemplate.send(topic, message);
         log.info("Gửi message tới Kafka topic [{}]: {}", topic, message);
     }

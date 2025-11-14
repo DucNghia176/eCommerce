@@ -1,5 +1,6 @@
 package ecommerce.orderservice.dto.response;
 
+import ecommerce.apicommon1.model.status.OrderStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -14,9 +15,10 @@ import java.util.List;
 public class OrderResponse {
     private Long id;
     private Long userId;
+    private String orderCode;
     private String shippingAddress;
     private BigDecimal totalAmount;
-    private String status;
+    private OrderStatus status;
     private Integer isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

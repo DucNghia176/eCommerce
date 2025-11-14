@@ -131,6 +131,7 @@ class CartService {
     }
 
     async removeProductsFromCart(userId, productIds) {
+        console.log("nhận yêu cầu xóa từ order")
         if (!userId) throw new Error('Vui lòng đăng nhập');
 
         const cart = await cartRepository.findOneBy({userId});
@@ -150,12 +151,36 @@ class CartService {
         }
 
         // Xóa tất cả cartItem
-        for (const item of cartItems) {
-            await cartItemRepository.delete(item.id);
-        }
+        // for (const item of cartItems) {
+        //     await cartItemRepository.delete(item.id);
+        // }
+        await Promise.all(cartItems.map(item => cartItemRepository.delete(item.id)));
 
         // Trả về giỏ hàng mới
         return await this._updateCartCache(cart.userId, cart);
+    }
+
+    async getSelectedCartItems(userId, productIds) {
+        if (!userId) throw new Error('Vui lòng đăng nhập');
+        if (!Array.isArray(productIds) || productIds.length === 0) {
+            throw new Error('Danh sách sản phẩm không hợp lệ');
+        }
+
+        const cart = await cartRepository.findOneBy({userId});
+        if (!cart) throw new Error('Không tìm thấy giỏ hàng cho người dùng');
+
+        const cartItems = await cartItemRepository.findAllByCartAndProductIds({
+            cartId: cart.id,
+            productIds: productIds
+        });
+
+        return cartItems.map(item => ({
+            id: item.id,
+            productId: item.productId,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            discount: item.discount || 0
+        }));
     }
 }
 
