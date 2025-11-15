@@ -14,7 +14,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/cart")
 @PreAuthorize("hasAuthority('USER')")
 public class CartController {

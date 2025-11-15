@@ -318,6 +318,14 @@ public class OrderServiceImpl implements OrderService {
         orders.setStatus(request.getOrderStatus());
         orderRepository.save(orders);
 
+        if (request.getOrderStatus() == OrderStatus.SHIPPING) {
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("orderId", orders.getId());
+            payload.put("status", request.getOrderStatus().toString());
+            payload.put("orderCode", orders.getOrderCode());
+            kafkaOrder.sendMessage("shipping-update", payload);
+        }
+
         return UpdateOrderStatusResponse.builder()
                 .orderId(orders.getId())
                 .orderStatus(orders.getStatus().toString())
