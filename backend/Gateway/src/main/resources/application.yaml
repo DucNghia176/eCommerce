@@ -8,7 +8,7 @@ spring:
     web-application-type: reactive
   data:
     redis:
-      host: localhost
+      host: ${SPRING_DATA_REDIS_HOST}
       port: 6379
       password: 123456aA@
       connect-timeout: 60000
@@ -27,9 +27,9 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8762/eureka
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
   instance:
-    hostname: localhost
+    hostname: ${EUREKA_INSTANCE_HOSTNAME}
     prefer-ip-address: true
 
 logging:
