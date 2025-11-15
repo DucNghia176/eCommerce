@@ -16,7 +16,7 @@
     <modules>
         <module>api-common1</module>
         <module>eureka</module>
-        <module>gateway</module>
+        <module>Gateway</module>
         <module>user-service</module>
         <module>product-service</module>
         <module>inventory-service</module>
