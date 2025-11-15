@@ -50,4 +50,6 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     Optional<Orders> findByUserIdAndCartSignature(Long userId, String cartSignature);
 
     List<Orders> findOrdersByUserId(Long userId);
+
+    Orders findOrdersByOrderCode(String orderCode);
 }

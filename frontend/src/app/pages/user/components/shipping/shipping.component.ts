@@ -113,7 +113,7 @@ export class ShippingComponent implements OnInit {
     const normalized = fabricStatus?.trim()?.toUpperCase();
     switch (normalized) {
       case 'CREATED':
-        return OrderStatus.pending;      // hoặc OrderStatus.confirmed
+        return OrderStatus.pending;
       case 'SHIPPING':
         return OrderStatus.shipping;
       case 'DELIVERED':
@@ -121,7 +121,7 @@ export class ShippingComponent implements OnInit {
       case 'CANCELLED':
         return OrderStatus.cancelled;
       default:
-        return OrderStatus.failed;              // fallback
+        return OrderStatus.failed;
     }
   }
 }

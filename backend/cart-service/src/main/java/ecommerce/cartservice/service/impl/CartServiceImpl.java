@@ -140,6 +140,7 @@ public class CartServiceImpl implements CartService {
                         .data(null)
                         .build();
             }
+            
             CartItem cartItem = optionalItem.get();
 
             // Nếu quantity <= 0 thì xóa khỏi giỏ

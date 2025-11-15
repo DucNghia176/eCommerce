@@ -5,7 +5,7 @@ const path = require('path');
 
 const AppDataSource = new DataSource({
     type: 'oracle',
-    username: process.env.DB_USER,
+    username: 'INVENTORY_DB',
     password: process.env.DB_PASSWORD,
     connectString: process.env.DB_CONNECT_STRING,
     synchronize: false,
