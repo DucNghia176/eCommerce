@@ -18,7 +18,7 @@
       type="button"
     >
       <fa-icon [icon]="faAdd"></fa-icon>
-      <span class="ml-2">Thêm Sản Phẩm</span>
+      <span class="ml-2">Thêm sản phẩm</span>
     </button>
 
     <div
@@ -32,7 +32,9 @@
         height="48"
         width="48"
       />
-      <span class="block overflow-hidden whitespace-nowrap text-ellipsis max-w-xs">{{ product.name }}</span>
+      <span class="block overflow-hidden whitespace-nowrap text-ellipsis max-w-xs">
+        {{ product.name }}
+      </span>
     </div>
 
     <app-page
@@ -50,7 +52,7 @@
 
     <!-- hiển thị danh mục -->
     <div class="bg-white p-4 rounded-xl shadow ">
-      <h2 class="font-semibold mb-4">Hiển Thị Danh Mục</h2>
+      <h2 class="font-semibold mb-4">Hiển thị danh mục</h2>
       <label class="relative inline-flex items-center cursor-pointer">
         <input
           [(ngModel)]="isVisible"
@@ -68,10 +70,12 @@
 
     <!-- thông tin danh mục -->
     <div class="bg-white p-4 rounded-xl shadow flex flex-col gap-2">
-      <h2 class="font-semibold mb-4">Thông Tin Danh Mục</h2>
-      <div class="">
+      <h2 class="font-semibold mb-4">Thông tin danh mục</h2>
+
+      <!-- tên -->
+      <div>
         <label class="text-gray-600 label-required block font-medium" for="name">
-          Tên Danh Mục
+          Tên danh mục
         </label>
         <input
           [(ngModel)]="categoryName"
@@ -82,6 +86,8 @@
           type="text"
         />
       </div>
+
+      <!-- danh mục cha -->
       <div class="relative">
         <span class="text-gray-600 label-required block font-medium">
           Danh mục cha
@@ -98,7 +104,7 @@
           </svg>
         </button>
 
-        <!-- danh sách dropdown -->
+        <!-- dropdown -->
         <ul *ngIf="isOpen"
             class="absolute w-full mt-2 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto z-10">
           <li
@@ -117,11 +123,11 @@
         </ul>
       </div>
 
-      <!-- Hình ảnh -->
+      <!-- hình ảnh -->
       <div class="border-gray-300 pb-7">
-        <h2 class="font-semibold mb-2">Hình Ảnh</h2>
+        <h2 class="font-semibold mb-2">Hình ảnh</h2>
 
-        <!-- Upload zone (chỉ hiển thị khi chưa có ảnh) -->
+        <!-- upload -->
         <div
           *ngIf="!image"
           class="border-2 border-dashed border-gray-300 rounded-md flex flex-col justify-center items-center space-y-2 h-40"
@@ -144,18 +150,18 @@
           <p class="text-sm text-gray-500">Hoặc kéo và thả tệp vào đây</p>
         </div>
 
-        <!-- Preview -->
+        <!-- preview -->
         <div *ngIf="image" class="mt-4 relative group w-40 aspect-square">
           <img
             [src]="image.src"
             alt="Xem trước"
             class="w-full h-full object-cover rounded-md border shadow"
           />
-          <!-- Overlay hover -->
+          <!-- hover -->
           <div
             class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2 rounded-md"
           >
-            <!-- Thay ảnh -->
+            <!-- thay ảnh -->
             <label
               class="bg-white text-blue-600 w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition flex items-center justify-center"
             >
@@ -168,7 +174,7 @@
               />
             </label>
 
-            <!-- Xoá ảnh -->
+            <!-- xoá -->
             <button
               (click)="removeImage()"
               class="bg-white text-red-500 p-2 w-8 h-8 rounded-full hover:scale-110 transition flex items-center justify-center"
@@ -181,10 +187,11 @@
       </div>
     </div>
 
+    <!-- nút -->
     <div class="flex gap-2 justify-end">
-      <button class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
+      <button (click)="goBack()" class="bg-white text-red-600 border px-4 py-2 rounded" type="button">
         <fa-icon [icon]="faClose"></fa-icon>
-        <span (click)="goBack()" class="ml-2">Hủy</span>
+        <span class="ml-2">Hủy</span>
       </button>
       <button
         [disabled]="isLoading"

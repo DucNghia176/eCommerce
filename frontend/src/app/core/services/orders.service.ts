@@ -12,12 +12,13 @@ import {
 } from "../models/orders.model";
 import {ApiResponse} from "../models/common.model";
 import {OrderStatus} from "../../shared/status/order-status";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrdersService {
-  private apiUrl = 'http://localhost:8085/api/orders';
+  private apiUrl = environment.apiUrl + 'orders';
 
   constructor(private http: HttpClient) {
   }

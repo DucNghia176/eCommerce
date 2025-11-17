@@ -1,5 +1,5 @@
 <div class="inline-block relative text-sm">
-  <!-- All Category -->
+  <!-- Tất cả danh mục -->
   <div class="inline-block relative">
     <button
       (click)="toggleCategory()"
@@ -9,7 +9,7 @@
             }"
       class="flex items-center gap-2 font-semibold rounded px-4 py-2 bg-gray-200 transition-colors"
     >
-      All Category
+      Tất cả danh mục
       <fa-icon
         [icon]="faChevronDown"
         [ngStyle]="{
@@ -20,38 +20,42 @@
       </fa-icon>
     </button>
 
-    <!-- category -->
+    <!-- dropdown danh mục -->
     <div
       *ngIf="showCategory"
       class="absolute left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out"
     >
       <ng-container *ngFor="let cat of categories">
-        <div (mouseenter)="onMouseEnterCategory(cat.id)"
-             (mouseleave)="onMouseLeaveCategory(cat.id)"
-             class="relative group"
+        <div
+          (mouseenter)="onMouseEnterCategory(cat.id)"
+          (mouseleave)="onMouseLeaveCategory(cat.id)"
+          class="relative group"
         >
           <button
             [ngClass]="{
-            'bg-gray-100 font-semibold': isCategoryHover(cat.id),
-            'hover:bg-gray-100 hover:font-semibold': !isCategoryHover(cat.id)
-          }"
+              'bg-gray-100 font-semibold': isCategoryHover(cat.id),
+              'hover:bg-gray-100 hover:font-semibold': !isCategoryHover(cat.id)
+            }"
             class="w-full text-left px-4 py-2 flex justify-between items-center rounded transition-colors duration-300 ease-in-out"
           >
             {{ cat.name }}
-            <fa-icon *ngIf="showChevronRight(cat.id)"
-                     [icon]="faChevronRight"
-                     class="ml-2 text-gray-500"></fa-icon>
+            <fa-icon
+              *ngIf="showChevronRight(cat.id)"
+              [icon]="faChevronRight"
+              class="ml-2 text-gray-500"
+            ></fa-icon>
           </button>
 
-          <!-- Dropdown con -->
+          <!-- menu con -->
           <div
             *ngIf="cat.brands?.length"
             class="absolute top-0 left-full ml-2 w-[550px] bg-white border border-gray-200 rounded-lg shadow-xl opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-opacity duration-300 ease-in-out z-50"
           >
             <div class="grid grid-cols-10 gap-4 p-4">
-              <!-- brand -->
+
+              <!-- thương hiệu -->
               <div class="col-span-3 border-r pr-4">
-                <h2 class="font-bold text-gray-700 mb-2">Brands</h2>
+                <h2 class="font-bold text-gray-700 mb-2">Thương hiệu</h2>
                 <div *ngFor="let sub of cat.brands | slice:0:10">
                   <button
                     (click)="selectSubCategory(cat.id, sub.id)"
@@ -60,24 +64,32 @@
                     {{ sub.name }}
                   </button>
                 </div>
-                <button *ngIf="cat.brands.length > 6"
-                        class="text-xs text-blue-500 mt-2 hover:underline">
+
+                <button
+                  *ngIf="cat.brands.length > 6"
+                  class="text-xs text-blue-500 mt-2 hover:underline"
+                >
                   Xem thêm...
                 </button>
               </div>
 
-
-              <!-- featured product -->
+              <!-- sản phẩm nổi bật -->
               <div class="col-span-7">
-                <h2 class="font-bold text-gray-700 mb-2">Featured Products</h2>
+                <h2 class="font-bold text-gray-700 mb-2">Sản phẩm nổi bật</h2>
                 <div class="flex flex-col gap-4">
-                  <div *ngFor="let pro of cat.products"
-                       class="flex gap-2 items-center p-2 rounded hover:bg-gray-50 border border-gray-300 w-full">
-                    <img [src]="pro.imageUrl"
-                         class="w-16 h-16 object-cover rounded">
+                  <div
+                    *ngFor="let pro of cat.products"
+                    class="flex gap-2 items-center p-2 rounded hover:bg-gray-50 border border-gray-300 w-full"
+                  >
+                    <img
+                      [src]="pro.imageUrl"
+                      class="w-16 h-16 object-cover rounded"
+                    >
                     <div>
                       <p class="text-sm font-medium">{{ pro.name }}</p>
-                      <p class="text-xs text-blue-600 font-semibold">{{ pro.price | currency:'VND' }}</p>
+                      <p class="text-xs text-blue-600 font-semibold">
+                        {{ pro.price | currency:'VND' }}
+                      </p>
                     </div>
                   </div>
                 </div>

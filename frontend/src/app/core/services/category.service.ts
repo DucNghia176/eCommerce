@@ -5,13 +5,14 @@ import {catchError, map, Observable, throwError} from "rxjs";
 import {ApiResponse} from "../models/common.model";
 import {Page} from "../models/page.model";
 import {ProductSummary} from "../models/product-summary.model";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
 
-  private apiUrl = 'http://localhost:8085/api/category';
+  private apiUrl = environment.apiUrl + 'category';
 
   constructor(private http: HttpClient) {
   }

@@ -12,13 +12,14 @@ import {
 } from "../models/product.model";
 import {ApiResponse} from "../models/common.model";
 import {Page} from "../models/page.model";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  private apiUrl = 'http://localhost:8085/api/product';
+  private apiUrl = environment.apiUrl + 'product';
 
   constructor(private http: HttpClient) {
   }

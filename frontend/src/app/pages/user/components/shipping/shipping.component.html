@@ -19,11 +19,11 @@
           Mã đơn: {{ order.orderCode || order.shipmentID }}
         </div>
         <span
-          [style.background-color]="OrderStatusMeta[order.status]?.bgColor || '#E5E7EB'"
-          [style.color]="OrderStatusMeta[order.status]?.color || '#374151'"
+          [style.background-color]="getStatusMeta(order.status).bgColor"
+          [style.color]="getStatusMeta(order.status).color"
           class="px-3 py-1 rounded-full text-xs font-semibold"
         >
-          {{ OrderStatusMeta[order.status]?.label || order.status }}
+          {{ getStatusMeta(order.status).label }}
         </span>
       </div>
 

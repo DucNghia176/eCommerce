@@ -1,37 +1,37 @@
-<h2 class="text-center text-2xl font-bold mb-4">Shop With Category</h2>
+<h2 class="text-center text-2xl font-bold mb-6">Mua Sắm Theo Danh Mục</h2>
 
 <div class="relative">
   <!-- Nút trái -->
   <button
     (click)="scrollLeft()"
-    class="absolute left-0 top-1/2 -translate-y-1/2 bg-orange-500 shadow rounded-full p-2 z-10 w-8 h-8 flex items-center justify-center"
+    class="absolute left-0 top-1/2 -translate-y-1/2 bg-orange-500 shadow-lg rounded-full p-2 z-20 w-9 h-9 flex items-center justify-center hover:bg-orange-600 transition"
   >
-    <fa-icon [icon]="faArrowLeft" class="text-white"></fa-icon>
+    <fa-icon [icon]="faArrowLeft" class="text-white text-sm"></fa-icon>
   </button>
 
   <!-- Container scroll -->
   <div
     #scrollContainer
-    class="flex overflow-x-auto gap-4 scrollbar-hide px-10 snap-mandatory"
+    class="flex overflow-x-auto gap-6 scrollbar-hide px-12 py-2 snap-x"
   >
     <div
       *ngFor="let cat of categories"
-      class="flex-shrink-0 w-40 p-4 bg-white rounded border text-center border-gray-300"
+      class="flex-shrink-0 w-40 p-4 bg-white rounded-xl shadow hover:shadow-md transition cursor-pointer text-center border border-gray-200 hover:border-orange-400"
     >
       <img
         [alt]="cat.name"
-        [src]="cat.image"
-        class="mx-auto mb-2 h-24 object-contain"
+        [src]="cat.image || 'assets/images/placeholder-category.png'"
+        class="mx-auto mb-3 h-24 object-contain"
       />
-      <p class="font-semibold">{{ cat.name }}</p>
+      <p class="font-semibold text-gray-800 text-sm">{{ cat.name }}</p>
     </div>
   </div>
 
   <!-- Nút phải -->
   <button
     (click)="scrollRight()"
-    class="absolute right-0 top-1/2 -translate-y-1/2 bg-orange-500 shadow rounded-full p-2 z-10 w-8 h-8 flex items-center justify-center"
+    class="absolute right-0 top-1/2 -translate-y-1/2 bg-orange-500 shadow-lg rounded-full p-2 z-20 w-9 h-9 flex items-center justify-center hover:bg-orange-600 transition"
   >
-    <fa-icon [icon]="faArrowRight" class="text-white"></fa-icon>
+    <fa-icon [icon]="faArrowRight" class="text-white text-sm"></fa-icon>
   </button>
 </div>

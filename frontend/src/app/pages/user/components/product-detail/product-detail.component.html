@@ -1,11 +1,12 @@
 <div class="flex gap-6 w-full">
-  <!--  ảnh-->
+  <!-- Ảnh -->
   <div class="flex flex-col items-center gap-4 w-full">
     <!-- Ảnh lớn -->
     <div class="w-80 h-60">
-      <img [src]="selectedImage" alt="Selected" class="w-full h-full object-contain rounded"/>
+      <img [src]="selectedImage" alt="Ảnh sản phẩm" class="w-full h-full object-contain rounded"/>
     </div>
-    <!-- Thumbnails -->
+
+    <!-- Danh sách ảnh nhỏ -->
     <div class="relative w-full">
       <!-- Nút trái -->
       <button
@@ -20,14 +21,15 @@
           (click)="selectImage(i)"
           *ngFor="let img of product.imageUrls; let i = index"
           [ngClass]="{
-    'border-orange-500': selectedImage === img,
-    'border-gray-300': selectedImage !== img
-  }"
+            'border-orange-500': selectedImage === img,
+            'border-gray-300': selectedImage !== img
+          }"
           class="flex-shrink-0 w-20 h-20 p-1 border cursor-pointer"
         >
           <img [src]="img" class="w-full h-full object-contain"/>
         </div>
       </div>
+
       <!-- Nút phải -->
       <button
         (click)="scrollRight()"
@@ -37,7 +39,8 @@
       </button>
     </div>
   </div>
-  <!--  //info-->
+
+  <!-- Thông tin sản phẩm -->
   <div class="flex flex-col gap-2 w-full">
     <div class="border-b border-gray-100 pb-3 gap-2">
       <div class="mt-2 flex items-center justify-between text-sm">
@@ -47,46 +50,59 @@
             [nzDisabled]="true"
             nzAllowHalf>
           </nz-rate>
-          <span>{{ product.user }} Star rating</span>
-          <span class="ml-1 text-gray-500 text-sm">({{ product.user }} User feedback)</span>
+          <span>{{ product.user }} sao đánh giá</span>
+          <span class="ml-1 text-gray-500 text-sm">({{ product.user }} phản hồi)</span>
         </div>
       </div>
+
       <p class="font-semibold text-2xl">{{ product.name }}</p>
+
       <div class="flex gap-32 text-sm items-center">
         <div class="flex flex-col gap-1">
-          <span>Sku: {{ product.skuCode }}</span>
-          <span>Brand: {{ product.brand.name }}</span>
+          <span>Mã sản phẩm (SKU): {{ product.skuCode }}</span>
+          <span>Thương hiệu: {{ product.brand.name }}</span>
         </div>
         <div class="flex flex-col gap-1">
-          <span>Availability: {{ product.quantity }}</span>
-          <span>Category: {{ product.categoryName }}</span>
+          <span>Tồn kho: {{ product.quantity }}</span>
+          <span>Danh mục: {{ product.categoryName }}</span>
         </div>
       </div>
-      <p class="font-semibold text-2xl text-blue-500">{{ product.price | currency:"VND" }}</p>
+
+      <p class="font-semibold text-2xl text-blue-500">
+        {{ product.price | currency:'VND' }}
+      </p>
     </div>
-    <!--button-->
+
+    <!-- Nút thao tác -->
     <div class="flex gap-3">
+      <!-- Số lượng -->
       <div class="flex items-center border border-gray-100 rounded overflow-hidden w-1/4">
-        <!-- Nút giảm -->
+        <!-- Giảm -->
         <button (click)="decrease()" class="flex-1 hover:bg-gray-100 text-center p-2">
           <fa-icon [icon]="faMinus"></fa-icon>
         </button>
+
         <!-- Hiển thị số lượng -->
         <span class="flex-1 text-center">{{ quantity }}</span>
-        <!-- Nút tăng -->
+
+        <!-- Tăng -->
         <button (click)="increase()" class="flex-1 hover:bg-gray-100 text-center p-2">
           <fa-icon [icon]="faPlus"></fa-icon>
         </button>
       </div>
 
-      <button class="flex gap-2 bg-orange-500 p-2 items-center justify-center rounded w-1/2">
-        ADD TO CARD
+      <!-- Thêm vào giỏ -->
+      <button
+        class="flex gap-2 bg-orange-500 p-2 items-center justify-center rounded w-1/2 text-white font-semibold hover:bg-orange-600 transition">
+        THÊM VÀO GIỎ
         <fa-icon [icon]="faCartPlus"></fa-icon>
       </button>
+
+      <!-- Mua ngay -->
       <button
         (click)="checkout()"
-        class="p-2 w-1/4 text-orange-500 border border-orange-500 items-center justify-center rounded">
-        BUY NOW
+        class="p-2 w-1/4 text-orange-500 border border-orange-500 items-center justify-center rounded font-semibold hover:bg-orange-50 transition">
+        MUA NGAY
       </button>
     </div>
   </div>

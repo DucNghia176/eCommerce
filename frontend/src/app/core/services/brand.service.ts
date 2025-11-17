@@ -3,13 +3,14 @@ import {BrandResponse, TagResponse} from "../models/TagBrand.model";
 import {catchError, map, Observable, throwError} from "rxjs";
 import {ApiResponse} from "../models/common.model";
 import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TagBrandService {
 
-  private apiUrl = 'http://localhost:8085/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {
   }

@@ -4,12 +4,13 @@ import {catchError, map, Observable, throwError} from 'rxjs';
 import {UserOrderDetail, UserOrdersResponse, UserResponse, UserUpdateRequest} from '../models/user.model';
 import {ApiResponse} from "../models/common.model";
 import {Page} from "../models/page.model";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-  private apiUrl = 'http://localhost:8085/api/users';
+  private apiUrl = environment.apiUrl + 'users';
 
   constructor(private http: HttpClient) {
   }

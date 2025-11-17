@@ -1,11 +1,11 @@
 <header class="bg-sky-700 text-gray-50">
   <!-- Top bar -->
   <div class="container mx-auto px-4 py-1 flex justify-between items-center text-sm">
-    <span>Welcome to Ezone online eCommerce store</span>
+    <span>Chào mừng bạn đến với cửa hàng trực tuyến Ezone</span>
 
     <div class="flex items-center divide-x">
       <div class="flex flex-row px-3 gap-3 items-center">
-        <span class="hidden sm:inline">Follow us:</span>
+        <span class="hidden sm:inline">Theo dõi chúng tôi:</span>
         <div class="flex gap-2 text-lg">
           <fa-icon [icon]="faTwitter" class="cursor-pointer hover:text-gray-300"></fa-icon>
           <fa-icon [icon]="faFacebook" class="cursor-pointer hover:text-gray-300"></fa-icon>
@@ -16,12 +16,12 @@
         </div>
       </div>
 
-      <div class="px-3 flex flex-row  gap-3">
-        <div class="flex flex-row gap-2 items-center justify-center">
+      <div class="px-3 flex flex-row gap-3">
+        <div class="flex flex-row gap-2 items-center justify-center cursor-pointer">
           <p>Vi</p>
           <fa-icon [icon]="faChevronDown" class="text-xs"></fa-icon>
         </div>
-        <div class="flex flex-row gap-2 items-center justify-center">
+        <div class="flex flex-row gap-2 items-center justify-center cursor-pointer">
           <p>VND</p>
           <fa-icon [icon]="faChevronDown" class="text-xs"></fa-icon>
         </div>
@@ -46,7 +46,7 @@
       <input
         (keyup.enter)="onSearchInput($event)"
         class="w-full rounded-md py-2 pl-10 pr-3 text-sm text-gray-900 focus:outline-none focus:ring focus:ring-sky-500"
-        placeholder="Search products..."
+        placeholder="Tìm kiếm sản phẩm..."
         type="text"
       />
       <fa-icon [icon]="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></fa-icon>
@@ -54,25 +54,28 @@
 
     <!-- Icons -->
     <div class="flex items-center gap-5 text-xl">
-      <!--      giỏ hàng-->
-      <div (click)="onCartClick()" class="cart-wrapper hover:text-gray-300">
+
+      <!-- Giỏ hàng -->
+      <div (click)="onCartClick()" class="cart-wrapper hover:text-gray-300 cursor-pointer">
         <fa-icon [icon]="faCartShopping" class="cart-icon"></fa-icon>
         <nz-badge [nzCount]="cartItemCount" class="cart-badge" nzSize="small"></nz-badge>
       </div>
 
-      <!--      //icon user-->
+      <!-- User -->
       <button [nzDropdownMenu]="menuUser"
               [nzTrigger]="'click'"
-              class="flex gap-2 border border-gray-200 p-2 hover:text-gray-300"
+              class="flex gap-2 border border-gray-200 p-2 hover:text-gray-300 cursor-pointer"
               nz-dropdown
               nzPlacement="bottomRight"
       >
         <ng-container *ngIf="isLoggedIn; else guest">
           <span>{{ (user?.fullName || '').split(' ').slice(-1)[0] || user?.username }}</span>
         </ng-container>
+
         <ng-template #guest>
           <span [routerLink]="['/auth/login']">Đăng nhập</span>
         </ng-template>
+
         <fa-icon [icon]="faUser"></fa-icon>
       </button>
 
@@ -83,32 +86,37 @@
           <li (click)="onLogout()" nz-menu-item>Đăng xuất</li>
         </ul>
       </nz-dropdown-menu>
+
     </div>
   </div>
-
 </header>
 
 <!-- Navbar -->
 <nav class="bg-white shadow-sm border-t border-gray-200">
   <div class="container mx-auto px-4 py-3 flex items-center justify-between text-gray-600 text-sm">
+
     <!-- Left -->
     <div class="flex items-center gap-6">
       <app-all-category [categories]="categories"></app-all-category>
+
       <button class="flex gap-1 hover:text-sky-600">
         <fa-icon [icon]="faLocationDot"></fa-icon>
-        Track Order
+        Tra cứu đơn hàng
       </button>
+
       <button class="flex gap-1 hover:text-sky-600">
         <fa-icon [icon]="faRotate"></fa-icon>
-        Compare
+        So sánh
       </button>
+
       <button class="flex gap-1 hover:text-sky-600">
         <fa-icon [icon]="faHeadphones"></fa-icon>
-        Customer Support
+        Hỗ trợ khách hàng
       </button>
+
       <button class="flex gap-1 hover:text-sky-600">
         <fa-icon [icon]="faCircleInfo"></fa-icon>
-        Need Help
+        Trợ giúp
       </button>
     </div>
 

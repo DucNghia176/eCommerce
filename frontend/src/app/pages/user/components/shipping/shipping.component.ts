@@ -109,19 +109,19 @@ export class ShippingComponent implements OnInit {
     this.orderHistory = [];
   }
 
-  private mapFabricStatusToFrontend(fabricStatus: string): OrderStatus {
-    const normalized = fabricStatus?.trim()?.toUpperCase();
-    switch (normalized) {
-      case 'CREATED':
-        return OrderStatus.pending;
-      case 'SHIPPING':
-        return OrderStatus.shipping;
-      case 'DELIVERED':
-        return OrderStatus.delivered;
-      case 'CANCELLED':
-        return OrderStatus.cancelled;
-      default:
-        return OrderStatus.failed;
+  getStatusMeta(rawStatus: string) {
+    const status = OrderStatus[rawStatus as keyof typeof OrderStatus];
+
+    if (status && OrderStatusMeta[status]) {
+      return OrderStatusMeta[status];
     }
+
+    // fallback nếu blockchain trả status lạ
+    return {
+      label: rawStatus,
+      color: '#374151',
+      bgColor: '#E5E7EB'
+    };
   }
+
 }
