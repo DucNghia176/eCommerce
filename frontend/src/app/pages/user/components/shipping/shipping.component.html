@@ -31,19 +31,37 @@
       <div class="text-gray-600 text-sm mb-4">🕓 {{ order.lastUpdated | date:'dd/MM/yyyy HH:mm' }}</div>
 
       <div class="flex justify-between mt-4">
+
+        <!-- 🔵 Xem lịch sử luôn hiện -->
         <button
           (click)="viewHistory(order)"
           class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
         >
           Xem lịch sử Blockchain
         </button>
+
+        <!-- 🟢 Chỉ hiện khi được phép confirm -->
         <button
           (click)="confirmReceived(order)"
+          *ngIf="canConfirm(order)"
           class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition"
         >
           Đã nhận hàng
         </button>
+
+        <!-- 💜 Chỉ hiện khi được phép thanh toán -->
+        <button
+          (click)="payWithMetaMask(order?.shipmentID!, '0.001')"
+          *ngIf="canPay(order)"
+          [disabled]="loadingPayment === order.shipmentID"
+          class="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition disabled:bg-purple-300 disabled:cursor-not-allowed"
+        >
+          <span *ngIf="loadingPayment !== order.shipmentID">💸 Thanh toán Crypto</span>
+          <span *ngIf="loadingPayment === order.shipmentID">⏳ Đang thanh toán...</span>
+        </button>
+
       </div>
+
     </div>
   </div>
 
