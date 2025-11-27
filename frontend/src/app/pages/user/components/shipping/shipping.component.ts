@@ -133,7 +133,7 @@ export class ShippingComponent implements OnInit {
 
 
   canConfirm(order: ShippingOrder): boolean {
-    return ['DELIVERED'].includes(order.status);
+    return ['SHIPPING'].includes(order.status);
   }
 
 
