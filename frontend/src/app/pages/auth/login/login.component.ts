@@ -22,8 +22,13 @@ export class LoginComponent {
   errorMessages: string | null = null;
   isLoading = false;
   @ViewChild('formRef') formRef!: ElementRef;
+  showPassword: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   login(form: NgForm) {

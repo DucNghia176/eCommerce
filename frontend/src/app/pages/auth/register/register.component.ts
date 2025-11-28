@@ -26,9 +26,14 @@ export class RegisterComponent {
   today = new Date().toISOString().split('T')[0]
   avatarPreview?: string;
   @ViewChild('formRef') formRef!: ElementRef;
+  showPassword: boolean = false;
   protected readonly Gender = Gender;
 
   constructor(private authService: AuthService, private router: Router, private toastService: ToastService) {
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   register(form: NgForm,) {
