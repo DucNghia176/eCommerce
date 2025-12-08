@@ -6,6 +6,7 @@ import {NgForOf} from "@angular/common";
 import {NzInputDirective} from "ng-zorro-antd/input";
 import {NzButtonComponent} from "ng-zorro-antd/button";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {environment} from "../../../../../environments/environment";
 
 @Component({
   selector: 'app-address-modal',
@@ -30,8 +31,9 @@ export class AddressModalComponent implements OnInit {
   selectedProvince: any;
   selectedWard: any;
   detail = '';
+  baseUrl = environment.provinceBaseUrl;
 
-  baseUrl = '/api-province/api/v2';
+  // baseUrl = '/api-province/api/v2';
 
   constructor(private http: HttpClient, private message: NzMessageService,) {
   }
