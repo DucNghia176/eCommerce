@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, catchError, map, Observable, throwError} from "rxjs";
+import {BehaviorSubject, catchError, map, Observable, of, throwError} from "rxjs";
 import {ApiResponse} from "../models/common.model";
 import {AuthRequest, RegisterRequest} from "../models/auth.model";
 import {UserResponse} from "../models/user.model";
 import {environment} from "../../../environments/environment";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class AuthService {
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   private tokenCheckInterval: any;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     const token = localStorage.getItem('token');
     if (token) {
       this.tokenSubject.next(token);
@@ -48,27 +49,38 @@ export class AuthService {
   logout(): Observable<ApiResponse<string>> {
     const token = this.getToken();
     if (!token) {
-      return throwError(() => new Error("Token không tồn tại"));
+      this.clearToken();
+      this.isAuthenticatedSubject.next(false);
+      return of({code: 200, message: "Đã logout", data: null});
     }
 
     return this.http.post<ApiResponse<string>>(
       `${this.apiUrl}/logout`,
-      null,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        responseType: 'text' as 'json',
-      }
+      {},
+      {headers: {Authorization: `Bearer ${token}`}}
     ).pipe(
       map(response => {
         this.clearToken();
         this.isAuthenticatedSubject.next(false);
-        return {code: 200, message: 'Đăng xuất thành công', data: null};
+        this.router.navigate(['/user']);
+        setTimeout(() => {
+          window.location.reload();
+        }, 50);// ✔ chuyển trang đúng
+        return response;
       }),
-      catchError(this.handleError)
+      catchError(err => {
+        // ✔ vẫn xoá token dù BE lỗi
+        this.clearToken();
+        this.isAuthenticatedSubject.next(false);
+        this.router.navigate(['/user']);
+        setTimeout(() => {
+          window.location.reload();
+        }, 50);
+        return throwError(() => err);
+      })
     );
   }
+
 
   startTokenMonitor() {
     if (this.tokenCheckInterval) clearInterval(this.tokenCheckInterval);
