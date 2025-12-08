@@ -16,7 +16,7 @@ export class TagBrandService {
   }
 
   getAllBrand(): Observable<BrandResponse[]> {
-    return this.http.get<ApiResponse<BrandResponse[]>>(`${this.apiUrl}/brand`)
+    return this.http.get<ApiResponse<BrandResponse[]>>(`${this.apiUrl}brand`)
       .pipe(
         map(response => {
           if (response.code === 200 && response.data) {
@@ -29,7 +29,7 @@ export class TagBrandService {
   }
 
   getAllTag(): Observable<TagResponse[]> {
-    return this.http.get<ApiResponse<TagResponse[]>>(`${this.apiUrl}/tag`)
+    return this.http.get<ApiResponse<TagResponse[]>>(`${this.apiUrl}tag`)
       .pipe(
         map(response => {
           if (response.code === 200 && response.data) {
